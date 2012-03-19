@@ -4,7 +4,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://www.aerin.co.uk/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, all you have to do is set up your email address and add the shortcode to your pages.
-Version: 1.0
+Version: 1.1
 Author: Graham Smith
 Author URI: http://www.aerin.co.uk
 */
@@ -27,11 +27,9 @@ register_deactivation_hook( __FILE__, 'qcf_delete_options' );
 */
 register_uninstall_hook(__FILE__, 'qcf_delete_options');
 
-
 $myStyleUrl = plugins_url('quick-contact-form-style.css', __FILE__);
 wp_register_style('qcf_style', $myStyleUrl);
 wp_enqueue_style( 'qcf_style');
-
 
 $myScriptUrl = plugins_url('quick-contact-form-javascript.js', __FILE__);
 wp_register_script('nofuss_script', $myScriptUrl);
@@ -228,7 +226,6 @@ function qcf_verify($options)
 
 function qcf_form()
 	{
-	
 	ob_start();
 	qcf_theform("");
 	if (isset($_POST['submit']))
