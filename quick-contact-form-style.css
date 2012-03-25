@@ -1,23 +1,25 @@
-#qcf {
+#qcf-style {
 	font-family: arial, sans-serif;
+	text-align: left;
+	margin-bottom: 10px;
 	}
 
-#qcf form {
-	margin: 10px 0 0 0;
+#qcf-style form {
+	margin: 0;
 	padding: 0;
 	}
-	
-#qcf #none {
+
+#qcf-style #none {
 	border: 0px solid #FFF;
 	padding: 0;
 	}
 
-#qcf #plain {
+#qcf-style #plain {
 	border: 1px solid #888; 
 	padding: 10px;
 	}
 
-#qcf #rounded {
+#qcf-style #rounded {
 	border: 1px solid #888;
 	padding: 10px;
 	-moz-border-radius: 10px;
@@ -25,7 +27,7 @@
 	border-radius: 10px;
 	}
 
-#qcf #shadow {
+#qcf-style #shadow {
 	background-color: #FFF;
 	border: 1px solid #888;
 	padding: 10px;
@@ -34,8 +36,8 @@
 	-moz-box-shadow: 5px 5px 5px #888;
 	box-shadow: 5px 5px 5px #888;
 	}
-	 
-#qcf #roundshadow {
+
+#qcf-style #roundshadow {
 	background-color: #FFF; 
 	border: 1px solid #888; 
 	padding: 10px; 
@@ -48,25 +50,44 @@
 	border-radius: 10px;
 	}
 
-#qcf form p {
-	margin: 0 0 10px 0;
+#qcf-style form p {
+	margin: 0 0 2px 0;
 	padding: 0;
 	}
 
-#qcf label{
-	position:absolute;left-999em;top-999em;
-	}
-
-#qcf input, #qcf textarea {
+#qcf-style input, #qcf-style textarea {
 	font-family: arial, sans-serif;
-	margin: 0 0 10px 0;
+	margin: 5px 0 5px 0;
 	padding: 6px;
 	color: #465069;
 	font-size: 120%;
 	border:1px solid #415063;
 	}
 
-#qcf #submit { 
+#qcf-style input:focus {
+	background:#FFFFCC;
+	}
+
+#qcf-style textarea:focus {
+	background:#FFFFCC;
+	}
+
+#qcf-style .error {
+	color: red;
+	font-weight: bold;
+	}
+
+#qcf-style .required {
+	border: 1px solid green;
+	color: green;
+	}
+
+#qcf-style .notrequired {
+	font-weight: bold;
+	margin-top: 10px;
+	}
+
+#qcf-style #submit {
 	color: #FFF;
 	background: #343838;
 	text-align: center;
@@ -95,6 +116,7 @@
 	color: #005F6B;
 	text-decoration: none
 	}
+
 #qcf-message a:hover {
 	color: #00B4CC;
 	text-decoration: none
