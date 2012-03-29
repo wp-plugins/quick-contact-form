@@ -64,6 +64,11 @@
 	border:1px solid #415063;
 	}
 
+#qcf-style #sums {
+	color: #465069;
+	font-size: 120%;
+	}
+
 #qcf-style input:focus {
 	background:#FFFFCC;
 	}
@@ -73,13 +78,12 @@
 	}
 
 #qcf-style .error {
-	color: red;
-	font-weight: bold;
+	color: #D31900;
 	}
 
 #qcf-style .required {
-	border: 1px solid green;
-	color: green;
+	border: 1px solid #00C618;
+	color: #00C618;
 	}
 
 #qcf-style .notrequired {

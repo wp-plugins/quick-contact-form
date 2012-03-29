@@ -18,14 +18,15 @@ A really, really simple contact form. There is nothing to configure, all you hav
 *	Compact and easy to use.
 *	No configuration required.
 *	Editable title, blurb, labels and captions (if you want to).
-*	Contextual validation
+*	Multi-levle validation (NEW).
+*	Spambot elimination (NEW).
 *	Pre-set range of border styles.
 *	Optional form width adjustment.
-*	Safe for use with animaas and children.
+*	Safe for use with animals and children.
 
 = Developers plugin page =
 
-[callback form plugin](http://aerin.co.uk/quick-contact-form/).
+[quick contact form plugin](http://aerin.co.uk/quick-contact-form/).
 
 == Installation ==
 
@@ -34,22 +35,22 @@ A really, really simple contact form. There is nothing to configure, all you hav
 3.	Go to 'Plugins', 'Add New' then 'Upload'.
 4.	Browse to the downloaded plugin then then 'Install Now'.
 5.	Activate the plugin.
-6.	Go to the plugin 'Settings' page to set the recipient's email address.
-7.	Edit the field labels and submit button caption is required.
-8.	To use the form in your posts and pages add the shortcode [qcf].
-9.	To use the form in a text widget add the line `add_filter('widget_text', 'do_shortcode');` to your functions.php file. You can now use the shortcode [qcf].
+6.	Go to the plugin 'Settings' page to add the recipient's email address.
+7.	Edit any of the form settings if you wish.
+8.	To use the form in your posts and pages add the shortcode `[qcf]`.
+9.	To use the form in a text widget add the line `add_filter('widget_text', 'do_shortcode');` to your functions.php file. You can now use the shortcode `[qcf]`.
 10.	To use the form in your theme files use the code `<?php echo do_shortcode('[qcf]'); ?>`.
 
 == Frequently Asked Questions ==
 
 = How do I change the labels and captions? =
-Go to your plugin list and scroll down until you see the 'Quick Contact Form' and click on 'Settings'. Change the labels and settings and click on 'Save Settings'.
+Go to your plugin list and scroll down until you see 'Quick Contact Form' and click on 'Settings'. Change the labels and settings and click on 'Save Settings'.
 
 = What's the shortcode? =
 [qcf]
 
 = How do I change the colours? =
-Go to your plugin list and scroll down until you see the 'Quick Contact Form' and click on 'Edit'. Click on the link 'quick-contact-form-styles.css' over on the right. Make the changes and click on 'Update Changes' down the bottom.
+Go to your plugin list and scroll down until you see 'Quick Contact Form' and click on 'Edit'. Click on the link 'quick-contact-form-styles.css' over on the right. Make the changes and click on 'Update Changes' down the bottom.
 
 = Can I add more fields? =
 No.
@@ -64,6 +65,10 @@ If it all goes wrong, just reinstall the plugin and start again. If you need hel
 I did, and so have you.  Maybe there will be more, who knows.....
 
 == Changelog ==
+
+= 1.3 =
+*	Added an optional maths checker to catch the spambots
+*	Added email and telephone number validation
 
 = 1.2 =
 *	Changed the way error and the thank you messages are displayed (no more popups).
