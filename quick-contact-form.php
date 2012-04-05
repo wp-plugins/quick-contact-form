@@ -50,7 +50,7 @@ function qcf_init()
 
 function qcf_add_options_page()
 	{
-	add_options_page('Contact Test Options Page', 'Contact Test', 'manage_options', __FILE__, 'qcf_options_page');
+	add_options_page('Quick Contact Options Page', 'Quick Contact', 'manage_options', __FILE__, 'qcf_options_page');
 	}
 
 function qcf_options_page()
