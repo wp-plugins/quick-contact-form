@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://www.aerin.co.uk/quick-contact-form-plugin
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 1.3
+Version: 1.4
 Author: Graham Smith
 Author URI: http://www.aerin.co.uk
 */
@@ -19,6 +19,8 @@ add_action('admin_init', 'qcf_init');
 add_action('admin_init', 'qcf_add_defaults');
 add_action('admin_menu', 'qcf_add_options_page');
 add_filter( 'plugin_action_links', 'qcf_plugin_action_links', 10, 2 );
+
+register_sidebar_widget("Quick Contact Form", "qcf_widget");
 
 register_activation_hook(__FILE__, 'qcf_add_defaults');
 /* register_deactivation_hook( __FILE__, 'qcf_delete_options' ); */
@@ -52,6 +54,12 @@ function qcf_add_options_page()
 	{
 	add_options_page('Quick Contact Options Page', 'Quick Contact', 'manage_options', __FILE__, 'qcf_options_page');
 	}
+
+function qcf_widget()
+	{
+	echo qcf_loop();
+	}
+
 
 function qcf_options_page()
 	{

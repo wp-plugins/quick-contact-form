@@ -14,14 +14,10 @@ A really, really simple contact form. There is nothing to configure, all you hav
 
 = Features =
 
-*	Ready made contact form with three fields.
-*	Compact and easy to use.
 *	No configuration required.
-*	Editable title, blurb, labels and captions (if you want to).
-*	Multi-levle validation (NEW).
-*	Spambot elimination (NEW).
+*	Editable title, blurb, labels and captions.
 *	Pre-set range of border styles.
-*	Optional form width adjustment.
+*	Optional form width adjustment and spambot detection
 *	Safe for use with animals and children.
 
 = Developers plugin page =
@@ -38,7 +34,7 @@ A really, really simple contact form. There is nothing to configure, all you hav
 6.	Go to the plugin 'Settings' page to add the recipient's email address.
 7.	Edit any of the form settings if you wish.
 8.	To use the form in your posts and pages add the shortcode `[qcf]`.
-9.	To use the form in a text widget add the line `add_filter('widget_text', 'do_shortcode');` to your functions.php file. You can now use the shortcode `[qcf]`.
+9.	Drag and drop the 'Quick Contact Form' widget to your sidebar.
 10.	To use the form in your theme files use the code `<?php echo do_shortcode('[qcf]'); ?>`.
 
 == Frequently Asked Questions ==
@@ -65,6 +61,10 @@ If it all goes wrong, just reinstall the plugin and start again. If you need hel
 I did, and so have you.  Maybe there will be more, who knows.....
 
 == Changelog ==
+
+= 1.4 =
+*	Added widget
+*	Changed text colour of required fields (looks much nicer)
 
 = 1.3 =
 *	Added an optional maths checker to catch the spambots

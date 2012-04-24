@@ -83,7 +83,6 @@
 
 #qcf-style .required {
 	border: 1px solid #00C618;
-	color: #00C618;
 	}
 
 #qcf-style .notrequired {
@@ -96,34 +95,6 @@
 	background: #343838;
 	text-align: center;
 	cursor: pointer;
-	}
-
-#qcf-message {
-	position:absolute;
-	z-index:1;
-	border: 3px solid #343838;
-	background: #F0F0F0;
-	width:500px;
-	margin:0 0 0 -250px;
-	padding: 20px 0;
-	top: 30%;
-	left:50%;
-	text-align:center;
-	font-size:140%;
-	color: #343838;
-	-moz-border-radius: 20px;
-	-webkit-box-shadow: 20px;
-	border-radius: 20px;
-	}
-
-#qcf-message a{
-	color: #005F6B;
-	text-decoration: none
-	}
-
-#qcf-message a:hover {
-	color: #00B4CC;
-	text-decoration: none
 	}
 
 #qcf-options {
