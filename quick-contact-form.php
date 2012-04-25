@@ -4,13 +4,11 @@ Plugin Name: Quick Contact Form
 Plugin URI: http://www.aerin.co.uk/quick-contact-form-plugin
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
 Version: 1.4
-Author: Graham Smith
+Author: fisicx
 Author URI: http://www.aerin.co.uk
 */
 
 /*
-Copyright (C) 2012 Graham Smith, aerin.co.uk (graham AT aerin DOT co DOT uk)
-
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
@@ -196,10 +194,12 @@ function qcf_verify_form(&$values, &$errors)
 	if (($qcf_options[14] == "required") && ((empty($values['qcfname4']) || $values['qcfname4'] == $qcf_options[4]))) 
 		$errors['qcfname4'] = 'What is the '.strtolower($qcf_options[4]).'?';
 
-	if($values['qcfname9']<>7)
-       	$errors['qcfname9'] = 'That&#146;s not the right answer, try again';
-	if(empty($values['qcfname9']))
-    	$errors['qcfname9'] = 'Can you give me an answer to the sum please';
+	if($qcf_options[9] == 'required') {
+		if($values['qcfname9']<>7)
+       		$errors['qcfname9'] = 'That&#146;s not the right answer, try again';
+		if(empty($values['qcfname9']))
+			$errors['qcfname9'] = 'Can you give me an answer to the sum please';
+		}
 
 	return (count($errors) == 0);	
 	}

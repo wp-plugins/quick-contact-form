@@ -65,6 +65,7 @@ I did, and so have you.  Maybe there will be more, who knows.....
 = 1.4 =
 *	Added widget
 *	Changed text colour of required fields (looks much nicer)
+*	Fixed bug in spambot checker
 
 = 1.3 =
 *	Added an optional maths checker to catch the spambots
