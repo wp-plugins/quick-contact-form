@@ -1,127 +1,127 @@
-#qcf-style {
-	font-family: arial, sans-serif;
-	text-align: left;
-	margin-bottom: 10px;
-	}
-
-#qcf-style form {
-	margin: 0;
-	padding: 0;
-	}
-
-#qcf-style #none {
-	border: 0px solid #FFF;
-	padding: 0;
-	}
-
-#qcf-style #plain {
-	border: 1px solid #888; 
-	padding: 10px;
-	}
-
-#qcf-style #rounded {
-	border: 1px solid #888;
-	padding: 10px;
-	-moz-border-radius: 10px;
-	-webkit-box-shadow: 10px;
-	border-radius: 10px;
-	}
-
-#qcf-style #shadow {
-	background-color: #FFF;
-	border: 1px solid #888;
-	padding: 10px;
-	margin: 0 10px 20px 0;
-	-webkit-box-shadow: 5px 5px 5px #888;
-	-moz-box-shadow: 5px 5px 5px #888;
-	box-shadow: 5px 5px 5px #888;
-	}
-
-#qcf-style #roundshadow {
-	background-color: #FFF; 
-	border: 1px solid #888; 
-	padding: 10px; 
-	margin: 0 10px 20px 0; 
-	-webkit-box-shadow: 5px 5px 5px #888; 
-	-moz-box-shadow: 5px 5px 5px #888; 
-	box-shadow: 5px 5px 5px #888 
-	-moz-border-radius: 10px; 
-	-webkit-box-shadow: 10px; 
-	border-radius: 10px;
-	}
-
-#qcf-style form p {
-	margin: 0 0 2px 0;
-	padding: 0;
-	}
-
-#qcf-style input, #qcf-style textarea {
-	font-family: arial, sans-serif;
-	margin: 5px 0 5px 0;
-	padding: 6px;
-	color: #465069;
-	font-size: 120%;
-	border:1px solid #415063;
-	}
-
-#qcf-style #sums {
-	color: #465069;
-	font-size: 120%;
-	}
-
-#qcf-style input:focus {
-	background:#FFFFCC;
-	}
-
-#qcf-style textarea:focus {
-	background:#FFFFCC;
-	}
-
-#qcf-style .error {
-	color: #D31900;
-	}
-
-#qcf-style .required {
-	border: 1px solid #00C618;
-	}
-
-#qcf-style .notrequired {
-	font-weight: bold;
-	margin-top: 10px;
-	}
-
-#qcf-style #submit {
-	color: #FFF;
-	background: #343838;
-	text-align: center;
-	cursor: pointer;
-	}
-
-#qcf-style td, #qcf-widget td {
-	border-bottom: 1px solid #415063;
-	padding: 5px 5px 5px 0;
-	min-width: 100px;
-	max-width: 400px;
-	vertical-align:top;
-	}
-
-#qcf-style pre {
-	margin: 0;
-	padding: 0;
-	}
-
-#qcf-options {
-	border: 1px solid #C3CFF5;
-	padding: 0 10px 10px 10px;
-	margin: 10px 10px 0 0 ;
-	float: left;
-	width: 45%;
-	}
-
-#qcf-options h2 {
-	color: #005F6B;
-	}
-
-#qcf-options submit input:focus {
-	color: #FFF;
-	}
+#qcf-style {
+	font-family: arial, sans-serif;
+	text-align: left;
+	margin-bottom: 10px;
+	}
+
+#qcf-style form {
+	margin: 0;
+	padding: 0;
+	}
+
+#qcf-style #none {
+	border: 0px solid #FFF;
+	padding: 0;
+	}
+
+#qcf-style #plain {
+	border: 1px solid #888; 
+	padding: 10px;
+	}
+
+#qcf-style #rounded {
+	border: 1px solid #888;
+	padding: 10px;
+	-moz-border-radius: 10px;
+	-webkit-box-shadow: 10px;
+	border-radius: 10px;
+	}
+
+#qcf-style #shadow {
+	background-color: #FFF;
+	border: 1px solid #888;
+	padding: 10px;
+	margin: 0 10px 20px 0;
+	-webkit-box-shadow: 5px 5px 5px #888;
+	-moz-box-shadow: 5px 5px 5px #888;
+	box-shadow: 5px 5px 5px #888;
+	}
+
+#qcf-style #roundshadow {
+	background-color: #FFF; 
+	border: 1px solid #888; 
+	padding: 10px; 
+	margin: 0 10px 20px 0; 
+	-webkit-box-shadow: 5px 5px 5px #888; 
+	-moz-box-shadow: 5px 5px 5px #888; 
+	box-shadow: 5px 5px 5px #888 
+	-moz-border-radius: 10px; 
+	-webkit-box-shadow: 10px; 
+	border-radius: 10px;
+	}
+
+#qcf-style form p {
+	margin: 0 0 2px 0;
+	padding: 0;
+	}
+
+#qcf-style input, #qcf-style textarea {
+	font-family: arial, sans-serif;
+	margin: 5px 0 5px 0;
+	padding: 6px;
+	color: #465069;
+	font-size: 120%;
+	border:1px solid #415063;
+	}
+
+#qcf-style #sums {
+	color: #465069;
+	font-size: 120%;
+	}
+
+#qcf-style input:focus {
+	background:#FFFFCC;
+	}
+
+#qcf-style textarea:focus {
+	background:#FFFFCC;
+	}
+
+#qcf-style .error {
+	color: #D31900;
+	}
+
+#qcf-style .required {
+	border: 1px solid #00C618;
+	}
+
+#qcf-style .notrequired {
+	font-weight: bold;
+	margin-top: 10px;
+	}
+
+#qcf-style #submit {
+	color: #FFF;
+	background: #343838;
+	text-align: center;
+	cursor: pointer;
+	}
+
+#qcf-style td, #qcf-widget td {
+	border-bottom: 1px solid #415063;
+	padding: 5px 5px 5px 0;
+	min-width: 100px;
+	max-width: 400px;
+	vertical-align:top;
+	}
+
+#qcf-style pre {
+	margin: 0;
+	padding: 0;
+	}
+
+#qcf-options {
+	border: 1px solid #C3CFF5;
+	padding: 0 10px 10px 10px;
+	margin: 10px 10px 0 0 ;
+	float: left;
+	width: 45%;
+	}
+
+#qcf-options h2 {
+	color: #005F6B;
+	}
+
+#qcf-options submit input:focus {
+	color: #FFF;
+	}
