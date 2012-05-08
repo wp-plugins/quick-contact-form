@@ -14,11 +14,10 @@ A really, really simple contact form. There is nothing to configure, all you hav
 
 = Features =
 
-*	No configuration required.
-*	Editable title, blurb, labels and captions.
+*	Editable labels and captions 
 *	Pre-set range of border styles.
 *	Optional form width adjustment and spambot detection
-*	Safe for use with animals and children.
+*	Can display latest messages on dashboard
 
 = Developers plugin page =
 
@@ -33,8 +32,8 @@ A really, really simple contact form. There is nothing to configure, all you hav
 5.	Activate the plugin.
 6.	Go to the plugin 'Settings' page to add the recipient's email address.
 7.	Edit any of the form settings if you wish.
-8.	To use the form in your posts and pages add the shortcode `[qcf]`.
-9.	Drag and drop the 'Quick Contact Form' widget to your sidebar.
+8.	Drag and drop the 'Quick Contact Form' widget to your sidebar.
+9.	To use the form in your posts and pages add the shortcode `[qcf]`.
 10.	To use the form in your theme files use the code `<?php echo do_shortcode('[qcf]'); ?>`.
 
 == Frequently Asked Questions ==
@@ -62,10 +61,13 @@ I did, and so have you.  Maybe there will be more, who knows.....
 
 == Changelog ==
 
+= 2.0 =
+*	Major upgrade to the settings interface
+*	Option to display latest messages on your dashboard
+
 = 1.4 =
 *	Added widget
 *	Changed text colour of required fields (looks much nicer)
-*	Fixed bug in spambot checker
 
 = 1.3 =
 *	Added an optional maths checker to catch the spambots
