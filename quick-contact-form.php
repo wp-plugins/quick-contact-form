@@ -20,7 +20,7 @@ add_filter( 'plugin_action_links', 'qcf_plugin_action_links', 10, 2 );
 add_action('wp_dashboard_setup', 'qcf_add_dashboard_widgets' );
 
 register_activation_hook(__FILE__, 'qcf_add_defaults');
-register_deactivation_hook( __FILE__, 'qcf_delete_options' );
+/* register_deactivation_hook( __FILE__, 'qcf_delete_options' ); */
 register_uninstall_hook(__FILE__, 'qcf_delete_options');
 
 $myStyleUrl = plugins_url('quick-contact-form-style.css', __FILE__);
