@@ -17,7 +17,7 @@ A really, really simple contact form. There is nothing to configure, all you hav
 *	Editable labels and captions 
 *	Pre-set range of border styles.
 *	Optional form width adjustment and spambot detection
-*	Can display latest messages on dashboard
+*	Displays latest messages on dashboard
 
 = Developers plugin page =
 
@@ -60,6 +60,9 @@ If it all goes wrong, just reinstall the plugin and start again. If you need hel
 I did, and so have you.  Maybe there will be more, who knows.....
 
 == Changelog ==
+
+= 2.0.1 =
+*	Bugfix - message array not initiating on upgrade
 
 = 2.0 =
 *	Major upgrade to the settings interface
