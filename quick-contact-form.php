@@ -209,7 +209,6 @@ function qcf_verify_form(&$values, &$errors)
 function qcf_display_form($values, $errors, $whichpage)
 	{
 	$qcf_options = get_option('qcf_options');
-	$qcf_messages = get_option('qcf_messages');
 	$width = preg_replace("/[^0-9]/", "", $qcf_options[7]);
 	if ($qcf_options[8] == "none") $padding = 0; else $padding = 12;
 	$input = $width - $padding;
@@ -289,6 +288,10 @@ function qcf_process_form($values)
 function qcf_show_messages()
 	{
 	$messages = get_option('qcf_messages');
+	if (empty($messages)) {$messages = array(
+	array('name' => 'Test', 'contact' => 'test', 'message' => 'This is a test message', 'date' => '01 Jan 1970',),
+	);}
+	add_option('qcf_messages', $qcf_messages);
 	usort($messages, function($a1, $a2) {
 		$v1 = strtotime($a1['date']);
 		$v2 = strtotime($a2['date']);
