@@ -291,7 +291,6 @@ function qcf_show_messages()
 	if (empty($messages)) {$messages = array(
 	array('name' => 'Test', 'contact' => 'test', 'message' => 'This is a test message', 'date' => '01 Jan 1970',),
 	);}
-	add_option('qcf_messages', $qcf_messages);
 	usort($messages, function($a1, $a2) {
 		$v1 = strtotime($a1['date']);
 		$v2 = strtotime($a2['date']);
@@ -449,6 +448,9 @@ add_action( 'widgets_init', create_function('', 'return register_widget("qcf_wid
 function qcf_dashboard_widget() 
 	{
 	$messages = get_option('qcf_messages');
+	if (empty($messages)) {$messages = array(
+	array('name' => 'Test', 'contact' => 'test', 'message' => 'This is a test message', 'date' => '01 Jan 1970',),
+	);}
 	usort($messages, function($a1, $a2) {
 		$v1 = strtotime($a1['date']);
 		$v2 = strtotime($a2['date']);
