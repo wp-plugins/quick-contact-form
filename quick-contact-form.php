@@ -20,7 +20,7 @@ add_filter( 'plugin_action_links', 'qcf_plugin_action_links', 10, 2 );
 add_action('wp_dashboard_setup', 'qcf_add_dashboard_widgets' );
 
 register_activation_hook(__FILE__, 'qcf_add_defaults');
-/* register_deactivation_hook( __FILE__, 'qcf_delete_options' ); */
+register_deactivation_hook( __FILE__, 'qcf_delete_options' );
 register_uninstall_hook(__FILE__, 'qcf_delete_options');
 
 $myStyleUrl = plugins_url('quick-contact-form-style.css', __FILE__);
@@ -57,32 +57,6 @@ function qcf_init()
 	register_setting('my_qcf_options', 'qcf_options');
 	}
 
-function qcf_setup_page()
-	{
-	?>
-	<div id="qcf-options">
-	<div id="qcf-style">
-	<form method="post" action="options.php">
-	<?php
-	settings_fields('my_qcf_options');
-	$qcf_options = get_option('qcf_options');
-	$width = preg_replace("/[^0-9]/", "", $qcf_options[7]);
-	$input = $width.'px';
-	?>
-	<h2>Setting up the plugin</h2>	
-	<p><span style="color:red; font-weight: bold;">Important!</span> Enter YOUR email address below and save the changes.  This won't display, it's just so the plugin knows where to send the message.</p>
-	<p><input type="text" style="width:100%" label="Email" name="qcf_options[6]" value="<?php echo $qcf_options[6]; ?>" /></p>
-	<p><input type="submit" class="button-primary" style="color: #FFF" value="<?php _e('Save Changes') ?>" /></p>
-	<h2>Adding the contact form to your site</h2>
-	<p>To add the contact form your posts or pages use the short code: <code>[qcf]</code>.<br />
-	<p>To add it to your theme files use <code>&lt;?php echo do_shortcode('[qcf]'); ?&gt;</code></p>
-	<p>There is also a widget called 'Quick Contact Form' you can drag and drop into your sidebar.</p>	
-	<p>That's it.  The plugin is ready to use.</p>	
-	</div>
-	</div>
-	<?php
-	}
-
 function qcf_options_page()
 	{
 	?>
@@ -108,6 +82,14 @@ function qcf_options_page()
 	if ($qcf_options[9] == "required") $checked9 = "checked";
 	if ($qcf_options[10] == "yes") $checked10 = "checked";
 	?>
+	<h2>Setting up the plugin</h2>	
+	<p><span style="color:red; font-weight: bold;">Important!</span> Enter YOUR email address below and save the changes.  This won't display, it's just so the plugin knows where to send the message.</p>
+	<p><input type="text" style="width:100%" label="Email" name="qcf_options[6]" value="<?php echo $qcf_options[6]; ?>" /></p>
+	<p><input type="submit" class="button-primary" style="color: #FFF" value="<?php _e('Save Changes') ?>" /></p>
+	<h2>Adding the contact form to your site</h2>
+	<p>To add the contact form your posts or pages use the short code: <code>[qcf]</code>.<br />
+	<p>To add it to your theme files use <code>&lt;?php echo do_shortcode('[qcf]'); ?&gt;</code></p>
+	<p>There is also a widget called 'Quick Contact Form' you can drag and drop into your sidebar.</p>	
 	<h2>Form Title and Introductory Blurb</h2>
 	<p>Form title (leave blank if you don't want a heading):</p>
 	<p><input type="text"  style="width:<?php echo $input; ?>;" name="qcf_options[0]" value="<?php echo $qcf_options[0]; ?>" /></p>
@@ -298,8 +280,7 @@ function qcf_show_messages()
 	});
 	echo '<div id="qcf-options" style="width:90%;">
 	<div id="qcf-style">
-	<h2>Message List</h2>
-	<p>Lists the messages received since the plugin was activated.</p>
+	<h2>Latest Messages</h2>
 	<table cellspacing="0">
 	<tr><td><b>From</b</td><td><b>&nbsp;</b</td><td><b>Message</b</td><td><b>Date</b</td></tr>';
 	foreach($messages as $value)
@@ -378,7 +359,7 @@ function qcf_loop()
 
 function qcf_admin_tabs( $current = 'settings' )
 	{ 
-	$tabs = array( 'setup' => 'Setup', 'options' => 'Options', 'messages' => 'Messages', 'support' => 'Support' ); 
+	$tabs = array('options' => 'Options', 'messages' => 'Messages', 'support' => 'Support' ); 
 	$links = array();
 	echo '<div id="icon-themes" class="icon32"><br></div>';
 	echo '<h2 class="nav-tab-wrapper">';
@@ -396,9 +377,9 @@ function qcf_tabbed_page()
 	<div class="wrap">
 	<h1>Quick Contact Form</h1>
 	<?php
-	if ( isset ( $_GET['tab'] ) ) qcf_admin_tabs($_GET['tab']); else qcf_admin_tabs('setup');
+	if ( isset ( $_GET['tab'] ) ) qcf_admin_tabs($_GET['tab']); else qcf_admin_tabs('options');
 	if ( isset ( $_GET['tab'] ) ) $tab = $_GET['tab']; 
-	else $tab = 'setup'; 
+	else $tab = 'options'; 
 	switch ( $tab )
 		{
 		case 'messages' : qcf_show_messages();
@@ -406,8 +387,6 @@ function qcf_tabbed_page()
 		case 'support' : qcf_help();
 		break;
 		case 'options' : qcf_options_page();
-		break;
-		case 'setup' : qcf_setup_page();
 		break;
 		}
 	?>			
