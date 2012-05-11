@@ -15,6 +15,7 @@ This program is free software; you can redistribute it and/or modify it under th
 add_shortcode('qcf', 'qcf_loop');
 add_action('admin_init', 'qcf_init');
 add_action('admin_init', 'qcf_add_defaults');
+add_action('admin_init', 'qcf_add_messages');
 add_action('admin_menu', 'qcf_options_page_init');
 add_filter( 'plugin_action_links', 'qcf_plugin_action_links', 10, 2 );
 add_action('wp_dashboard_setup', 'qcf_add_dashboard_widgets' );
@@ -42,8 +43,12 @@ function qcf_add_defaults()
 	add_option('qcf_email', $qcf_email);
 	$qcf_options = array("Enquiry Form", "Complete the form below and we will be in contact very soon","Your Name", "Email Address","Message", "Send It!","bob","250","plain","","","","required","required","","","","","","");
 	add_option('qcf_options', $qcf_options);
+	}
+
+function qcf_add_messages()
+	{
 	$qcf_messages = array(
-	array('name' => 'Test', 'contact' => 'test', 'message' => 'This is a test message', 'date' => '01 Jan 1970',),
+	array('name' => '<b>From</b>', 'contact' => '<b>&nbsp;</b>', 'message' => '<b>Message</b>', 'date' => '<b>Date</b>',),
 	);
 	add_option('qcf_messages', $qcf_messages);
 	}
@@ -282,9 +287,7 @@ function qcf_process_form($values)
 	</div>';  	
 	
 	$qcf_messages = get_option('qcf_messages');
-	if (empty($messages)) {$messages = array(
-	array('name' => 'Test', 'contact' => 'test', 'message' => 'This is a test message', 'date' => '01 Jan 1970',),
-	);}
+	if (empty($messages)) {qcf_add_messages(); $qcf_messages = get_option('qcf_messages');}
 	$sentdate = date('d M Y');
 	$qcf_messages[] = array(name => $values['qcfname2'], contact => $values['qcfname3'], message => $values['qcfname4'],date => $sentdate,);
 	update_option('qcf_messages',$qcf_messages);
@@ -293,9 +296,7 @@ function qcf_process_form($values)
 function qcf_show_messages()
 	{
 	$messages = get_option('qcf_messages');
-	if (empty($messages)) {$messages = array(
-	array('name' => 'Test', 'contact' => 'test', 'message' => 'This is a test message', 'date' => '01 Jan 1970',),
-	);}
+	if (empty($messages)) {qcf_add_messages(); $qcf_messages = get_option('qcf_messages');}
 	usort($messages, function($a1, $a2) {
 		$v1 = strtotime($a1['date']);
 		$v2 = strtotime($a2['date']);
@@ -453,16 +454,14 @@ add_action( 'widgets_init', create_function('', 'return register_widget("qcf_wid
 function qcf_dashboard_widget() 
 	{
 	$messages = get_option('qcf_messages');
-	if (empty($messages)) {$messages = array(
-	array('name' => 'Test', 'contact' => 'test', 'message' => 'This is a test message', 'date' => '01 Jan 1970',),
-	);}
+	if (empty($messages)) {qcf_add_messages(); $qcf_messages = get_option('qcf_messages');}
 	usort($messages, function($a1, $a2) {
 		$v1 = strtotime($a1['date']);
 		$v2 = strtotime($a2['date']);
    		return $v2 - $v1; // $v2 - $v1 to reverse direction
 	});
 	echo '<div id="qcf-widget"><table cellspacing="0">
-	<tr><td><b>From</b</td><td><b>&nbsp;</b</td><td><b>Message</b</td><td><b>Date</b</td></tr>';
+	<tr><td><b>From</b></td><td><b>&nbsp;</b></td><td><b>Message</b></td><td><b>Date</b></td></tr>';
 	foreach($messages as $value)
 		{
 		echo '<tr>';
