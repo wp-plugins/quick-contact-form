@@ -21,7 +21,7 @@ add_filter( 'plugin_action_links', 'qcf_plugin_action_links', 10, 2 );
 add_action('wp_dashboard_setup', 'qcf_add_dashboard_widgets' );
 
 register_activation_hook(__FILE__, 'qcf_add_defaults');
-register_deactivation_hook( __FILE__, 'qcf_delete_options' );
+/* register_deactivation_hook( __FILE__, 'qcf_delete_options' ); */
 register_uninstall_hook(__FILE__, 'qcf_delete_options');
 
 $myStyleUrl = plugins_url('quick-contact-form-style.css', __FILE__);
@@ -296,7 +296,7 @@ function qcf_process_form($values)
 function qcf_show_messages()
 	{
 	$messages = get_option('qcf_messages');
-	if (empty($messages)) {qcf_add_messages(); $qcf_messages = get_option('qcf_messages');}
+	if (empty($messages)) {qcf_add_messages(); $messages = get_option('qcf_messages');}
 	usort($messages, function($a1, $a2) {
 		$v1 = strtotime($a1['date']);
 		$v2 = strtotime($a2['date']);
