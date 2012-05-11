@@ -61,8 +61,8 @@ I did, and so have you.  Maybe there will be more, who knows.....
 
 == Changelog ==
 
-= 2.0.1 =
-*	Bugfix - message array not initiating on upgrade
+= 2.0.1/2.0.2 =
+*	Bugfix - message array not initiating on upgrade. Apologies to all who got the error messages - I'll do more testing next time.
 
 = 2.0 =
 *	Major upgrade to the settings interface
