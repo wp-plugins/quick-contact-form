@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://www.aerin.co.uk/quick-contact-form-plugin
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 2.0
+Version: 2.0.1
 Author: fisicx
 Author URI: http://www.aerin.co.uk
 */
