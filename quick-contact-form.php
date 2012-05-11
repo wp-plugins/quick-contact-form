@@ -21,7 +21,7 @@ add_filter( 'plugin_action_links', 'qcf_plugin_action_links', 10, 2 );
 add_action('wp_dashboard_setup', 'qcf_add_dashboard_widgets' );
 
 register_activation_hook(__FILE__, 'qcf_add_defaults');
-/* register_deactivation_hook( __FILE__, 'qcf_delete_options' ); */
+register_deactivation_hook( __FILE__, 'qcf_delete_options' );
 register_uninstall_hook(__FILE__, 'qcf_delete_options');
 
 $myStyleUrl = plugins_url('quick-contact-form-style.css', __FILE__);
@@ -304,10 +304,9 @@ function qcf_show_messages()
 	});
 	echo '<div id="qcf-options" style="width:90%;">
 	<div id="qcf-style">
-	<h2>Message List</h2>
-	<p>Lists the messages received since the plugin was activated.</p>
+	<h2>Latest Messages</h2>
 	<table cellspacing="0">
-	<tr><td><b>From</b</td><td><b>&nbsp;</b</td><td><b>Message</b</td><td><b>Date</b</td></tr>';
+	<tr><th>From</th><th>&nbsp;</th><th>Message</th><th>Date</td></tr>';
 	foreach($messages as $value)
 		{
 		echo '<tr>';
