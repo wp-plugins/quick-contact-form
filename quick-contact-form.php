@@ -306,7 +306,7 @@ function qcf_show_messages()
 	<div id="qcf-style">
 	<h2>Latest Messages</h2>
 	<table cellspacing="0">
-	<tr><th>From</th><th>&nbsp;</th><th>Message</th><th>Date</td></tr>';
+	<tr><th>From</th><th>&nbsp;</th><th>Message</th><th>Date</th></tr>';
 	foreach($messages as $value)
 		{
 		echo '<tr>';
@@ -453,14 +453,14 @@ add_action( 'widgets_init', create_function('', 'return register_widget("qcf_wid
 function qcf_dashboard_widget() 
 	{
 	$messages = get_option('qcf_messages');
-	if (empty($messages)) {qcf_add_messages(); $qcf_messages = get_option('qcf_messages');}
+	if (empty($messages)) {qcf_add_messages(); $messages = get_option('qcf_messages');}
 	usort($messages, function($a1, $a2) {
 		$v1 = strtotime($a1['date']);
 		$v2 = strtotime($a2['date']);
    		return $v2 - $v1; // $v2 - $v1 to reverse direction
 	});
 	echo '<div id="qcf-widget"><table cellspacing="0">
-	<tr><td><b>From</b></td><td><b>&nbsp;</b></td><td><b>Message</b></td><td><b>Date</b></td></tr>';
+	<tr><th>From</th><th>&nbsp;</th><th>Message</th><th>Date</th></tr>';
 	foreach($messages as $value)
 		{
 		echo '<tr>';
