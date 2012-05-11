@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://www.aerin.co.uk/quick-contact-form-plugin
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 2.0.1
+Version: 2.0.2
 Author: fisicx
 Author URI: http://www.aerin.co.uk
 */
@@ -282,6 +282,9 @@ function qcf_process_form($values)
 	</div>';  	
 	
 	$qcf_messages = get_option('qcf_messages');
+	if (empty($messages)) {$messages = array(
+	array('name' => 'Test', 'contact' => 'test', 'message' => 'This is a test message', 'date' => '01 Jan 1970',),
+	);}
 	$sentdate = date('d M Y');
 	$qcf_messages[] = array(name => $values['qcfname2'], contact => $values['qcfname3'], message => $values['qcfname4'],date => $sentdate,);
 	update_option('qcf_messages',$qcf_messages);
