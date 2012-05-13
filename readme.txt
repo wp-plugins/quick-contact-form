@@ -14,7 +14,8 @@ A really, really simple contact form. There is nothing to configure, all you hav
 
 = Features =
 
-*	Editable labels and captions 
+*		
+Editable labels and captions 
 *	Pre-set range of border styles.
 *	Optional form width adjustment and spambot detection
 *	Displays latest messages on dashboard
@@ -61,8 +62,8 @@ I did, and so have you.  Maybe there will be more, who knows.....
 
 == Changelog ==
 
-= 2.0.1/2.0.2 =
-*	Bugfix - message array not initiating on upgrade. Apologies to all who got the error messages - I'll do more testing next time.
+= 2.1 =
+*	Tweak to the stylesheet to cope with the hopeless Internet Explorer CSS support
 
 = 2.0 =
 *	Major upgrade to the settings interface

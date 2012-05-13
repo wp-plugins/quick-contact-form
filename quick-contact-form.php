@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://www.aerin.co.uk/quick-contact-form-plugin
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 2.0.3
+Version: 2.1
 Author: fisicx
 Author URI: http://www.aerin.co.uk
 */
@@ -67,6 +67,7 @@ function qcf_init()
 
 function qcf_setup_page()
 	{
+	register_setting('my_qcf_email', 'qcf_email');
 	?>
 	<div id="qcf-options">
 	<div id="qcf-style">
@@ -95,7 +96,7 @@ function qcf_options_page()
 	?>
 	<div id="qcf-options">
 	<div id="qcf-style">
-	<form method="post" action="file:///D|/websites/qcf/quick-contact-form/options.php">
+	<form method="post" action="options.php">
 	<?php
 	settings_fields('my_qcf_options');
 	$qcf_options = get_option('qcf_options');
@@ -123,15 +124,15 @@ function qcf_options_page()
 	<h2>Form fields and captions</h2>
 	<p>These can be any questions you like: name, email, telephone, shoe size, favourite colour and so on. Tick the checkbox if the field is required.</p><p>You can change the caption on the submit button as well.</p>
 	<p><input type="text" class="<?php echo $qcf_options[12]; ?>" style="width:<?php echo $input; ?>;" name="qcf_options[2]" value="<?php echo $qcf_options[2]; ?>" /></p>
-	<p><input type="checkbox" style="margin: 0;" name="qcf_options[12]" <?php echo $checked2; ?> value="required">Required</p>
+	<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_options[12]" <?php echo $checked2; ?> value="required">Required</p>
 	<p><input type="text" class="<?php echo $qcf_options[13]; ?>" style="width:<?php echo $input; ?>;" name="qcf_options[3]" value="<?php echo $qcf_options[3]; ?>" /></p>
-	<p><input type="checkbox" style="margin: 0;" name="qcf_options[13]" <?php echo $checked3; ?> value="required">Required</p>
+	<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_options[13]" <?php echo $checked3; ?> value="required">Required</p>
 	<p><input type="text" class="<?php echo $qcf_options[14]; ?>" style="width:<?php echo $input; ?>;" name="qcf_options[4]" value="<?php echo $qcf_options[4]; ?>" /></p>
-	<p><input type="checkbox" style="margin: 0;" name="qcf_options[14]" <?php echo $checked4; ?> value="required">Required</p>
+	<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_options[14]" <?php echo $checked4; ?> value="required">Required</p>
 	<p><input type="text" id="submit" style="width:<?php echo $input; ?>; font-size: 130%;cursor:auto; color: #FFF" name="qcf_options[5]" value="<?php echo $qcf_options[5]; ?>" /></p>
 	<h2>Spambot Checker</h2>
 	<p>Add a maths checker to the form to (hopefully) block most of the spambots</p>
-	<p><input type="checkbox" style="margin: 0;" name="qcf_options[9]" <?php echo $checked9; ?> value="required"> Add Spambot blocker</p>
+	<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_options[9]" <?php echo $checked9; ?> value="required"> Add Spambot blocker</p>
 	<h2>Form Width</h2>
 	<p>Enter the width of the form in pixels. Just enter the value, no need to add 'px'. The current width is as you see it here.</p>
 	<p><input type="text"  style="width:<?php echo $input; ?>;" label="width" name="qcf_options[7]" value="<?php echo $qcf_options[7]; ?>" /></p>
@@ -139,14 +140,14 @@ function qcf_options_page()
 	<p>Choose your border style.</p>
 	<p>Note: The rounded corners and shadows only work on CSS3 supported browsers and even then not in IE8. Don't blame me, blame Microsoft.</p>
 	<p>
-	<input style="margin: 0;" type="radio" name="qcf_options[8]"  value="none" <?php echo $none; ?> > No border<br />
-	<input style="margin: 0;" type="radio" name="qcf_options[8]"  value="plain" <?php echo $plain; ?>  > Plain Border<br /> 
-	<input style="margin: 0;" type="radio" name="qcf_options[8]"  value="rounded" <?php echo $rounded; ?>  > Round Corners (Not IE8)<br /> 		
-	<input style="margin: 0;" type="radio" name="qcf_options[8]"  value="shadow" <?php echo $shadow; ?> > Shadowed Border(Not IE8)<br />
-	<input style="margin: 0;" type="radio" name="qcf_options[8]"  value="roundshadow" <?php echo $roundshadow; ?> > Rounded Shadowed Border (Not IE8)</p>		
+	<input style="margin: 0; padding: 0; border: none;" type="radio" name="qcf_options[8]"  value="none" <?php echo $none; ?> > No border<br />
+	<input style="margin: 0; padding: 0; border: none;" type="radio" name="qcf_options[8]"  value="plain" <?php echo $plain; ?>  > Plain Border<br /> 
+	<input style="margin: 0; padding: 0; border: none;" type="radio" name="qcf_options[8]"  value="rounded" <?php echo $rounded; ?>  > Round Corners (Not IE8)<br /> 		
+	<input style="margin: 0; padding: 0; border: none;" type="radio" name="qcf_options[8]"  value="shadow" <?php echo $shadow; ?> > Shadowed Border(Not IE8)<br />
+	<input style="margin: 0; padding: 0; border: none;" type="radio" name="qcf_options[8]"  value="roundshadow" <?php echo $roundshadow; ?> > Rounded Shadowed Border (Not IE8)</p>		
 	<h2>Dashboard Widget</h2>
 	<p>Displays most recent messages on your dashboard</p>
-	<p><input type="checkbox" style="margin: 0;" name="qcf_options[10]" <?php echo $checked10; ?> value="yes"> Add latest messages to dashboard</p>
+	<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_options[10]" <?php echo $checked10; ?> value="yes"> Add latest messages to dashboard</p>
 <p><input type="submit" class="button-primary" style="color: #FFF" value="<?php _e('Save Changes') ?>" /></p>
 	</form>
 	</div>
@@ -258,7 +259,8 @@ function qcf_display_form($values, $errors, $whichpage)
 function qcf_process_form($values)
 	{
 	$qcf_options = get_option('qcf_options');
-	$qcf_sendmail = $qcf_options[6];
+	$qcf_email = get_option('qcf_email');
+	if (empty($qcf_email)) $qcf_email = $qcf_options[6];
 	$ip=$_SERVER['REMOTE_ADDR'];
 	$url = $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
 	$subject = "Enquiry from {$values['qcfname2']}";
@@ -273,7 +275,7 @@ function qcf_process_form($values)
 	$message .= "<p>This is the senders IP address: <b>$ip</b></p></html>";
 	$message .= "</html>"; 
 
-	mail($qcf_sendmail, $subject, $message, $headers);
+	mail($qcf_email, $subject, $message, $headers);
 
 	echo '<div id="qcf-style">
 	<div id="'.$qcf_options[8].'" style="width:'.$qcf_options[7].'px;">
