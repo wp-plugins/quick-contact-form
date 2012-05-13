@@ -41,7 +41,7 @@ function qcf_add_defaults()
 	{
 	$qcf_email = "";
 	add_option('qcf_email', $qcf_email);
-	$qcf_options = array("Enquiry Form", "Complete the form below and we will be in contact very soon","Your Name", "Email Address","Message", "Send It!","bob","250","plain","","","","required","required","","","","","","");
+	$qcf_options = array("Enquiry Form", "Complete the form below and we will be in contact very soon","Your Name", "Email Address","Message", "Send It!","","250","plain","","","","required","required","","","","","","");
 	add_option('qcf_options', $qcf_options);
 	}
 
@@ -56,6 +56,7 @@ function qcf_add_messages()
 function qcf_delete_options()
 	{
 	delete_option('qcf_options');
+	delete_option('qcf_email');
 	delete_option('qcf_messages');
 	}
 
@@ -422,12 +423,12 @@ function qcf_tabbed_page()
 	<?php
 	}
 
+		$widget_ops = array('classname' => 'qcf_widget', 'description' => 'Add th
 
 class qcf_widget extends WP_Widget
 	{
 	function qcf_widget()
-		{
-		$widget_ops = array('classname' => 'qcf_widget', 'description' => 'Add the Quick Contact Form to your sidebar');
+		{e Quick Contact Form to your sidebar');
 		$this->WP_Widget('qcf_widget', 'Quick Contact Form', $widget_ops);
 		}
 
