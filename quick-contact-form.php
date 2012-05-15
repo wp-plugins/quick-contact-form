@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://www.aerin.co.uk/quick-contact-form-plugin
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 2.1
+Version: 2.2
 Author: fisicx
 Author URI: http://www.aerin.co.uk
 */
@@ -127,13 +127,13 @@ function qcf_reset_page()
    	?>
 		<div id="qcf-options">
 		<div id="qcf-style">
-		<h2>Reset Options</h2>
-		<p>Use with caution!</p>
-		<p>Select the options you wish to reset.</p> 
+		<h2>Reset Everything</h2>
+		<p><span style="color:red; font-weight: bold;">Use with caution!</span></p>
+		<p>Select the options you wish to reset and click on the blue button.  This will reset the selected settings to the defaults.</p> 
 		<form action="" method="POST">
 		<p><input type="checkbox" class="qcf_iehack" name="qcf_reset_email"> Reset email</p>
 <p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_options"> Reset form options</p>
-<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_messages"> Delete message list</p>
+<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_messages"> Delete message list - this won't delete any email you have recieved.</p>
 		<input type="submit" class="button-primary" name="qcf_reset" style="color: #FFF" value="Reset Options" />
 		</form>
 		</div>
