@@ -62,6 +62,9 @@ I did, and so have you.  Maybe there will be more, who knows.....
 
 == Changelog ==
 
+= 2.2 =
+*	Added new tab so that you can reset any or all of the settings
+
 = 2.1 =
 *	Tweak to the stylesheet to cope with the hopeless Internet Explorer CSS support
 
