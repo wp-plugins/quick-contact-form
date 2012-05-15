@@ -20,8 +20,9 @@ add_action('admin_menu', 'qcf_options_page_init');
 add_filter( 'plugin_action_links', 'qcf_plugin_action_links', 10, 2 );
 add_action('wp_dashboard_setup', 'qcf_add_dashboard_widgets' );
 
+
 register_activation_hook(__FILE__, 'qcf_add_defaults');
-/* register_deactivation_hook( __FILE__, 'qcf_delete_options' ); */
+register_deactivation_hook( __FILE__, 'qcf_delete_options' );
 register_uninstall_hook(__FILE__, 'qcf_delete_options');
 
 $myStyleUrl = plugins_url('quick-contact-form-style.css', __FILE__);
@@ -64,6 +65,7 @@ function qcf_init()
 	{
 	register_setting('my_qcf_options', 'qcf_options');
 	register_setting('my_qcf_email', 'qcf_email');
+	register_setting('my_qcf_messages', 'qcf_messages');
 	}
 
 function qcf_setup_page()
@@ -76,12 +78,11 @@ function qcf_setup_page()
 	<?php
 	settings_fields('my_qcf_email');
 	$qcf_email = get_option('qcf_email');
-	if (empty($qcf_email)) {$qcf_options = get_option('qcf_options'); $qcf_email = $qcf_options[6];}
 	?>
 	<h2>Setting up the plugin</h2>	
 	<p><span style="color:red; font-weight: bold;">Important!</span> Enter YOUR email address below and save the changes.  This won't display, it's just so the plugin knows where to send the message.</p>
 	<p><input type="text" style="width:100%" label="Email" name="qcf_email" value="<?php echo $qcf_email; ?>" /></p>
-	<p><input type="submit" class="button-primary" style="color: #FFF" value="<?php _e('Save Changes') ?>" /></p>
+	<p><input type="submit" class="button-primary" style="color: #FFF" value="Save Changes" /></p>
 	<h2>Adding the contact form to your site</h2>
 	<p>To add the contact form your posts or pages use the short code: <code>[qcf]</code>.<br />
 	<p>To add it to your theme files use <code>&lt;?php echo do_shortcode('[qcf]'); ?&gt;</code></p>
@@ -91,6 +92,56 @@ function qcf_setup_page()
 	</div>
 	<?php
 	}
+
+function qcf_admin_notice($message)
+	{
+	if (!empty($message)) echo '<div class="updated"><p>'.$message.'</p></div>';
+	}
+
+add_action('admin_notices', 'qcf_admin_notice');
+
+function qcf_reset_page()
+	{
+	if (isset($_POST['qcf_reset']))
+		{
+		if (isset($_POST['qcf_reset_email']))
+			{
+			$qcf_email = "";
+			update_option('qcf_email', $qcf_email);
+			qcf_admin_notice("<b>Your email adress has been reset.</b> Use the 'Setup' tab to add a new email address");
+			}
+		if (isset($_POST['qcf_reset_options']))
+			{
+			$qcf_options = array("Enquiry Form", "Complete the form below and we will be in contact very soon","Your Name", "Email Address","Message", "Send It!","","250","plain","","","","required","required","","","","","","");
+			update_option('qcf_options', $qcf_options);
+			qcf_admin_notice("<b>Form settings have been reset.</b> Use the 'Options' tab to change the form settings");
+			}
+		if (isset($_POST['qcf_reset_messages']))
+			{
+			$qcf_messages = array(
+			array('name' => '<b>From</b>', 'contact' => '<b>&nbsp;</b>', 'message' => '<b>Message</b>', 'date' => '<b>Date</b>',),);
+			update_option('qcf_messages', $qcf_messages);
+			qcf_admin_notice("<b>The message list has been deleted.</b> Only those messages received from today will be displayed.");
+			}
+		}	
+   	?>
+		<div id="qcf-options">
+		<div id="qcf-style">
+		<h2>Reset Options</h2>
+		<p>Use with caution!</p>
+		<p>Select the options you wish to reset.</p> 
+		<form action="" method="POST">
+		<p><input type="checkbox" class="qcf_iehack" name="qcf_reset_email"> Reset email</p>
+<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_options"> Reset form options</p>
+<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_messages"> Delete message list</p>
+		<input type="submit" class="button-primary" name="qcf_reset" style="color: #FFF" value="Reset Options" />
+		</form>
+		</div>
+		</div>
+		<?php 
+		
+	}
+
 
 function qcf_options_page()
 	{
@@ -386,7 +437,7 @@ function qcf_loop()
 
 function qcf_admin_tabs( $current = 'settings' )
 	{ 
-	$tabs = array( 'setup' => 'Setup', 'options' => 'Options', 'messages' => 'Messages', 'support' => 'Support' ); 
+	$tabs = array( 'setup' => 'Setup', 'options' => 'Options', 'messages' => 'Messages', 'support' => 'Support', reset => Reset); 
 	$links = array();
 	echo '<div id="icon-themes" class="icon32"><br></div>';
 	echo '<h2 class="nav-tab-wrapper">';
@@ -417,18 +468,19 @@ function qcf_tabbed_page()
 		break;
 		case 'setup' : qcf_setup_page();
 		break;
+		case 'reset' : qcf_reset_page();
+		break;
 		}
 	?>			
 	</div>
 	<?php
 	}
 
-		$widget_ops = array('classname' => 'qcf_widget', 'description' => 'Add th
-
 class qcf_widget extends WP_Widget
 	{
 	function qcf_widget()
-		{e Quick Contact Form to your sidebar');
+		{
+		$widget_ops = array('classname' => 'qcf_widget', 'description' => 'Add the Quick Contact Form to your sidebar');
 		$this->WP_Widget('qcf_widget', 'Quick Contact Form', $widget_ops);
 		}
 
