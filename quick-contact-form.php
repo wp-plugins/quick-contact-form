@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://www.aerin.co.uk/quick-contact-form-plugin
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 2.2
+Version: 2.3
 Author: fisicx
 Author URI: http://www.aerin.co.uk
 */
@@ -19,7 +19,6 @@ add_action('admin_init', 'qcf_add_messages');
 add_action('admin_menu', 'qcf_options_page_init');
 add_filter( 'plugin_action_links', 'qcf_plugin_action_links', 10, 2 );
 add_action('wp_dashboard_setup', 'qcf_add_dashboard_widgets' );
-
 
 register_activation_hook(__FILE__, 'qcf_add_defaults');
 /* register_deactivation_hook( __FILE__, 'qcf_delete_options' ); */
@@ -42,7 +41,7 @@ function qcf_add_defaults()
 	{
 	$qcf_email = "";
 	add_option('qcf_email', $qcf_email);
-	$qcf_options = array("Enquiry Form", "Complete the form below and we will be in contact very soon","Your Name", "Email Address","Message", "Send It!","","250","plain","","","","required","required","","","","","","");
+	$qcf_options = array("Enquiry Form", "Complete the form below and we will be in contact very soon","Your Name", "Email Address","Message", "Send It!","","250","plain","","","","required","required","","Telephone number","","yes","yes","yes","yes","update");
 	add_option('qcf_options', $qcf_options);
 	}
 
@@ -112,7 +111,7 @@ function qcf_reset_page()
 			}
 		if (isset($_POST['qcf_reset_options']))
 			{
-			$qcf_options = array("Enquiry Form", "Complete the form below and we will be in contact very soon","Your Name", "Email Address","Message", "Send It!","","250","plain","","","","required","required","","","","","","");
+			$qcf_options = array("Enquiry Form", "Complete the form below and we will be in contact very soon","Your Name", "Email Address","Message", "Send It!","","250","plain","","","","required","required","","Telephone number","","yes","yes","yes","yes","reset");
 			update_option('qcf_options', $qcf_options);
 			qcf_admin_notice("<b>Form settings have been reset.</b> Use the 'Options' tab to change the form settings");
 			}
@@ -132,16 +131,14 @@ function qcf_reset_page()
 		<p>Select the options you wish to reset and click on the blue button.  This will reset the selected settings to the defaults.</p> 
 		<form action="" method="POST">
 		<p><input type="checkbox" class="qcf_iehack" name="qcf_reset_email"> Reset email</p>
-<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_options"> Reset form options</p>
+	<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_options"> Reset form options</p>
 <p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_messages"> Delete message list - this won't delete any email you have recieved.</p>
 		<input type="submit" class="button-primary" name="qcf_reset" style="color: #FFF" value="Reset Options" />
 		</form>
 		</div>
 		</div>
 		<?php 
-		
 	}
-
 
 function qcf_options_page()
 	{
@@ -157,6 +154,11 @@ function qcf_options_page()
 	$input = $width;
 	$submit = $width;
 	$textarea = $width;
+	if ($qcf_options[21] == "")
+		 {$qcf_options[17] = "yes"; $qcf_options[18] = "yes"; $qcf_options[20] = "yes";
+		?><input type="hidden" name = 'qcf_options[21]' value ='upgrade'><?php
+		}
+	
 	if ($qcf_options[8] == "shadow") $shadow = "checked"; else $shadow = "";
 	if ($qcf_options[8] == "roundshadow") $roundshadow = "checked"; else $roundshadow = "";
 	if ($qcf_options[8] == "plain") $plain = "checked"; else $plain = "";
@@ -165,8 +167,15 @@ function qcf_options_page()
 	if ($qcf_options[12] == "required") $checked2 = "checked"; else $checked2 = "";
 	if ($qcf_options[13] == "required") $checked3 = "checked"; else $checked3 = "";
 	if ($qcf_options[14] == "required") $checked4 = "checked"; else $checked4 = "";
+	if ($qcf_options[16] == "required") $checked16 = "checked"; else $checked16 = "";
+	if ($qcf_options[17] == "yes") $checked17 = "checked"; else $checked17 = "";
+	if ($qcf_options[18] == "yes") $checked18 = "checked"; else $checked18 = "";
+	if ($qcf_options[19] == "yes") $checked19 = "checked"; else $checked19 = "";
+	if ($qcf_options[20] == "yes") $checked20 = "checked"; else $checked20 = "";
 	if ($qcf_options[9] == "required") $checked9 = "checked";
 	if ($qcf_options[10] == "yes") $checked10 = "checked";
+	
+	
 	?>
 	<h2>Form Title and Introductory Blurb</h2>
 	<p>Form title (leave blank if you don't want a heading):</p>
@@ -174,17 +183,24 @@ function qcf_options_page()
 	<p>This is the blurb that will appear below the heading and above the form (leave blank if you don't want any blurb):</p>
 	<p><input type="text" style="width:100%" name="qcf_options[1]" value="<?php echo $qcf_options[1]; ?>" /></p>
 	<h2>Form fields and captions</h2>
-	<p>These can be any questions you like: name, email, telephone, shoe size, favourite colour and so on. Tick the checkbox if the field is required.</p><p>You can change the caption on the submit button as well.</p>
-	<p><input type="text" class="<?php echo $qcf_options[12]; ?>" style="width:<?php echo $input; ?>;" name="qcf_options[2]" value="<?php echo $qcf_options[2]; ?>" /></p>
-	<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_options[12]" <?php echo $checked2; ?> value="required">Required</p>
-	<p><input type="text" class="<?php echo $qcf_options[13]; ?>" style="width:<?php echo $input; ?>;" name="qcf_options[3]" value="<?php echo $qcf_options[3]; ?>" /></p>
-	<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_options[13]" <?php echo $checked3; ?> value="required">Required</p>
-	<p><input type="text" class="<?php echo $qcf_options[14]; ?>" style="width:<?php echo $input; ?>;" name="qcf_options[4]" value="<?php echo $qcf_options[4]; ?>" /></p>
-	<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_options[14]" <?php echo $checked4; ?> value="required">Required</p>
+	<p>These can be any questions you like: name, email, telephone, shoe size, favourite colour and so on. Tick the checkboxes if you want to include the field in your form and if the field needs to be completed.</p><p>You can change the caption on the submit button as well.</p>
+	
+<p><input type="text" class="<?php echo $qcf_options[12]; ?>" style="width:<?php echo $input; ?>;" name="qcf_options[2]" value="<?php echo $qcf_options[2]; ?>" /></p>
+	<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_options[17]" <?php echo $checked17; ?> value="yes"> Use this field <input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_options[12]" <?php echo $checked2; ?> value="required"> Required </p>
+	
+<p><input type="text" class="<?php echo $qcf_options[13]; ?>" style="width:<?php echo $input; ?>;" name="qcf_options[3]" value="<?php echo $qcf_options[3]; ?>" /></p>
+	<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_options[18]" <?php echo $checked18; ?> value="yes"> Use this field <input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_options[13]" <?php echo $checked3; ?> value="required"> Required </p>
+	
+	<p><input type="text" class="<?php echo $qcf_options[16]; ?>" style="width:<?php echo $input; ?>;" name="qcf_options[15]" value="<?php echo $qcf_options[15]; ?>" /></p>
+	<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_options[19]" <?php echo $checked19; ?> value="yes"> Use this field <input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_options[16]" <?php echo $checked16; ?> value="required"> Required </p>
+
+<p><input type="text" class="<?php echo $qcf_options[14]; ?>" style="width:<?php echo $input; ?>;" name="qcf_options[4]" value="<?php echo $qcf_options[4]; ?>" /></p>
+	<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_options[20]" <?php echo $checked20; ?> value="yes"> Use this field <input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_options[14]" <?php echo $checked4; ?> value="required"> Required </p>
+	
 	<p><input type="text" id="submit" style="width:<?php echo $input; ?>; font-size: 130%;cursor:auto; color: #FFF" name="qcf_options[5]" value="<?php echo $qcf_options[5]; ?>" /></p>
 	<h2>Spambot Checker</h2>
 	<p>Add a maths checker to the form to (hopefully) block most of the spambots</p>
-	<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_options[9]" <?php echo $checked9; ?> value="required"> Add Spambot blocker</p>
+	<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_options[9]" <?php echo $checked9; ?> value="required"> Add Spambot blocker</p>
 	<h2>Form Width</h2>
 	<p>Enter the width of the form in pixels. Just enter the value, no need to add 'px'. The current width is as you see it here.</p>
 	<p><input type="text"  style="width:<?php echo $input; ?>;" label="width" name="qcf_options[7]" value="<?php echo $qcf_options[7]; ?>" /></p>
@@ -192,15 +208,15 @@ function qcf_options_page()
 	<p>Choose your border style.</p>
 	<p>Note: The rounded corners and shadows only work on CSS3 supported browsers and even then not in IE8. Don't blame me, blame Microsoft.</p>
 	<p>
-	<input style="margin: 0; padding: 0; border: none;" type="radio" name="qcf_options[8]"  value="none" <?php echo $none; ?> > No border<br />
-	<input style="margin: 0; padding: 0; border: none;" type="radio" name="qcf_options[8]"  value="plain" <?php echo $plain; ?>  > Plain Border<br /> 
-	<input style="margin: 0; padding: 0; border: none;" type="radio" name="qcf_options[8]"  value="rounded" <?php echo $rounded; ?>  > Round Corners (Not IE8)<br /> 		
-	<input style="margin: 0; padding: 0; border: none;" type="radio" name="qcf_options[8]"  value="shadow" <?php echo $shadow; ?> > Shadowed Border(Not IE8)<br />
-	<input style="margin: 0; padding: 0; border: none;" type="radio" name="qcf_options[8]"  value="roundshadow" <?php echo $roundshadow; ?> > Rounded Shadowed Border (Not IE8)</p>		
+	<input style="margin:0; padding: 0; border: none" type="radio" name="qcf_options[8]"  value="none" <?php echo $none; ?> > No border<br />
+	<input style="margin:0; padding: 0; border: none" type="radio" name="qcf_options[8]"  value="plain" <?php echo $plain; ?>  > Plain Border<br /> 
+	<input style="margin:0; padding: 0; border: none" type="radio" name="qcf_options[8]"  value="rounded" <?php echo $rounded; ?>  > Round Corners (Not IE8)<br /> 		
+	<input style="margin:0; padding: 0; border: none" type="radio" name="qcf_options[8]"  value="shadow" <?php echo $shadow; ?> > Shadowed Border(Not IE8)<br />
+	<input style="margin:0; padding: 0; border: none" type="radio" name="qcf_options[8]"  value="roundshadow" <?php echo $roundshadow; ?> > Rounded Shadowed Border (Not IE8)</p>		
 	<h2>Dashboard Widget</h2>
 	<p>Displays most recent messages on your dashboard</p>
-	<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_options[10]" <?php echo $checked10; ?> value="yes"> Add latest messages to dashboard</p>
-<p><input type="submit" class="button-primary" style="color: #FFF" value="<?php _e('Save Changes') ?>" /></p>
+	<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_options[10]" <?php echo $checked10; ?> value="yes"> Add latest messages to dashboard</p>
+<p><input type="submit" class="button-primary" style="color: #FFF" value="Save Changes" /></p>
 	</form>
 	</div>
 	</div>
@@ -217,7 +233,7 @@ function qcf_options_page()
 		}
 	else
 		{
-		for ($i=0; $i<=20; $i++) { $qcf_options['qcfname'.$i] = $qcf_options[$i]; }
+		for ($i=0; $i<=21; $i++) { $qcf_options['qcfname'.$i] = $qcf_options[$i]; }
 		qcf_display_form($qcf_options, null,0);
 		}
 	?>
@@ -238,6 +254,10 @@ function qcf_plugin_action_links($links, $file )
 function qcf_verify_form(&$values, &$errors)
 	{
 	$qcf_options = get_option('qcf_options');
+	if ($qcf_options[17] == "") $qcf_options[12] = "";
+	if ($qcf_options[18] == "") $qcf_options[13] = "";
+	if ($qcf_options[19] == "") $qcf_options[16] = "";
+	if ($qcf_options[20] == "") $qcf_options[14] = "";
 	for ($i=0; $i<=15; $i++) {$values['qcfname'.$i] = strip_tags($values['qcfname'.$i]);}
 
 	if (($qcf_options[12] == "required") && ((empty($values['qcfname2']) || $values['qcfname2'] == $qcf_options[2]))) 
@@ -256,6 +276,16 @@ function qcf_verify_form(&$values, &$errors)
 	if (($qcf_options[14] == "required") && ((empty($values['qcfname4']) || $values['qcfname4'] == $qcf_options[4]))) 
 		$errors['qcfname4'] = 'What is the '.strtolower($qcf_options[4]).'?';
 
+	if ($qcf_options[16] == "required")
+		{
+		if (strpos(strtolower($qcf_options[15]),'phone') && preg_match("/[^0-9()\+-\s]$/",$values['qcfname15']))
+			$errors['qcfname15'] = 'Please enter a valid phone number';
+		if (strpos($qcf_options[15],'mail') && !filter_var($values['qcfname15'], FILTER_VALIDATE_EMAIL))
+			$errors['qcfname15'] = 'Please enter a valid email address';
+		if (empty($values['qcfname15']) || $values['qcfname15'] == $qcf_options[15])
+			$errors['qcfname15'] = 'The '.strtolower($qcf_options[15]).' is needed';
+		}
+
 	if($qcf_options[9] == 'required')
 		{
 		if($values['qcfname11']<>7)
@@ -269,6 +299,7 @@ function qcf_verify_form(&$values, &$errors)
 function qcf_display_form($values, $errors, $whichpage)
 	{
 	$qcf_options = get_option('qcf_options');
+	if ($qcf_options[21] == "") {$qcf_options[17] = "yes"; $qcf_options[18] = "yes"; $qcf_options[20] = "yes";}
 	$width = preg_replace("/[^0-9]/", "", $qcf_options[7]);
 	if ($qcf_options[8] == "none") $padding = 0; else $padding = 12;
 	$input = $width - $padding;
@@ -287,20 +318,29 @@ function qcf_display_form($values, $errors, $whichpage)
 		echo "<h2>Oops, got a few problems here</h2><p class='error'>Can you sort out the details highlighted below.</p>";
 	else
 		echo '<h2>'.$qcf_options[0].'</h2><p>'. $qcf_options[1].'</p>';
+
 	?>
 	<form action="" method="POST">
+	<?php if ($qcf_options[17] == "yes") { ?>
 	<p class="error"><?= $errors['qcfname2'] ?></p>
 	<p><input type="text" class="<?php echo $qcf_options[12]; ?>" style="width:<?php echo $input; ?>" label="Name" name="qcfname2"  value="<?php echo $values['qcfname2']; ?>" onfocus="clickclear(this, '<?php echo $values['qcfname2']; ?>')" onblur="clickrecall(this,'<?php echo $values['qcfname2']; ?>')"></p>
+	<?php ;} ?>
+	<?php if ($qcf_options[18] == "yes") { ?>
 	<p class="error"><?= $errors['qcfname3'] ?></p>
 	<p><input type="text" class="<?php echo $qcf_options[13]; ?>" style="width:<?php echo $input; ?>" label="Contact" name="qcfname3"  value="<?php echo $values['qcfname3']; ?>" onfocus="clickclear(this, '<?php echo $values['qcfname3']; ?>')" onblur="clickrecall(this,'<?php echo $values['qcfname3']; ?>')"></p>
+	<?php ;} ?>
+	<?php if ($qcf_options[19] == "yes") { ?>
+	<p class="error"><?= $errors['qcfname15'] ?></p>
+	<p><input type="text" class="<?php echo $qcf_options[16]; ?>" style="width:<?php echo $input; ?>" label="Telephone" name="qcfname15"  value="<?php echo $values['qcfname15']; ?>" onfocus="clickclear(this, '<?php echo $values['qcfname15']; ?>')" onblur="clickrecall(this,'<?php echo $values['qcfname15']; ?>')"></p>
+	<?php ;} ?>
+	<?php if ($qcf_options[20] == "yes") { ?>
 	<p class="error"><?= $errors['qcfname4'] ?></p>
 	<p><textarea  class="<?php echo $qcf_options[14]; ?>" name="qcfname4" label="Message" rows="6" style="width:<?php echo $textarea ?>" onFocus="this.value=''; this.onfocus=null;"><?php echo $values['qcfname4'] ?></textarea></p>
-	<?php
-	if ($qcf_options[9] == 'required'){
-	?>
+	<?php ;} ?>
+	<?php if ($qcf_options[9] == "required") { ?>
 	<p class="error"><?= $errors['qcfname11'] ?></p>
-	<p id="sums">What is 3 + 4? <input type="text" class="required" style="width:30px" label="Sum" name="qcfname11"  value="<?php echo $values['qcfname11']; ?>"></p>  
-	<?php }; ?>
+	<p id="sums">What is 3 + 4? <input type="text" class="required" style="width:30px" label="Sum" name="qcfname11"  value="<?php echo $values['qcfname11']; ?>"></p> 
+<?php ;} ?> 
 	<p><input type="submit" id="submit" style="width:<?php echo $submit; ?>" name="submit" value="<?php echo $qcf_options[5]; ?>">	
 	</form>
 	</div>
@@ -381,7 +421,7 @@ function qcf_help()
 	<h2>Introduction</h2>
 	<p>This contact form plugin can almost be used straight out the box. All you need to do is add your email address and insert the shortcode into your posts and pages. There are options to edit the labels and captions, select which fields are required, alter the width of the form and change the border style. I've also added an optionals spambot cruncher When you save the changes the updated form will preview on the right.</p>
 	<h2>Installing the plugin, FAQs and other info</h2>
-	<p>Everything you need to know is on the <a href="http://wordpress.org/extend/plugins/quick-contact-form/installation/" target="_blank">wordpress plugin page</a>.  If you have a question or want to offer a suggestion then use the form on <a href="http://aerin.co.uk/quick-contact-form/">my plugin page</a>.</p>
+	<p>Theres is some installation info and FAQs on the <a href="http://wordpress.org/extend/plugins/quick-contact-form/installation/" target="_blank">wordpress plugin page</a>.  Some developement info on <a href="http://aerin.co.uk/quick-contact-form/">my plugin page</a> along with a feedback form. Or you can email me at <a href="mailto:graham@aerin.co.uk">graham@aerin.co.uk</a>.</p>
 	<h2>Validation</h2>
 	<p>I've spent quite some time trying to make the validation as usable as possible but keep the configuration as simple as possible. I think I've captured most conditions but there might be the odd omission if you set up a weird label.</p>
 	<p>Anyway, here's how it works.  If you tick the 'required' checkbox the field will get validated.</p>
@@ -427,7 +467,7 @@ function qcf_loop()
 	else
 		{
 		$qcf_options = get_option('qcf_options');
-		for ($i=0; $i<=20; $i++) { $qcf_options['qcfname'.$i] = $qcf_options[$i]; }
+		for ($i=0; $i<=21; $i++) { $qcf_options['qcfname'.$i] = $qcf_options[$i]; }
 		qcf_display_form($qcf_options, null,14);
 		}
 	$output_string=ob_get_contents();;

@@ -14,8 +14,7 @@ A really, really simple contact form. There is nothing to configure, all you hav
 
 = Features =
 
-*		
-Editable labels and captions 
+*	Selectable text fields 
 *	Pre-set range of border styles.
 *	Optional form width adjustment and spambot detection
 *	Displays latest messages on dashboard
@@ -62,8 +61,12 @@ I did, and so have you.  Maybe there will be more, who knows.....
 
 == Changelog ==
 
+= 2.3 =
+*	Added options to select which fields you want on your form
+*	Added a forth field so you can have email and telephone number (woo!)
+
 = 2.2 =
-*	Added new tab so that you can reset any or all of the settings
+*	Added reset options
 
 = 2.1 =
 *	Tweak to the stylesheet to cope with the hopeless Internet Explorer CSS support

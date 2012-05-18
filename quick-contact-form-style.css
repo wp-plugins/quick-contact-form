@@ -110,9 +110,10 @@
 	color: #005F6B;
 	}
 
-#qcf-style pre {
+#iehack {
 	margin: 0;
 	padding: 0;
+	border: none;
 	}
 
 #qcf-options {
