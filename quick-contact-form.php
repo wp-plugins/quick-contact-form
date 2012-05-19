@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://www.aerin.co.uk/quick-contact-form-plugin
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 2.3
+Version: 2.3.1
 Author: fisicx
 Author URI: http://www.aerin.co.uk
 */
@@ -48,7 +48,7 @@ function qcf_add_defaults()
 function qcf_add_messages()
 	{
 	$qcf_messages = array(
-	array('name' => '<b>From</b>', 'contact' => '<b>&nbsp;</b>', 'telephone' => '<b>&nbsp;</b>','message' => '<b>Message</b>', 'date' => '<b>Date</b>',),
+	array('name' => '<b>From</b>', 'contact' => '<b></b>', 'telephone' => '<b></b>','message' => '<b>Message</b>', 'date' => '<b>Date</b>',),
 	);
 	add_option('qcf_messages', $qcf_messages);
 	}
@@ -118,7 +118,7 @@ function qcf_reset_page()
 		if (isset($_POST['qcf_reset_messages']))
 			{
 			$qcf_messages = array(
-			array('name' => '<b>From</b>', 'contact' => '<b>&nbsp;</b>', 'telephone' => '<b>&nbsp;</b>','message' => '<b>Message</b>', 'date' => '<b>Date</b>',),);
+			array('name' => '<b>From</b>', 'contact' => '<b></b>', 'telephone' => '<b></b>','message' => '<b>Message</b>', 'date' => '<b>Date</b>',),);
 			update_option('qcf_messages', $qcf_messages);
 			qcf_admin_notice("<b>The message list has been deleted.</b> Only those messages received from today will be displayed.");
 			}
@@ -358,15 +358,13 @@ function qcf_process_form($values)
 	$subject = "Enquiry from {$values['qcfname2']}";
 	$headers = "From: {$values['qcfname2']}<{$values['qcfname3']}>\r\n";
 	$headers .= "MIME-Version: 1.0\r\n";
+	if ($qcf_options[17]=='yes')$content = "<p><b>{$qcf_options[2]}: </b>{$values['qcfname2']}</p>";
+	if ($qcf_options[18]=='yes')$content .= "<p><b>{$qcf_options[3]}: </b>{$values['qcfname3']}</p>";
+	if ($qcf_options[19]=='yes')$content .= "<p><b>{$qcf_options[15]}: </b>{$values['qcfname15']}</p>";
+	if ($qcf_options[20]=='yes')$content .= "<p><b>{$qcf_options[4]}: </b>{$values['qcfname4']}</p>";
+	
    	$headers .= "Content-Type: text/html; charset=\"utf-8\"\r\n"; 
-	$message = "<html><h2>The message was:</h2>";
-	if ($qcf_options[17]=='yes') $message .= "<p><b>{$qcf_options[2]}: </b>{$values['qcfname2']}</p>";
-	if ($qcf_options[18]=='yes')$message .= "<p><b>{$qcf_options[3]}: </b>{$values['qcfname3']}</p>";
-	if ($qcf_options[19]=='yes')$message .= "<p><b>{$qcf_options[15]}: </b>{$values['qcfname15']}</p>";
-	if ($qcf_options[20]=='yes')$message .= "<p><b>{$qcf_options[4]}: </b>{$values['qcfname4']}</p>";
-	$message .= "<p>The message was sent from this page: <b>$url</b></p>";
-	$message .= "<p>This is the senders IP address: <b>$ip</b></p></html>";
-	$message .= "</html>"; 
+	$message = "<html><h2>The message was:</h2>".$content."<p>The message was sent from this page: <b>$url</b></p><p>This is the senders IP address: <b>$ip</b></p></html>";
 
 	mail($qcf_email, $subject, $message, $headers);
 
@@ -374,12 +372,7 @@ function qcf_process_form($values)
 	<div id="'.$qcf_options[8].'" style="width:'.$qcf_options[7].'px;">
 	<h2>Message Sent!</h2>
 	<p>Thank you for your enquiry. I&#146;ll be in contact soon</p>
-	<p>The details you sent me were:</p>
-	<p><b>'.$qcf_options[2].': </b><br />'.$values['qcfname2'].'</p>
-	<p><b>'.$qcf_options[3].': </b><br />'.$values['qcfname3'].'</p>
-	<p><b>'.$qcf_options[15].': </b><br />'.$values['qcfname15'].'</p>
-	<p><b>'.$qcf_options[4].': </b><br />'.$values['qcfname4'].'</p>
-	</div>
+	<p>The details you sent me were:</p>'.$content.'</div>
 	</div>';  	
 	
 	$qcf_messages = get_option('qcf_messages');
@@ -402,7 +395,7 @@ function qcf_show_messages()
 	<div id="qcf-style">
 	<h2>Latest Messages</h2>
 	<table cellspacing="0">
-	<tr><th>From</th><th>&nbsp;</th><th>&nbsp;</th><th>Message</th><th>Date</th></tr>';
+	<tr><th>From</th><th></th><th></th><th>Message</th><th>Date</th></tr>';
 	foreach($messages as $value)
 		{
 		echo '<tr>';
@@ -557,7 +550,7 @@ function qcf_dashboard_widget()
    		return $v2 - $v1; // $v2 - $v1 to reverse direction
 	});
 	echo '<div id="qcf-widget"><table cellspacing="0">
-	<tr><th>From</th><th>&nbsp;</th><th>&nbsp;</th><th>Message</th><th>Date</th></tr>';
+	<tr><th>From</th><th></th><th></th><th>Message</th><th>Date</th></tr>';
 	foreach($messages as $value)
 		{
 		echo '<tr>';
