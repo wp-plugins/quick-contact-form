@@ -155,7 +155,7 @@ function qcf_options_page()
 	$submit = $width;
 	$textarea = $width;
 	if ($qcf_options[21] == "")
-		 {$qcf_options[17] = "yes"; $qcf_options[18] = "yes"; $qcf_options[20] = "yes";
+		 {$qcf_options[17] = "yes"; $qcf_options[18] = "yes"; $qcf_options[20] = "yes"; $qcf_options[21] == "done"
 		?><input type="hidden" name = 'qcf_options[21]' value ='upgrade'><?php
 		}
 	
