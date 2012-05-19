@@ -48,7 +48,7 @@ function qcf_add_defaults()
 function qcf_add_messages()
 	{
 	$qcf_messages = array(
-	array('name' => '<b>From</b>', 'contact' => '<b>&nbsp;</b>', 'message' => '<b>Message</b>', 'date' => '<b>Date</b>',),
+	array('name' => '<b>From</b>', 'contact' => '<b>&nbsp;</b>', 'telephone' => '<b>&nbsp;</b>','message' => '<b>Message</b>', 'date' => '<b>Date</b>',),
 	);
 	add_option('qcf_messages', $qcf_messages);
 	}
@@ -118,7 +118,7 @@ function qcf_reset_page()
 		if (isset($_POST['qcf_reset_messages']))
 			{
 			$qcf_messages = array(
-			array('name' => '<b>From</b>', 'contact' => '<b>&nbsp;</b>', 'message' => '<b>Message</b>', 'date' => '<b>Date</b>',),);
+			array('name' => '<b>From</b>', 'contact' => '<b>&nbsp;</b>', 'telephone' => '<b>&nbsp;</b>','message' => '<b>Message</b>', 'date' => '<b>Date</b>',),);
 			update_option('qcf_messages', $qcf_messages);
 			qcf_admin_notice("<b>The message list has been deleted.</b> Only those messages received from today will be displayed.");
 			}
@@ -360,9 +360,10 @@ function qcf_process_form($values)
 	$headers .= "MIME-Version: 1.0\r\n";
    	$headers .= "Content-Type: text/html; charset=\"utf-8\"\r\n"; 
 	$message = "<html><h2>The message was:</h2>";
-	$message .= "<p><b>{$qcf_options[2]}: </b>{$values['qcfname2']}</p>";
-	$message .= "<p><b>{$qcf_options[3]}: </b>{$values['qcfname3']}</p>";
-	$message .= "<p><b>{$qcf_options[4]}: </b>{$values['qcfname4']}</p>";
+	if ($qcf_options[17]=='yes') $message .= "<p><b>{$qcf_options[2]}: </b>{$values['qcfname2']}</p>";
+	if ($qcf_options[18]=='yes')$message .= "<p><b>{$qcf_options[3]}: </b>{$values['qcfname3']}</p>";
+	if ($qcf_options[19]=='yes')$message .= "<p><b>{$qcf_options[15]}: </b>{$values['qcfname15']}</p>";
+	if ($qcf_options[20]=='yes')$message .= "<p><b>{$qcf_options[4]}: </b>{$values['qcfname4']}</p>";
 	$message .= "<p>The message was sent from this page: <b>$url</b></p>";
 	$message .= "<p>This is the senders IP address: <b>$ip</b></p></html>";
 	$message .= "</html>"; 
@@ -376,6 +377,7 @@ function qcf_process_form($values)
 	<p>The details you sent me were:</p>
 	<p><b>'.$qcf_options[2].': </b><br />'.$values['qcfname2'].'</p>
 	<p><b>'.$qcf_options[3].': </b><br />'.$values['qcfname3'].'</p>
+	<p><b>'.$qcf_options[15].': </b><br />'.$values['qcfname15'].'</p>
 	<p><b>'.$qcf_options[4].': </b><br />'.$values['qcfname4'].'</p>
 	</div>
 	</div>';  	
@@ -383,7 +385,7 @@ function qcf_process_form($values)
 	$qcf_messages = get_option('qcf_messages');
 	if (empty($messages)) {qcf_add_messages(); $qcf_messages = get_option('qcf_messages');}
 	$sentdate = date('d M Y');
-	$qcf_messages[] = array(name => $values['qcfname2'], contact => $values['qcfname3'], message => $values['qcfname4'],date => $sentdate,);
+	$qcf_messages[] = array(name => $values['qcfname2'], contact => $values['qcfname3'], telephone => $values['qcfname15'],message => $values['qcfname4'],date => $sentdate,);
 	update_option('qcf_messages',$qcf_messages);
 }
 
@@ -400,7 +402,7 @@ function qcf_show_messages()
 	<div id="qcf-style">
 	<h2>Latest Messages</h2>
 	<table cellspacing="0">
-	<tr><th>From</th><th>&nbsp;</th><th>Message</th><th>Date</th></tr>';
+	<tr><th>From</th><th>&nbsp;</th><th>&nbsp;</th><th>Message</th><th>Date</th></tr>';
 	foreach($messages as $value)
 		{
 		echo '<tr>';
@@ -555,7 +557,7 @@ function qcf_dashboard_widget()
    		return $v2 - $v1; // $v2 - $v1 to reverse direction
 	});
 	echo '<div id="qcf-widget"><table cellspacing="0">
-	<tr><th>From</th><th>&nbsp;</th><th>Message</th><th>Date</th></tr>';
+	<tr><th>From</th><th>&nbsp;</th><th>&nbsp;</th><th>Message</th><th>Date</th></tr>';
 	foreach($messages as $value)
 		{
 		echo '<tr>';
