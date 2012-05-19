@@ -299,7 +299,7 @@ function qcf_verify_form(&$values, &$errors)
 function qcf_display_form($values, $errors, $whichpage)
 	{
 	$qcf_options = get_option('qcf_options');
-	if ($qcf_options[21] == "") {$qcf_options[17] = "yes"; $qcf_options[18] = "yes"; $qcf_options[20] = "yes";}
+	if ($qcf_options[21] == "") {$qcf_options[17] = "yes"; $qcf_options[18] = "yes"; $qcf_options[20] = "yes" $qcf_options[21] == "done";}
 	$width = preg_replace("/[^0-9]/", "", $qcf_options[7]);
 	if ($qcf_options[8] == "none") $padding = 0; else $padding = 12;
 	$input = $width - $padding;
