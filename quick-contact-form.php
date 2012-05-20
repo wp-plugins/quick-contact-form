@@ -154,11 +154,6 @@ function qcf_options_page()
 	$input = $width;
 	$submit = $width;
 	$textarea = $width;
-	if ($qcf_options[21] == "")
-		 {$qcf_options[17] = "yes"; $qcf_options[18] = "yes"; $qcf_options[20] = "yes"; $qcf_options[21] == "done"
-		?><input type="hidden" name = 'qcf_options[21]' value ='upgrade'><?php
-		}
-	
 	if ($qcf_options[8] == "shadow") $shadow = "checked"; else $shadow = "";
 	if ($qcf_options[8] == "roundshadow") $roundshadow = "checked"; else $roundshadow = "";
 	if ($qcf_options[8] == "plain") $plain = "checked"; else $plain = "";
@@ -174,7 +169,6 @@ function qcf_options_page()
 	if ($qcf_options[20] == "yes") $checked20 = "checked"; else $checked20 = "";
 	if ($qcf_options[9] == "required") $checked9 = "checked";
 	if ($qcf_options[10] == "yes") $checked10 = "checked";
-	
 	
 	?>
 	<h2>Form Title and Introductory Blurb</h2>
@@ -233,7 +227,7 @@ function qcf_options_page()
 		}
 	else
 		{
-		for ($i=0; $i<=21; $i++) { $qcf_options['qcfname'.$i] = $qcf_options[$i]; }
+		for ($i=0; $i<=22; $i++) { $qcf_options['qcfname'.$i] = $qcf_options[$i]; }
 		qcf_display_form($qcf_options, null,0);
 		}
 	?>
@@ -299,7 +293,6 @@ function qcf_verify_form(&$values, &$errors)
 function qcf_display_form($values, $errors, $whichpage)
 	{
 	$qcf_options = get_option('qcf_options');
-	if ($qcf_options[21] == "") {$qcf_options[17] = "yes"; $qcf_options[18] = "yes"; $qcf_options[20] = "yes"; $qcf_options[21] == "done";}
 	$width = preg_replace("/[^0-9]/", "", $qcf_options[7]);
 	if ($qcf_options[8] == "none") $padding = 0; else $padding = 12;
 	$input = $width - $padding;
@@ -462,7 +455,7 @@ function qcf_loop()
 	else
 		{
 		$qcf_options = get_option('qcf_options');
-		for ($i=0; $i<=21; $i++) { $qcf_options['qcfname'.$i] = $qcf_options[$i]; }
+		for ($i=0; $i<=22; $i++) { $qcf_options['qcfname'.$i] = $qcf_options[$i]; }
 		qcf_display_form($qcf_options, null,14);
 		}
 	$output_string=ob_get_contents();;
