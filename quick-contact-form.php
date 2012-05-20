@@ -154,6 +154,7 @@ function qcf_options_page()
 	$input = $width;
 	$submit = $width;
 	$textarea = $width;
+	if (empty($qcf_options[21])){$qcf_options[17]="yes";$qcf_options[18]="yes";$qcf_options[20]="yes";}
 	if ($qcf_options[8] == "shadow") $shadow = "checked"; else $shadow = "";
 	if ($qcf_options[8] == "roundshadow") $roundshadow = "checked"; else $roundshadow = "";
 	if ($qcf_options[8] == "plain") $plain = "checked"; else $plain = "";
@@ -171,6 +172,7 @@ function qcf_options_page()
 	if ($qcf_options[10] == "yes") $checked10 = "checked";
 	
 	?>
+	<input type="hidden" name="qcf_options[21]" value="update">
 	<h2>Form Title and Introductory Blurb</h2>
 	<p>Form title (leave blank if you don't want a heading):</p>
 	<p><input type="text"  style="width:<?php echo $input; ?>;" name="qcf_options[0]" value="<?php echo $qcf_options[0]; ?>" /></p>
@@ -179,10 +181,10 @@ function qcf_options_page()
 	<h2>Form fields and captions</h2>
 	<p>These can be any questions you like: name, email, telephone, shoe size, favourite colour and so on. Tick the checkboxes if you want to include the field in your form and if the field needs to be completed.</p><p>You can change the caption on the submit button as well.</p>
 	
-<p><input type="text" class="<?php echo $qcf_options[12]; ?>" style="width:<?php echo $input; ?>;" name="qcf_options[2]" value="<?php echo $qcf_options[2]; ?>" /></p>
+	<p><input type="text" class="<?php echo $qcf_options[12]; ?>" style="width:<?php echo $input; ?>;" name="qcf_options[2]" value="<?php echo $qcf_options[2]; ?>" /></p>
 	<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_options[17]" <?php echo $checked17; ?> value="yes"> Use this field <input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_options[12]" <?php echo $checked2; ?> value="required"> Required </p>
 	
-<p><input type="text" class="<?php echo $qcf_options[13]; ?>" style="width:<?php echo $input; ?>;" name="qcf_options[3]" value="<?php echo $qcf_options[3]; ?>" /></p>
+	<p><input type="text" class="<?php echo $qcf_options[13]; ?>" style="width:<?php echo $input; ?>;" name="qcf_options[3]" value="<?php echo $qcf_options[3]; ?>" /></p>
 	<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_options[18]" <?php echo $checked18; ?> value="yes"> Use this field <input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_options[13]" <?php echo $checked3; ?> value="required"> Required </p>
 	
 	<p><input type="text" class="<?php echo $qcf_options[16]; ?>" style="width:<?php echo $input; ?>;" name="qcf_options[15]" value="<?php echo $qcf_options[15]; ?>" /></p>
@@ -294,6 +296,7 @@ function qcf_display_form($values, $errors, $whichpage)
 	{
 	$qcf_options = get_option('qcf_options');
 	$width = preg_replace("/[^0-9]/", "", $qcf_options[7]);
+	if (empty($qcf_options[21])){$qcf_options[17]="yes";$qcf_options[18]="yes";$qcf_options[20]="yes";}
 	if ($qcf_options[8] == "none") $padding = 0; else $padding = 12;
 	$input = $width - $padding;
 	$textarea = $width - $padding;
