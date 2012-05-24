@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://www.aerin.co.uk/quick-contact-form-plugin
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 2.3.1
+Version: 2.3.2
 Author: fisicx
 Author URI: http://www.aerin.co.uk
 */
@@ -48,7 +48,7 @@ function qcf_add_defaults()
 function qcf_add_messages()
 	{
 	$qcf_messages = array(
-	array('name' => '<b>From</b>', 'contact' => '<b></b>', 'telephone' => '<b></b>','message' => '<b>Message</b>', 'date' => '<b>Date</b>',),
+	array('name' => '', 'contact' => '', 'telephone' => '','message' => '', 'date' => '',),
 	);
 	add_option('qcf_messages', $qcf_messages);
 	}
@@ -118,7 +118,7 @@ function qcf_reset_page()
 		if (isset($_POST['qcf_reset_messages']))
 			{
 			$qcf_messages = array(
-			array('name' => '<b>From</b>', 'contact' => '<b></b>', 'telephone' => '<b></b>','message' => '<b>Message</b>', 'date' => '<b>Date</b>',),);
+			array('name' => '', 'contact' => '', 'telephone' => '','message' => '', 'date' => '',),);
 			update_option('qcf_messages', $qcf_messages);
 			qcf_admin_notice("<b>The message list has been deleted.</b> Only those messages received from today will be displayed.");
 			}
@@ -349,6 +349,10 @@ function qcf_process_form($values)
 	$qcf_options = get_option('qcf_options');
 	$qcf_email = get_option('qcf_email');
 	if (empty($qcf_email)) $qcf_email = $qcf_options[6];
+	if ($values['qcfname2'] == $qcf_options[2]) $values['qcfname2'] ='';
+	if ($values['qcfname3'] == $qcf_options[3]) $values['qcfname3'] ='';
+	if ($values['qcfname15'] == $qcf_options[15]) $values['qcfname15'] ='';
+	if ($values['qcfname4'] == $qcf_options[4]) $values['qcfname4'] ='';
 	$ip=$_SERVER['REMOTE_ADDR'];
 	$url = $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
 	$subject = "Enquiry from {$values['qcfname2']}";
@@ -372,7 +376,7 @@ function qcf_process_form($values)
 	</div>';  	
 	
 	$qcf_messages = get_option('qcf_messages');
-	if (empty($messages)) {qcf_add_messages(); $qcf_messages = get_option('qcf_messages');}
+	if ($values['qcfname2'] == $$qcf_options[2]) $values['qcfname2'] ='';
 	$sentdate = date('d M Y');
 	$qcf_messages[] = array(name => $values['qcfname2'], contact => $values['qcfname3'], telephone => $values['qcfname15'],message => $values['qcfname4'],date => $sentdate,);
 	update_option('qcf_messages',$qcf_messages);
@@ -381,7 +385,6 @@ function qcf_process_form($values)
 function qcf_show_messages()
 	{
 	$messages = get_option('qcf_messages');
-	if (empty($messages)) {qcf_add_messages(); $messages = get_option('qcf_messages');}
 	usort($messages, function($a1, $a2) {
 		$v1 = strtotime($a1['date']);
 		$v2 = strtotime($a2['date']);
@@ -539,7 +542,6 @@ add_action( 'widgets_init', create_function('', 'return register_widget("qcf_wid
 function qcf_dashboard_widget() 
 	{
 	$messages = get_option('qcf_messages');
-	if (empty($messages)) {qcf_add_messages(); $messages = get_option('qcf_messages');}
 	usort($messages, function($a1, $a2) {
 		$v1 = strtotime($a1['date']);
 		$v2 = strtotime($a2['date']);

@@ -23,6 +23,10 @@ A really, really simple contact form. There is nothing to configure, all you hav
 
 [quick contact form plugin](http://aerin.co.uk/quick-contact-form/).
 
+= Bugs and Errors =
+
+Some people report errors on activation.  I can't replicate the problem so if it doesn't work for you please let me know the problem: graham@aerin.co.uk.
+
 == Installation ==
 
 1.	Download the plugin.
@@ -61,7 +65,7 @@ I did, and so have you.  Maybe there will be more, who knows.....
 
 == Changelog ==
 
-= 2.3 / 2.3.1 =
+= 2.3 / 2.3.1 / 2.3.2 =
 *	Added options to select which fields you want on your form
 *	Added a forth field so you can have email and telephone number (woo!)
 *	Tidied up the way messages are displayed
