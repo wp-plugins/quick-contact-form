@@ -64,7 +64,6 @@ function qcf_init()
 	{
 	register_setting('my_qcf_options', 'qcf_options');
 	register_setting('my_qcf_email', 'qcf_email');
-	register_setting('my_qcf_messages', 'qcf_messages');
 	}
 
 function qcf_setup_page()
@@ -382,31 +381,6 @@ function qcf_process_form($values)
 	update_option('qcf_messages',$qcf_messages);
 }
 
-function qcf_show_messages()
-	{
-	$messages = get_option('qcf_messages');
-	usort($messages, function($a1, $a2) {
-		$v1 = strtotime($a1['date']);
-		$v2 = strtotime($a2['date']);
-   		return $v2 - $v1; // $v2 - $v1 to reverse direction
-	});
-	echo '<div id="qcf-options" style="width:90%;">
-	<div id="qcf-style">
-	<h2>Latest Messages</h2>
-	<table cellspacing="0">
-	<tr><th>From</th><th></th><th></th><th>Message</th><th>Date</th></tr>';
-	foreach($messages as $value)
-		{
-		echo '<tr>';
-		foreach($value as $item)
-			{
-			echo '<td>'.$item.'</td>';
-			}
-		echo '</tr>';
- 		}
-		echo '</table></div></div>';
-	}
-
 function qcf_help()
 	{
 	?>
@@ -494,8 +468,6 @@ function qcf_tabbed_page()
 	else $tab = 'setup'; 
 	switch ( $tab )
 		{
-		case 'messages' : qcf_show_messages();
-		break; 
 		case 'support' : qcf_help();
 		break;
 		case 'options' : qcf_options_page();
@@ -542,11 +514,6 @@ add_action( 'widgets_init', create_function('', 'return register_widget("qcf_wid
 function qcf_dashboard_widget() 
 	{
 	$messages = get_option('qcf_messages');
-	usort($messages, function($a1, $a2) {
-		$v1 = strtotime($a1['date']);
-		$v2 = strtotime($a2['date']);
-   		return $v2 - $v1; // $v2 - $v1 to reverse direction
-	});
 	echo '<div id="qcf-widget"><table cellspacing="0">
 	<tr><th>From</th><th></th><th></th><th>Message</th><th>Date</th></tr>';
 	foreach($messages as $value)
