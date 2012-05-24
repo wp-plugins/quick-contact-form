@@ -445,7 +445,7 @@ function qcf_loop()
 
 function qcf_admin_tabs( $current = 'settings' )
 	{ 
-	$tabs = array( 'setup' => 'Setup', 'options' => 'Options', 'messages' => 'Messages', 'support' => 'Support', reset => Reset); 
+	$tabs = array( 'setup' => 'Setup', 'options' => 'Options', 'support' => 'Support', reset => Reset); 
 	$links = array();
 	echo '<div id="icon-themes" class="icon32"><br></div>';
 	echo '<h2 class="nav-tab-wrapper">';
