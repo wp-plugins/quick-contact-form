@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://www.aerin.co.uk/quick-contact-form-plugin
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 2.3.2
+Version: 2.3.3
 Author: fisicx
 Author URI: http://www.aerin.co.uk
 */
@@ -116,8 +116,7 @@ function qcf_reset_page()
 			}
 		if (isset($_POST['qcf_reset_messages']))
 			{
-			$qcf_messages = array(
-			array('name' => '', 'contact' => '', 'telephone' => '','message' => '', 'date' => '',),);
+			$qcf_messages = array();
 			update_option('qcf_messages', $qcf_messages);
 			qcf_admin_notice("<b>The message list has been deleted.</b> Only those messages received from today will be displayed.");
 			}
@@ -375,7 +374,7 @@ function qcf_process_form($values)
 	</div>';  	
 	
 	$qcf_messages = get_option('qcf_messages');
-	if ($values['qcfname2'] == $$qcf_options[2]) $values['qcfname2'] ='';
+	if ($values['qcfname2'] == $qcf_options[2]) $values['qcfname2'] ='';
 	$sentdate = date('d M Y');
 	$qcf_messages[] = array(name => $values['qcfname2'], contact => $values['qcfname3'], telephone => $values['qcfname15'],message => $values['qcfname4'],date => $sentdate,);
 	update_option('qcf_messages',$qcf_messages);
@@ -514,9 +513,13 @@ add_action( 'widgets_init', create_function('', 'return register_widget("qcf_wid
 function qcf_dashboard_widget() 
 	{
 	$messages = get_option('qcf_messages');
+	$qcf_options = get_option('qcf_options');
+	if ($qcf_options[18]=='yes')$two = $qcf_options[3];
+	if ($qcf_options[19]=='yes')$three = $qcf_options[15];
+	if ($qcf_options[20]=='yes')$four = $qcf_options[4];
 	echo '<div id="qcf-widget"><table cellspacing="0">
-	<tr><th>From</th><th></th><th></th><th>Message</th><th>Date</th></tr>';
-	foreach($messages as $value)
+	<tr><th>From</th><th>'.$two.'</th><th>'.$three.'</th><th>'.$four.'</th><th>Date</th></tr>';
+	foreach(array_reverse($messages) as $value)
 		{
 		echo '<tr>';
 		foreach($value as $item)
