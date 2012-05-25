@@ -27,6 +27,11 @@ A really, really simple contact form. There is nothing to configure, all you hav
 
 Some people report errors on activation.  I can't replicate the problem so if it doesn't work for you please let me know the problem: graham@aerin.co.uk.
 
+= Thanks to the debuggers and testers = 
+[Jon](http://www.cloud9its.co.uk/)
+[Gareth](http://www.garethgillman.co.uk)
+[Karl](http://employmentlawclinic.com/)
+
 == Installation ==
 
 1.	Download the plugin.
@@ -65,7 +70,7 @@ I did, and so have you.  Maybe there will be more, who knows.....
 
 == Changelog ==
 
-= 2.3 / 2.3.1 / 2.3.2 / 2.3.3=
+= 2.3 / 2.3.1 / 2.3.2 / 2.3.3 =
 *	Added options to select which fields you want on your form
 *	Added a forth field so you can have email and telephone number (woo!)
 *	Tidied up the way messages are displayed
