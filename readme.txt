@@ -70,7 +70,11 @@ I did, and so have you.  Maybe there will be more, who knows.....
 
 == Changelog ==
 
-= 2.3 / 2.3.1 / 2.3.2 / 2.3.3 =
+= 2.4 =
+*	Added options to edit the thank you message
+*	Added options to display and track messages
+
+= 2.3 =
 *	Added options to select which fields you want on your form
 *	Added a forth field so you can have email and telephone number (woo!)
 *	Tidied up the way messages are displayed
