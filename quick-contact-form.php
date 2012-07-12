@@ -455,7 +455,7 @@ function qcf_verify_form(&$values, &$errors)
 		if (strpos($qcf_options[15],'mail') && !filter_var($values['qcfname15'], FILTER_VALIDATE_EMAIL))
 			$errors['qcfname15'] = 'Please enter a valid email address';
 		if (empty($values['qcfname15']) || $values['qcfname15'] == $qcf_options[15])
-			$errors['qcfname15'] = $qcf_error[1];
+			$errors['qcfname15'] = $qcf_error[4];
 		}
 
 	if($qcf_options[9] == 'required')
