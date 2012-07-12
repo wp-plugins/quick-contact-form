@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://www.aerin.co.uk/quick-contact-form-plugin
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 2.4
+Version: 2.5
 Author: fisicx
 Author URI: http://www.aerin.co.uk
 */
@@ -49,6 +49,10 @@ function qcf_add_defaults()
 	register_setting('my_qcf_reply', 'qcf_reply');
 	$qcf_reply = array('Message sent!','Thank you for your enquiry. I&#146;ll be in contact soon','checked','checked','');
 	add_option('qcf_reply', $qcf_reply);
+	
+	register_setting('my_qcf_error', 'qcf_error');
+	$qcf_error = array('Oops, got a few problems here','Can you sort out the details highlighted below.','','','','','Please answer the sum','That&#146;s not right answer','','','','','');
+	add_option('qcf_error', $qcf_error);
 	}
 
 function qcf_add_messages()
@@ -272,6 +276,74 @@ function qcf_reply_page()
 	<?php
 	}
 
+function qcf_error_page()
+	{
+	?>
+	<div id="qcf-options">
+	<div id="qcf-style">
+	<form method="post" action="options.php">
+	<?php
+	settings_fields('my_qcf_error');
+	$qcf_error = get_option('qcf_error');
+	$qcf_options = get_option('qcf_options');
+	if (empty($qcf_error[2])) $qcf_error[2] = 'Giving me '.strtolower($qcf_options[2]).' would really help';
+	if (empty($qcf_error[3])) $qcf_error[3] = 'The '.strtolower($qcf_options[3]).' is needed';
+	if (empty($qcf_error[5])) $qcf_error[5] = 'What is the '.strtolower($qcf_options[4]).'?';
+	if (empty($qcf_error[4])) $qcf_error[4] = 'The '.strtolower($qcf_options[15]).' is needed';
+	$width = preg_replace("/[^0-9]/", "", $qcf_options[7]);
+	$width = $width.'px';
+	$input = $width;
+	$submit = $width;
+	$textarea = $width;
+	?>
+	<h2>Error Reporting</h2>
+	<p>Error header (leave blank if you don't want a heading):</p>
+	<p><input type="text"  style="width:<?php echo $input; ?>;" name="qcf_error[0]" value="<?php echo $qcf_error[0]; ?>" /></p>
+	<p>This is the blurb that will appear below the error heading and above the actual error messages (leave blank if you don't want any blurb):</p>
+	<p><input type="text" style="width:100%" name="qcf_error[1]" value="<?php echo $qcf_error[1]; ?>" /></p>
+	<h2>Error Messages</h2>
+	<p>These can be any message you like.</p>
+	<p>Error message for <em><?php echo $qcf_options[2]; ?></em>:</p>
+	<p><input type="text" style="width:<?php echo $input; ?>;" name="qcf_error[2]" value="<?php echo $qcf_error[2]; ?>" /></p>
+	
+	<p>Error message for <em><?php echo $qcf_options[3]; ?></em>:</p>
+	<p><input type="text" style="width:<?php echo $input; ?>;" name="qcf_error[3]" value="<?php echo $qcf_error[3]; ?>" /></p>
+	
+	<p>Error message for <em><?php echo $qcf_options[15]; ?></em>:</p>
+	<p><input type="text" style="width:<?php echo $input; ?>;" name="qcf_error[4]" value="<?php echo $qcf_error[4]; ?>" /></p>
+	
+	<p>Error message for <em><?php echo $qcf_options[4]; ?></em>:</p>
+	<p><input type="text" style="width:<?php echo $input; ?>;" name="qcf_error[5]" value="<?php echo $qcf_error[5]; ?>" /></p>
+	<p>Maths Captcha missing answer error message:</p>
+	<p><input type="text" style="width:<?php echo $input; ?>;" name="qcf_error[6]" value="<?php echo $qcf_error[6]; ?>" /></p>
+	<p>Maths Captcha wrong answer error message:</p>
+	<p><input type="text" style="width:<?php echo $input; ?>;" name="qcf_error[7]" value="<?php echo $qcf_error[7]; ?>" /></p>
+	<p><input type="submit" class="button-primary" style="color: #FFF" value="Save Changes" /></p>
+	</form>
+	</div>
+	</div>
+	<div id="qcf-options">
+	<h2>Test Form</h2>
+	<p>Send an empty form to test your error messages.</p>
+	<?php
+	$qcf_options = get_option('qcf_options');
+	if (isset($_POST['submit']))
+		{
+		$formvalues = $_POST;
+		$formerrors = array();
+    		if (!qcf_verify_form($formvalues, $formerrors)) qcf_display_form($formvalues, $formerrors, 0);
+    		else qcf_process_form($formvalues);
+		}
+	else
+		{
+		for ($i=0; $i<=23; $i++) { $qcf_options['qcfname'.$i] = $qcf_options[$i]; }
+		qcf_display_form($qcf_options, null,0);
+		}
+	?>
+	</div>
+	<?php
+	}
+
 function qcf_reset_page()
 	{
 	if (isset($_POST['qcf_reset']))
@@ -303,7 +375,20 @@ function qcf_reset_page()
 			update_option('qcf_messages', $qcf_messages);
 			qcf_admin_notice("<b>The message list has been deleted.</b> Only those messages received from today will be displayed.");
 			}
-		}	
+		
+		if (isset($_POST['qcf_reset_errors']))
+			{
+			$qcf_options = get_option('qcf_options');
+			$qcf_f1  = 'Giving me '.strtolower($qcf_options[2]).' would really help';
+			$qcf_f2  = 'Please enter your '.strtolower($qcf_options[3]);
+			$qcf_f3  = 'A '.strtolower($qcf_options[15]).' is needed';
+			$qcf_f4  = 'What is the '.strtolower($qcf_options[4]);
+			$qcf_error = array('Oops, got a few problems here','Can you sort out the details highlighted below.', $qcf_f1, $qcf_f2, $qcf_f3 , $qcf_f4,'Please answer the sum','That&#146;s not right answer');
+			update_option('qcf_error', $qcf_error);
+			qcf_admin_notice("<b>The error messages have been reset been deleted.</b> Use the 'Error Messages' tab to change the settings.");
+			}
+		}
+	
    		?>
 		<div id="qcf-options">
 		<div id="qcf-style">
@@ -314,8 +399,9 @@ function qcf_reset_page()
 		<p><input type="checkbox" class="qcf_iehack" name="qcf_reset_email"> Reset email</p>
 		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_options"> Reset form options</p>
 		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_reply"> Reset reply options</p>
+		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_errors"> Reset error messages</p>
 		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_messages"> Delete message list - this won't delete any email you have recieved.</p>
-		<input type="submit" class="button-primary" name="aerin_reset" style="color: #FFF" value="Reset Options" onclick="return window.confirm( 'Are you sure you want to reset these settings?' );"/>
+		<input type="submit" class="button-primary" name="qcf_reset" style="color: #FFF" value="Reset Options" onclick="return window.confirm( 'Are you sure you want to reset these settings?' );"/>
 		</form>
 		</div>
 		</div>
@@ -335,14 +421,19 @@ function qcf_plugin_action_links($links, $file )
 function qcf_verify_form(&$values, &$errors)
 	{
 	$qcf_options = get_option('qcf_options');
+	$qcf_error = get_option('qcf_error');
 	if ($qcf_options[17] == "") $qcf_options[12] = "";
 	if ($qcf_options[18] == "") $qcf_options[13] = "";
 	if ($qcf_options[19] == "") $qcf_options[16] = "";
 	if ($qcf_options[20] == "") $qcf_options[14] = "";
+	if (empty($qcf_error[2])) $qcf_error[2] = 'Giving me '.strtolower($qcf_options[2]).' would really help';
+	if (empty($qcf_error[3])) $qcf_error[3] = 'The '.strtolower($qcf_options[3]).' is needed';
+	if (empty($qcf_error[5])) $qcf_error[5] = 'What is the '.strtolower($qcf_options[4]).'?';
+	if (empty($qcf_error[4])) $qcf_error[4] = 'The '.strtolower($qcf_options[15]).' is needed';
+	
 	for ($i=0; $i<=15; $i++) {$values['qcfname'.$i] = strip_tags($values['qcfname'.$i]);}
-
 	if (($qcf_options[12] == "required") && ((empty($values['qcfname2']) || $values['qcfname2'] == $qcf_options[2]))) 
-	$errors['qcfname2'] = 'Giving me '.strtolower($qcf_options[2]).' would really help';
+	$errors['qcfname2'] = $qcf_error[2];
 
 	if ($qcf_options[13] == "required")
 		{
@@ -351,11 +442,11 @@ function qcf_verify_form(&$values, &$errors)
 		if (strpos($qcf_options[3],'mail') && !filter_var($values['qcfname3'], FILTER_VALIDATE_EMAIL))
 			$errors['qcfname3'] = 'Please enter a valid email address';
 		if (empty($values['qcfname3']) || $values['qcfname3'] == $qcf_options[3])
-			$errors['qcfname3'] = 'The '.strtolower($qcf_options[3]).' is needed';
+			$errors['qcfname3'] = $qcf_error[3];
 		}
 
 	if (($qcf_options[14] == "required") && ((empty($values['qcfname4']) || $values['qcfname4'] == $qcf_options[4]))) 
-		$errors['qcfname4'] = 'What is the '.strtolower($qcf_options[4]).'?';
+		$errors['qcfname4'] = $qcf_error[5];
 
 	if ($qcf_options[16] == "required")
 		{
@@ -364,15 +455,15 @@ function qcf_verify_form(&$values, &$errors)
 		if (strpos($qcf_options[15],'mail') && !filter_var($values['qcfname15'], FILTER_VALIDATE_EMAIL))
 			$errors['qcfname15'] = 'Please enter a valid email address';
 		if (empty($values['qcfname15']) || $values['qcfname15'] == $qcf_options[15])
-			$errors['qcfname15'] = 'The '.strtolower($qcf_options[15]).' is needed';
+			$errors['qcfname15'] = $qcf_error[1];
 		}
 
 	if($qcf_options[9] == 'required')
 		{
 		if($values['qcfname11']<>7)
-       		$errors['qcfname11'] = 'That&#146;s not the right answer, try again';
+       		$errors['qcfname11'] = $qcf_error[7];
 		if(empty($values['qcfname11']))
-    		$errors['qcfname11'] = 'Can you give me an answer to the sum please';
+    		$errors['qcfname11'] = $qcf_error[6];
 		}
 	return (count($errors) == 0);	
 	}
@@ -380,6 +471,7 @@ function qcf_verify_form(&$values, &$errors)
 function qcf_display_form($values, $errors, $whichpage)
 	{
 	$qcf_options = get_option('qcf_options');
+	$qcf_error = get_option('qcf_error');
 	$width = preg_replace("/[^0-9]/", "", $qcf_options[7]);
 	if (empty($qcf_options[21])){$qcf_options[17]="yes";$qcf_options[18]="yes";$qcf_options[20]="yes";}
 	if (!empty($qcf_options[0])) $qcf_options[0] = '<h2>'.$qcf_options[0].'</h2>';
@@ -398,7 +490,7 @@ function qcf_display_form($values, $errors, $whichpage)
 	<div id="<?php echo $border; ?>" style="width: <?php echo $width; ?>">
 	<?php
 	if (count($errors) > 0)
-		echo "<h2>Oops, got a few problems here</h2><p class='error'>Can you sort out the details highlighted below.</p>";
+		echo '<h2>' . $qcf_error[0] . '</h2><p class="error">' . $qcf_error[1]. '</p>';
 	else
 		echo $qcf_options[0].$qcf_options[1];
 
@@ -483,8 +575,10 @@ function qcf_help()
 	<h2>Installing the plugin, FAQs and other info</h2>
 	<p>Theres is some installation info and FAQs on the <a href="http://wordpress.org/extend/plugins/quick-contact-form/installation/" target="_blank">wordpress plugin page</a>.  Some developement info on <a href="http://aerin.co.uk/quick-contact-form/">my plugin page</a> along with a feedback form. Or you can email me at <a href="mailto:graham@aerin.co.uk">graham@aerin.co.uk</a>.</p>
 	<h2>New Stuff</h2>
-	<p>I've added a new <a href='?page=quick-contact-form/quick-contact-form.php&tab=reply'> Reply Options</a> tab that allows you to edit the way message are sent and displayed. One of the settings is the dashboard widget that used to be on the 'form Settings' tab. I moved it here as it seemed more logical, apologies if you were using the widget and it has now gone.</p>
-	<h2>Validation</h2>
+	<p>The error messages were all in English. Now you can create your own using the handy dandy Error Messages tab.</p>
+    <h2>Next Up</h2>
+    <p>customised subject fields. Woooo...</p>
+    <h2>Validation</h2>
 	<p>I've spent quite some time trying to make the validation as usable as possible but keep the configuration as simple as possible. I think I've captured most conditions but there might be the odd omission if you set up a weird label.</p>
 	<p>Anyway, here's how it works.  If you tick the 'required' checkbox the field will get validated.</p>
 	<p>The first validation removes all the unwanted characters. Essentially this clears out the sort of thing a spammer would use: URLs, HTML and so on leaving just the alphabet, numbers and a few punctuation marks.</p>
@@ -545,7 +639,7 @@ function qcf_loop()
 
 function qcf_admin_tabs( $current = 'settings' )
 	{ 
-	$tabs = array( 'setup' => 'Setup', 'options' => 'Form Settings', 'reply' => 'Reply Options', 'support' => 'Support', reset => Reset); 
+	$tabs = array( 'setup' => 'Setup', 'options' => 'Form Settings', 'error' => 'Error Messages', 'reply' => 'Reply Options', 'support' => 'Support', reset => Reset); 
 	$links = array();
 	echo '<div id="icon-themes" class="icon32"><br></div>';
 	echo '<h2 class="nav-tab-wrapper">';
@@ -571,6 +665,8 @@ function qcf_tabbed_page()
 		case 'support' : qcf_help();
 		break;
 		case 'options' : qcf_options_page();
+		break;
+		case 'error' : qcf_error_page();
 		break;
 		case 'reply' : qcf_reply_page();
 		break;

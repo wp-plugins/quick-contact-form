@@ -18,6 +18,7 @@ A really, really simple contact form. There is nothing to configure, all you hav
 *	Pre-set range of border styles.
 *	Optional form width adjustment and spambot detection
 *	Displays latest messages on dashboard
+*	Custom error and thank-you messages
 
 = Developers plugin page =
 
@@ -48,7 +49,7 @@ Some people report errors on activation.  I can't replicate the problem so if it
 == Frequently Asked Questions ==
 
 = How do I change the labels and captions? =
-Go to your plugin list and scroll down until you see 'Quick Contact Form' and click on 'Settings'. Change the labels and settings and click on 'Save Settings'.
+Go to your plugin list and scroll down until you see 'Quick Contact Form' and click on 'Settings'. Select the 'Form Settings', 'Error Messages' or 'Reply options' tabs. Change the settings and Save (quite important this last bit).
 
 = What's the shortcode? =
 [qcf]
@@ -68,7 +69,13 @@ If it all goes wrong, just reinstall the plugin and start again. If you need hel
 = Does anybody read these things? =
 I did, and so have you.  Maybe there will be more, who knows.....
 
+=Have you got any pitures of cute kittens? =
+No but I've inherited 2 ancient, deaf and grumpy Persians.
+
 == Changelog ==
+
+= 2.5 =
+*	Added tab to edit the erorr messages
 
 = 2.4 =
 *	Added options to edit the thank you message
