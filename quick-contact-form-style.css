@@ -1,7 +1,8 @@
 #qcf-style {
 	font-family: arial, sans-serif;
 	text-align: left;
-	margin-bottom: 10px;
+	margin: 0 0 10px 0;
+	padding: 0;
 	}
 
 #qcf-style form {
@@ -12,11 +13,14 @@
 #qcf-style #none {
 	border: 0px solid #FFF;
 	padding: 0;
+	background: #FFF;
 	}
 
 #qcf-style #plain {
 	border: 1px solid #888; 
 	padding: 10px;
+	margin: 0;
+	background: #FFF;
 	}
 
 #qcf-style #rounded {
@@ -25,6 +29,7 @@
 	-moz-border-radius: 10px;
 	-webkit-box-shadow: 10px;
 	border-radius: 10px;
+	background: #FFF;
 	}
 
 #qcf-style #shadow {
@@ -44,7 +49,7 @@
 	margin: 0 10px 20px 0; 
 	-webkit-box-shadow: 5px 5px 5px #888; 
 	-moz-box-shadow: 5px 5px 5px #888; 
-	box-shadow: 5px 5px 5px #888 
+	box-shadow: 5px 5px 5px #888;
 	-moz-border-radius: 10px; 
 	-webkit-box-shadow: 10px; 
 	border-radius: 10px;
@@ -55,7 +60,7 @@
 	padding: 0;
 	}
 
-#qcf-style input, #qcf-style textarea {
+#qcf-style input, #qcf-style textarea{
 	font-family: arial, sans-serif;
 	margin: 5px 0 5px 0;
 	padding: 6px;
@@ -64,7 +69,15 @@
 	border:1px solid #415063;
 	}
 
-#qcf-style #sums {
+#qcf-style select {
+	color: #465069;
+	border:1px solid #415063;
+	color: #465069;
+	font-size: 120%;
+	padding: 2px;
+	}
+
+#qcf-style #sums , #qcf-style .input {
 	color: #465069;
 	font-size: 120%;
 	}
@@ -110,11 +123,16 @@
 	color: #005F6B;
 	}
 
-#iehack {
+.iehack {
 	margin: 0;
 	padding: 0;
 	border: none;
 	}
+
+#qcf_sort { list-style-type: none; margin: 0; padding: 0; width:100%; }
+#qcf_sort li { margin: 3px 0; padding: 0.3em 0.8em 0.3em 0.5em; height: 1.6em; cursor:pointer; border:1px solid #888;}
+#qcf_sort li.button_active { background-color: white; }
+#qcf_sort li.button_inactive { background-color: #E0E0E0 }
 
 #qcf-options {
 	border: 1px solid #C3CFF5;
