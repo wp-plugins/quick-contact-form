@@ -34,10 +34,7 @@ Some people report errors on activation.  I can't replicate the problem so if it
 
 == Screenshots ==
 
-Some contact form examples:
-`/screenshots/simpleform.png` `/screenshots/middleform.png` `/screenshots/complexform.png` `/screenshots/error.png` `/screenshots/sent.png` 
-This is the main editing screen:
-`/screenshots/screenshot1.png`
+So see some examples, please go to the [quick contact form plugin](http://aerin.co.uk/quick-contact-form/) page.
 
 == Installation ==
 
