@@ -14,9 +14,8 @@ A really, really simple contact form. There is nothing to configure, all you hav
 
 = Features =
 
-*	Selectable text fields 
-*	Pre-set range of border styles.
-*	Optional form width adjustment and spambot detection
+*	Drag and drop fields with easy to edit labels and captions.
+*	Range of border styles.
 *	Displays latest messages on dashboard
 *	Custom error and thank-you messages
 
@@ -32,6 +31,13 @@ Some people report errors on activation.  I can't replicate the problem so if it
 [Jon](http://www.cloud9its.co.uk/)
 [Gareth](http://www.garethgillman.co.uk)
 [Karl](http://employmentlawclinic.com/)
+
+== Screenshots ==
+
+Some contact form examples:
+`/screenshots/simpleform.png` `/screenshots/middleform.png` `/screenshots/complexform.png` `/screenshots/error.png` `/screenshots/sent.png` 
+This is the main editing screen:
+`/screenshots/screenshot1.png`
 
 == Installation ==
 
@@ -73,6 +79,10 @@ I did, and so have you.  Maybe there will be more, who knows.....
 No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
+
+= 3.0 =
+*	Now lots of fields to select and arrange
+*	Changed the way files are written to the database
 
 = 2.5 =
 *	Added tab to edit the erorr messages
