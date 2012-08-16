@@ -34,7 +34,7 @@ Some people report errors on activation.  I can't replicate the problem so if it
 
 == Screenshots ==
 
-So see some examples, please go to the [quick contact form plugin](http://aerin.co.uk/quick-contact-form/) page.
+So see some examples, please go to the [quick contact form examples](http://aerin.co.uk/contact-form-examples/) page.
 
 == Installation ==
 
