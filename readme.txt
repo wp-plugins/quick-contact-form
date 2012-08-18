@@ -33,8 +33,9 @@ Some people report errors on activation.  I can't replicate the problem so if it
 [Karl](http://employmentlawclinic.com/)
 
 == Screenshots ==
+1. This is an example of a simple form. Everything on the form is editable.
 
-So see some examples, please go to the [quick contact form examples](http://aerin.co.uk/contact-form-examples/) page.
+To see forms from actual sites go to the [quick contact form examples](http://aerin.co.uk/contact-form-examples/) page.
 
 == Installation ==
 
