@@ -71,9 +71,9 @@ Well OK yes you can add more fields if you want but you are going to have to fid
 If it all goes wrong, just reinstall the plugin and start again. If you need help then [contact me](http://aerin.co.uk/contact-me/).
 
 = Does anybody read these things? =
-I did, and so have you.  Maybe there will be more, who knows.....
+I did, and so have you.  Maybe there will be more, who knows.
 
-=Have you got any pitures of cute kittens? =
+=Have you got any pictures of cute kittens? =
 No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
