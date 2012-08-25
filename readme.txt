@@ -10,7 +10,7 @@ Simple plug and play contact form.
 
 == Description ==
 
-A really, really simple contact form. There is nothing to configure, all you have to do is set up your email address and add the shortcode to your pages.
+A really, really simple drag and drop contact form. There is nothing to configure, all you have to do is set up your email address and add the shortcode to your pages.
 
 = Features =
 
@@ -75,6 +75,14 @@ I did, and so have you.  Maybe there will be more, who knows.
 No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
+
+= 3.1 =
+*	Random maths captcha added
+*	Editable email subject line
+*	Background colour options
+*	Changed the layout of the form editor to make it simpler.
+*	Improved the the instructions for use
+*	Fixed a small bug in the checkbox validator
 
 = 3.0 =
 *	Now lots of fields to select and arrange

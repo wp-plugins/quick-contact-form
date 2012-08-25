@@ -13,14 +13,12 @@
 #qcf-style #none {
 	border: 0px solid #FFF;
 	padding: 0;
-	background: #FFF;
 	}
 
 #qcf-style #plain {
 	border: 1px solid #888; 
 	padding: 10px;
 	margin: 0;
-	background: #FFF;
 	}
 
 #qcf-style #rounded {
@@ -29,11 +27,9 @@
 	-moz-border-radius: 10px;
 	-webkit-box-shadow: 10px;
 	border-radius: 10px;
-	background: #FFF;
 	}
 
 #qcf-style #shadow {
-	background-color: #FFF;
 	border: 1px solid #888;
 	padding: 10px;
 	margin: 0 10px 20px 0;
@@ -43,7 +39,6 @@
 	}
 
 #qcf-style #roundshadow {
-	background-color: #FFF; 
 	border: 1px solid #888; 
 	padding: 10px; 
 	margin: 0 10px 20px 0; 
@@ -123,16 +118,17 @@
 	color: #005F6B;
 	}
 
-.iehack {
-	margin: 0;
-	padding: 0;
-	border: none;
-	}
-
 #qcf_sort { list-style-type: none; margin: 0; padding: 0; width:100%; }
-#qcf_sort li { margin: 3px 0; padding: 0.3em 0.8em 0.3em 0.5em; height: 1.6em; cursor:pointer; border:1px solid #888;}
+#qcf_sort li { margin: 3px 0; padding: 0.3em 0.8em 0.3em 0.5em; min-height: 1.6em; cursor:pointer; border:1px solid #888; clear:left}
 #qcf_sort li.button_active { background-color: white; }
 #qcf_sort li.button_inactive { background-color: #E0E0E0 }
+#qcf_sort li div {overflow:hidden;}
+
+.qcf-hack {
+	margin: 0;
+	padding: 0;
+	border: 1px solid red;
+	}
 
 #qcf-options {
 	border: 1px solid #C3CFF5;
@@ -146,6 +142,23 @@
 	color: #005F6B;
 	}
 
+#qcf-options h3 {
+	color: #717DD7;
+	margin: 4px 0 0 0;
+	padding: 0;
+	}
+
 #qcf-options submit input:focus {
 	color: #FFF;
+	}
+	
+#qcf-options ul {
+	margin: 0;
+	padding: 0;
+	}
+	
+#qcf-options .instructions li {
+	list-style-type: disc;
+	list-style-position: inside;
+	margin: 1px 0;
 	}
