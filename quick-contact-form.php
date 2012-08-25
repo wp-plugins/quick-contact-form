@@ -950,8 +950,10 @@ function qcf_process_form($values)
 	if (empty($qcf_email)) $qcf_email = $qcf[6];
 	if (!empty($reply['replytitle'])) $reply['replytitle'] = '<h2>' . $reply['replytitle'] . '</h2>';
 	if (!empty($reply['replyblurb'])) $reply['replyblurb'] = '<p>' . $reply['replyblurb'] . '</p>';
+	$pagetitle = get_the_title();
+	if (empty($pagetitle)) $pagetitle = 'quick contact form';
 	if ( $reply['subjectoption'] == "sendername") $addon = $values['qcfname1'];
-	if ( $reply['subjectoption'] == "senderpage") $addon = get_the_title();
+	if ( $reply['subjectoption'] == "senderpage") $addon = $pagetitle;
 	if ( $reply['subjectoption'] == "sendernone") $addon = ''; 
 	$ip=$_SERVER['REMOTE_ADDR'];
 	$url = $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
