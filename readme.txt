@@ -76,8 +76,9 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
-= 3.2 =
+= 3.2 and 3.3.1 =
 *	Validation can check the email and telephone number format even if they are not required fields.
+*	Missing apostrophe added (bugfix).
 
 = 3.1 =
 *	Random maths captcha added
