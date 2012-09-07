@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://www.aerin.co.uk/quick-contact-form
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 3.1
+Version: 3.2
 Author: fisicx
 Author URI: http://www.aerin.co.uk
 */
@@ -422,6 +422,8 @@ function qcf_error_page()
 		$error['telephone'] = esc_html( $_POST['telephone']);
 		$error['mathsmissing'] = esc_html( $_POST['errorsum1']);
 		$error['mathsanswer'] = esc_html( $_POST['errorsum2']);
+		$error['emailcheck'] = esc_html( $_POST['emailcheck']);
+		$error['phonecheck'] = esc_html( $_POST['phonecheck']);
 		$error['update'] = 'updated';
 		update_option( 'qcf_error', $error );
 		qcf_admin_notice("The reply settings have been updated.");
@@ -440,10 +442,12 @@ function qcf_error_page()
 		<p><input type="text" style="width:100%" name="error1" value="' .  $error['field1'] . '" /></p>
 		<p>If <em>' .  $qcf['label']['field2'] . '</em> is missing:</p>
 		<p><input type="text" style="width:100%" name="error2" value="' .  $error['field2'] . '" /></p>
+		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="emailcheck"' . $error['emailcheck'] . ' value="checked" /> Check for invalid email even if field is not required</p>
 		<p>Error message for an invalid email address:</p>
 		<p><input type="text" style="width:100%" name="email" value="' .  $error['email'] . '" /></p>
 		<p>If <em>' .  $qcf['label']['field3'] . '</em> is missing:</p>
 		<p>	<input type="text" style="width:100%" name="error3" value="' .  $error['field3'] . '" /></p>
+		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="phonecheck"' . $error['phonecheck'] . ' value="checked" /> Check for invalid phone number even if field is not required</p>
 		<p>Error message for an invalid telephone number:</p>
 		<p>	<input type="text" style="width:100%" name="telephone" value="' .  $error['telephone'] . '" /></p>
 		<p>If <em>' .  $qcf['label']['field4'] . '</em> is missing:</p>
@@ -695,8 +699,8 @@ function qcf_get_default_error () {
 	$qcf = get_option('qcf_settings');
 	$error = array();
 	$error['field1'] = 'Giving me '. strtolower($qcf['label']['field1']) . ' would really help';
-	$error['field2'] = 'Please enter your ' . strtolower($qcf['label']['field2']);
-	$error['field3'] = 'A '. strtolower($qcf['label']['field3']) .' is needed';
+	$error['field2'] = 'Please enter your email address;
+	$error['field3'] = 'A telephone number is needed';
 	$error['field4'] = 'What is the '. strtolower($qcf['label']['field4']);
 	$error['field5'] = 'Select a option from the list';
 	$error['field6'] = 'Check at least one box';
@@ -709,6 +713,8 @@ function qcf_get_default_error () {
 	$error['mathsanswer'] = 'That&#146;s not the right answer, try again';
 	$error['errortitle'] = 'Oops, got a few problems here';
 	$error['errorblurb'] = 'Can you sort out the details highlighted below.';
+	$error['emailcheck'] = '';
+	$error['phonecheck'] = '';
 	$error['update'] = 'updated';
 	return $error;
 	}
@@ -774,6 +780,18 @@ function qcf_verify_form(&$values, &$errors)
 	{
 	$qcf = qcf_get_stored_options();
 	$error = qcf_get_stored_error();
+	$emailcheck = $error['emailcheck'];
+	if ($qcf['required']['field2'] == 'checked') $emailcheck = 'checked';
+	$phonecheck = $error['phonecheck'];
+	if ($qcf['required']['field3'] == 'checked') $phonecheck = 'checked';
+	if ($qcf['active_buttons']['field2'] && $emailcheck == 'checked' && $values['qcfname2'] !== $qcf['label']['field2']) {
+			if (!filter_var($values['qcfname2'], FILTER_VALIDATE_EMAIL))
+				$errors['qcfname2'] = '<p class="error">' . $error['email'] . '</p>';
+			}
+		if ($qcf['active_buttons']['field3'] && $phonecheck == 'checked' && $values['qcfname3'] !== $qcf['label']['field3']) {
+			if (preg_match("/[^0-9()\+\.-\s]$/",$values['qcfname3']))
+				$errors['qcfname3'] = '<p class="error">' . $error['telephone'] . '</p>';
+			}
 	foreach (explode( ',',$qcf['sort']) as $name)
 		if ($qcf['active_buttons'][$name] && $qcf['required'][$name]) {
 			switch ( $name ) {
@@ -782,14 +800,10 @@ function qcf_verify_form(&$values, &$errors)
 						$errors['qcfname1'] = '<p class="error">' . $error['field1'] . '</p>';
 					break;
 				case 'field2':
-					if (!filter_var($values['qcfname2'], FILTER_VALIDATE_EMAIL))
-						$errors['qcfname2'] = '<p class="error">' . $error['email'] . '</p>';
 					if (empty($values['qcfname2']) || $values['qcfname2'] == $qcf['label'][$name])
 						$errors['qcfname2'] = '<p class="error">' . $error['field2'] . '</p>';
 					break;
 				case 'field3':
-					if (preg_match("/[^0-9()\+\.-\s]$/",$values['qcfname3']))
-						$errors['qcfname3'] = '<p class="error">' . $error['telephone'] . '</p>';
 					if (empty($values['qcfname3']) || $values['qcfname3'] == $qcf['label'][$name])
 						$errors['qcfname3'] = '<p class="error">' . $error['field3'] . '</p>';
 					break;
@@ -817,8 +831,7 @@ function qcf_verify_form(&$values, &$errors)
 					break;
 				}
 			}
-		if($qcf['captcha'] == 'checked')
-			{
+		if($qcf['captcha'] == 'checked') {
 			if($values['maths']<>$values['answer']) $errors['captcha'] = '<p class="error">' . $error['mathsanswer'] . '</p>';
 			if(empty($values['maths'])) $errors['captcha'] = '<p class="error">' . $error['mathsmissing'] . '</p>';
 			}		

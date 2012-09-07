@@ -3,7 +3,7 @@
 Contributors: 
 Tags: contact form
 Requires at least: 2.7
-Tested up to: 3.3.1
+Tested up to: 3.4.1
 Stable tag: trunk
 
 Simple plug and play contact form. 
@@ -16,7 +16,7 @@ A really, really simple drag and drop contact form. There is nothing to configur
 
 *	Drag and drop fields with easy to edit labels and captions.
 *	Range of border styles.
-*	Displays latest messages on dashboard
+*	Display latest messages on dashboard
 *	Custom error and thank-you messages
 
 = Developers plugin page =
@@ -57,7 +57,7 @@ Go to your plugin list and scroll down until you see 'Quick Contact Form' and cl
 [qcf]
 
 = How do I change the colours? =
-Go to your plugin list and scroll down until you see 'Quick Contact Form' and click on 'Edit'. Click on the link 'quick-contact-form-styles.css' over on the right. Make the changes and click on 'Update Changes' down the bottom.
+Change the background in the plugin settings 'Styling' page. Or edit the 'quick-contact-form-styles.css'.
 
 = Can I add more fields? =
 No.
@@ -71,10 +71,13 @@ If it all goes wrong, just reinstall the plugin and start again. If you need hel
 = Does anybody read these things? =
 I did, and so have you.  Maybe there will be more, who knows.
 
-=Have you got any pictures of cute kittens? =
+= Have you got any pictures of cute kittens? =
 No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
+
+= 3.2 =
+*	Validation can check the email and telephone number format even if they are not required fields.
 
 = 3.1 =
 *	Random maths captcha added
