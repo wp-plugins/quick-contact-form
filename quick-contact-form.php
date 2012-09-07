@@ -699,7 +699,7 @@ function qcf_get_default_error () {
 	$qcf = get_option('qcf_settings');
 	$error = array();
 	$error['field1'] = 'Giving me '. strtolower($qcf['label']['field1']) . ' would really help';
-	$error['field2'] = 'Please enter your email address;
+	$error['field2'] = 'Please enter your email address';
 	$error['field3'] = 'A telephone number is needed';
 	$error['field4'] = 'What is the '. strtolower($qcf['label']['field4']);
 	$error['field5'] = 'Select a option from the list';
