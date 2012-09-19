@@ -120,8 +120,8 @@
 
 #qcf_sort { list-style-type: none; margin: 0; padding: 0; width:100%; }
 #qcf_sort li { margin: 3px 0; padding: 0.3em 0.8em 0.3em 0.5em; min-height: 1.6em; cursor:pointer; border:1px solid #888; clear:left}
-#qcf_sort li.button_active { background-color: white; }
-#qcf_sort li.button_inactive { background-color: #E0E0E0 }
+#qcf_sort li.button_active { background-color: white; background: url(updown.gif) no-repeat right center;}
+#qcf_sort li.button_inactive { background-color: #E0E0E0;}
 #qcf_sort li div {overflow:hidden;}
 
 .qcf-hack {

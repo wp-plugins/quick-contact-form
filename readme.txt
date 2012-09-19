@@ -3,7 +3,7 @@
 Contributors: 
 Tags: contact form
 Requires at least: 2.7
-Tested up to: 3.4.1
+Tested up to: 3.4.2
 Stable tag: trunk
 
 Simple plug and play contact form. 
@@ -22,15 +22,6 @@ A really, really simple drag and drop contact form. There is nothing to configur
 = Developers plugin page =
 
 [quick contact form plugin](http://aerin.co.uk/quick-contact-form/).
-
-= Bugs and Errors =
-
-Some people report errors on activation.  I can't replicate the problem so if it doesn't work for you please let me know the problem: graham@aerin.co.uk.
-
-= Thanks to the debuggers and testers = 
-[Jon](http://www.cloud9its.co.uk/)
-[Gareth](http://www.garethgillman.co.uk)
-[Karl](http://employmentlawclinic.com/)
 
 == Screenshots ==
 1. This is an example of a simple form. Everything on the form is editable.  To see more go to the [quick contact form examples](http://aerin.co.uk/contact-form-examples/) page.
@@ -76,52 +67,61 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 4.0 =
+*	Option to send file attachments.
+*	Custom CSS support.
+*	Allow redirection after message has been sent.
+*	Reworked the 'form settings' instructions and added drag and drop arrows.
+*	Direct links to the CSS and PHP editors from the appropriate setting page.
+*	A lot of coding changes to speed up form processing.
+*	As soon as the last few users upgrade from Version 2 I can remove about 100 lines of code!
+
 = 3.2 and 3.3.1 =
 *	Validation can check the email and telephone number format even if they are not required fields.
 *	Missing apostrophe added (bugfix).
 
 = 3.1 =
-*	Random maths captcha added
-*	Editable email subject line
-*	Background colour options
+*	Random maths captcha added.
+*	Editable email subject line.
+*	Background colour options.
 *	Changed the layout of the form editor to make it simpler.
-*	Improved the the instructions for use
-*	Fixed a small bug in the checkbox validator
+*	Improved the the instructions for use.
+*	Fixed a small bug in the checkbox validator.
 
 = 3.0 =
-*	Now lots of fields to select and arrange
-*	Changed the way files are written to the database
+*	Now lots of fields to select and arrange.
+*	Changed the way files are written to the database.
 
 = 2.5 =
-*	Added tab to edit the erorr messages
+*	Added tab to edit the erorr messages.
 
 = 2.4 =
-*	Added options to edit the thank you message
-*	Added options to display and track messages
+*	Added options to edit the thank you message.
+*	Added options to display and track messages.
 
 = 2.3 =
-*	Added options to select which fields you want on your form
+*	Added options to select which fields you want on your form.
 *	Added a forth field so you can have email and telephone number (woo!)
-*	Tidied up the way messages are displayed
-*	Fixed sorting bug
+*	Tidied up the way messages are displayed.
+*	Fixed sorting bug.
 
 = 2.2 =
-*	Added reset options
+*	Added reset options.
 
 = 2.1 =
-*	Tweak to the stylesheet to cope with the hopeless Internet Explorer CSS support
+*	Tweak to the stylesheet to cope with the hopeless Internet Explorer CSS support.
 
 = 2.0 =
-*	Major upgrade to the settings interface
-*	Option to display latest messages on your dashboard
+*	Major upgrade to the settings interface.
+*	Option to display latest messages on your dashboard.
 
 = 1.4 =
-*	Added widget
-*	Changed text colour of required fields (looks much nicer)
+*	Added sidebar widget.
+*	Changed text colour of required fields (looks much nicer).
 
 = 1.3 =
-*	Added an optional maths checker to catch the spambots
-*	Added email and telephone number validation
+*	Added an optional maths checker to catch the spambots.
+*	Added email and telephone number validation.
 
 = 1.2 =
 *	Changed the way error and the thank you messages are displayed (no more popups).
