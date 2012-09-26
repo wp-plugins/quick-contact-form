@@ -3,19 +3,18 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://www.aerin.co.uk/quick-contact-form
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 4.0
+Version: 4.1
 Author: fisicx
 Author URI: http://www.aerin.co.uk
 */
 
-add_action( 'admin_notices', 'qcf_admin_notice' );
-add_action( 'wp_dashboard_setup', 'qcf_add_dashboard_widgets' );
 add_shortcode('qcf', 'qcf_start');
 add_action('init', 'qcf_init');
 add_action('admin_menu', 'qcf_page_init');
+add_action( 'admin_notices', 'qcf_admin_notice' );
+add_action( 'wp_dashboard_setup', 'qcf_add_dashboard_widgets' );
 add_action('wp_head', 'qcf_use_custom_css');
 add_filter( 'plugin_action_links', 'qcf_plugin_action_links', 10, 2 );
-add_action('wp_dashboard_setup', 'qcf_add_dashboard_widgets' );
 
 /* register_deactivation_hook( __FILE__, 'qcf_delete_options' ); */
 register_uninstall_hook(__FILE__, 'qcf_delete_options');
@@ -28,18 +27,15 @@ $myStyleUrl = plugins_url('quick-contact-form-style.css', __FILE__);
 wp_register_style('qcf_style', $myStyleUrl);
 wp_enqueue_style( 'qcf_style');
 
-function qcf_start()
-	{
+function qcf_start() {
 	return qcf_loop(14);
 	}
 
-function qcf_page_init()
-	{
+function qcf_page_init() {
 	add_options_page('Quick Contact', 'Quick Contact', 'manage_options', __FILE__, 'qcf_tabbed_page');
 	}
 
-function qcf_plugin_action_links($links, $file )
-	{
+function qcf_plugin_action_links($links, $file ) {
 	if ( $file == plugin_basename( __FILE__ ) )
 		{
 		$qcf_links = '<a href="'.get_admin_url().'options-general.php?page=quick-contact-form/quick-contact-form.php">'.__('Settings').'</a>';
@@ -48,18 +44,17 @@ function qcf_plugin_action_links($links, $file )
 	return $links;
 	}
 
-function qcf_delete_options()
-	{
+function qcf_delete_options() {
 	delete_option('qcf_settings');
 	delete_option('qcf_options');
 	delete_option('qcf_reply');
 	delete_option('qcf_error');
 	delete_option('qcf_email');
 	delete_option('qcf_style');
+	delete_option('qcf_attach');
 	}
 
-function qcf_admin_tabs( $current = 'settings' )
-	{ 
+function qcf_admin_tabs( $current = 'settings' ) { 
 	$tabs = array( 'setup' => 'Setup' , 'settings' => 'Form Settings', 'attach' => 'Attachments' , 'styles' => 'Styling' , 'reply' => 'Send Options' , 'error' => 'Error Messages' , 'help' => 'Help' , 'reset' => 'Reset' , ); 
 	$links = array();
 	echo '<div id="icon-themes" class="icon32"><br></div>';
@@ -72,41 +67,30 @@ function qcf_admin_tabs( $current = 'settings' )
 	echo '</h2>';
 	}
 
-function qcf_tabbed_page()
-	{
+function qcf_tabbed_page() {
 	echo '<div class="wrap">';
 	echo '<h1>Quick Contact Form</h1>';
 	if ( isset ( $_GET['tab'] ) ) qcf_admin_tabs($_GET['tab']); else qcf_admin_tabs('setup');
 	if ( isset ( $_GET['tab'] ) ) $tab = $_GET['tab']; else $tab = 'setup'; 
 	switch ( $tab )
 		{
-		case 'setup' : qcf_setup();
-		break;
-		case 'settings' : qcf_form_options();
-		break;
-		case 'styles' : qcf_styles();
-		break;
-		case 'reply' : qcf_reply_page();
-		break;
-		case 'error' : qcf_error_page ();
-		break;
-		case 'attach' : qcf_attach ();
-		break;
-		case 'help' : qcf_help ();
-		break;
-		case 'reset' : qcf_reset_page();
-		break;
+		case 'setup' : qcf_setup(); break;
+		case 'settings' : qcf_form_options(); break;
+		case 'styles' : qcf_styles(); break;
+		case 'reply' : qcf_reply_page(); break;
+		case 'error' : qcf_error_page (); break;
+		case 'attach' : qcf_attach (); break;
+		case 'help' : qcf_help (); break;
+		case 'reset' : qcf_reset_page(); break;
 		}
 	echo '</div>';
 	}
 
-function qcf_admin_notice( $message)
-	{
+function qcf_admin_notice( $message) {
 	if (!empty( $message)) echo '<div class="updated"><p>'.$message.'</p></div>';
 	}
 
-function qcf_setup ()
-	{
+function qcf_setup () {
 	if( isset( $_POST['Submit'])) {
 		$qcf_email = esc_html( $_POST['qcf_email']);
 		update_option( 'qcf_email', $qcf_email);
@@ -154,25 +138,20 @@ function qcf_form_options () {
 			{
 			$qcf['active_buttons'][$item] = (isset( $_POST['qcf_settings_active_'.$item]) and $_POST['qcf_settings_active_'.$item] == 'on' ) ? true : false;
 			$qcf['required'][$item] = (isset( $_POST['required_'.$item]) );
-			if (!empty ( $_POST['label_'.$item])) $qcf['label'][$item] = $_POST['label_'.$item];
+			if (!empty ( $_POST['label_'.$item])) $qcf['label'][$item] = stripslashes($_POST['label_'.$item]);
 			}
-		$qcf['sort'] = esc_html( $_POST['qcf_settings_sort']);
-		$qcf['dropdownlist'] = str_replace(', ' , ',' , esc_html( $_POST['dropdown_string']));
-		$qcf['checklist'] = str_replace(', ' , ',' , esc_html( $_POST['checklist_string']));
-		$qcf['radiolist'] = str_replace(', ' , ',' , esc_html( $_POST['radio_string']));
-		$qcf['lines'] = esc_html( $_POST['message_lines']);
-		$qcf['title'] = esc_html( $_POST['qcfname_title']);
-		$qcf['blurb'] = esc_html( $_POST['qcfname_blurb']);
-		$qcf['border'] = esc_html( $_POST['border']);
-		$qcf['width'] = esc_html( $_POST['width']);
-		$qcf['captcha'] = esc_html( $_POST['captcha']);
-		$qcf['mathscaption'] = esc_html( $_POST['mathscaption']);
-		$qcf['send'] = esc_html( $_POST['sendcaption']);
-		$qcf['qcf_attach'] = esc_html( $_POST['qcf_attach']);
-		$qcf['qcf_attach_label'] = esc_html( $_POST['qcf_attach_label']);
-		$qcf['qcf_attach_size'] = esc_html( $_POST['qcf_attach_size']);
-		$qcf['qcf_attach_type'] = esc_html( $_POST['qcf_attach_type']);
-		$qcf['qcf_attach_width'] = esc_html( $_POST['qcf_attach_width']);
+		$qcf['sort'] = $_POST['qcf_settings_sort'];
+		$qcf['dropdownlist'] = str_replace(', ' , ',' , $_POST['dropdown_string']);
+		$qcf['checklist'] = str_replace(', ' , ',' , $_POST['checklist_string']);
+		$qcf['radiolist'] = str_replace(', ' , ',' , $_POST['radio_string']);
+		$qcf['lines'] = $_POST['message_lines'];
+		$qcf['title'] = $_POST['qcfname_title'];
+		$qcf['blurb'] = $_POST['qcfname_blurb'];
+		$qcf['border'] = $_POST['border'];
+		$qcf['width'] = $_POST['width'];
+		$qcf['captcha'] = $_POST['captcha'];
+		$qcf['mathscaption'] = $_POST['mathscaption'];
+		$qcf['send'] = $_POST['sendcaption'];
 		$qcf['update'] = 'updated';
 		update_option( 'qcf_settings', $qcf);
 		qcf_admin_notice("The form settings have been updated.");
@@ -202,13 +181,13 @@ function qcf_form_options () {
 		<ul class="instructions">
 		<li>Select the fields you want to use on your form</li>
 		<li>Edit the field labels if required.</li>
-		<li>Drag and drop to change the order of the fields.</li>
 		<li>Select which fields you want validating.</li>
+		<li>Drag and drop to change the order of the fields.</li>
 		<li>Set the number of rows in the text (message) area.</li>
 		<li>Update the dropdown, checkbox and radio selections (if used).</li>
 		<li>Don&#146;t forget to save!</li>
 		</ul>
-		<p><b><div style="float:left; margin-left:7px;width:180px;">Field Selection & Label</div><div style="float:left; width:85px;">Field Type</div><div style="float:left; width:85px;">Validation</div><div style="float:right; width:40px;">Order</div></b></p>
+		<p><b><div style="float:left; margin-left:7px;width:180px;">Field Selection & Label</div><div style="float:left; width:85px;">Field Type</div><div style="float:left; width:85px;">Validation</div><div style="float:right; width:50px;">Position</div></b></p>
 		<div style="clear:left"></div>
 		<ul id="qcf_sort">';
 		foreach (explode( ',',$qcf['sort']) as $name)
@@ -301,15 +280,14 @@ function qcf_form_options () {
 	}
 
 function qcf_attach () {
-	if( isset( $_POST['Submit']))
-		{
-		$attach['qcf_attach'] = esc_html( $_POST['qcf_attach']);
-		$attach['qcf_attach_label'] = esc_html( $_POST['qcf_attach_label']);
-		$attach['qcf_attach_size'] = esc_html( $_POST['qcf_attach_size']);
-		$attach['qcf_attach_type'] = esc_html( $_POST['qcf_attach_type']);
-		$attach['qcf_attach_width'] = esc_html( $_POST['qcf_attach_width']);
-		$attach['qcf_attach_error_size'] = esc_html( $_POST['qcf_attach_error_size']);
-		$attach['qcf_attach_error_type'] = esc_html( $_POST['qcf_attach_error_type']);
+	if( isset( $_POST['Submit'])) {
+		$attach['qcf_attach'] = $_POST['qcf_attach'];
+		$attach['qcf_attach_label'] = stripslashes( $_POST['qcf_attach_label']);
+		$attach['qcf_attach_size'] = stripslashes( $_POST['qcf_attach_size']);
+		$attach['qcf_attach_type'] = stripslashes( $_POST['qcf_attach_type']);
+		$attach['qcf_attach_width'] = stripslashes( $_POST['qcf_attach_width']);
+		$attach['qcf_attach_error_size'] = stripslashes( $_POST['qcf_attach_error_size']);
+		$attach['qcf_attach_error_type'] = stripslashes( $_POST['qcf_attach_error_type']);
 		update_option( 'qcf_attach', $attach);
 		qcf_admin_notice("The attachment settings have been updated.");
 		}
@@ -349,15 +327,13 @@ function qcf_attach () {
 	}
 
 function qcf_styles() {
-	if( isset( $_POST['Submit']))
-		{
-		$style['width'] = esc_html( $_POST['width']);
-		$style['border'] = esc_html( $_POST['border']);
-		$style['background'] = esc_html( $_POST['background']);
-		$style['backgroundhex'] = esc_html( $_POST['backgroundhex']);
-		$style['use_custom'] = esc_html( $_POST['use_custom']);
-		$style['styles'] = esc_html( $_POST['styles']);
-		$style['update'] = 'updated';
+	if( isset( $_POST['Submit'])) {
+		$style['width'] = $_POST['width'];
+		$style['border'] = $_POST['border'];
+		$style['background'] = $_POST['background'];
+		$style['backgroundhex'] = stripslashes( $_POST['backgroundhex']);
+		$style['use_custom'] = $_POST['use_custom'];
+		$style['styles'] = stripslashes( $_POST['styles']);
 		update_option( 'qcf_style', $style);
 		qcf_admin_notice("The form styles have been updated.");
 		}
@@ -418,17 +394,16 @@ function qcf_styles() {
 	}
 
 function qcf_reply_page() {
-	if( isset( $_POST['Submit']))
-		{
-		$reply['replytitle'] = esc_html( $_POST['replytitle']);
-		$reply['replyblurb'] = esc_html( $_POST['replyblurb']);
-		$reply['messages'] = esc_html( $_POST['qcf_showmessage']);
-		$reply['dashboard'] = esc_html( $_POST['qcf_dashboard']);
-		$reply['tracker'] = esc_html( $_POST['qcf_tracker']);
-		$reply['subject'] = esc_html( $_POST['subject']);
-		$reply['subjectoption'] = esc_html( $_POST['subjectoption']);
-		$reply['qcf_redirect'] = esc_html( $_POST['qcf_redirect']);
-		$reply['qcf_redirect_url'] = esc_html( $_POST['qcf_redirect_url']);
+	if( isset( $_POST['Submit'])) {
+		$reply['replytitle'] = stripslashes( $_POST['replytitle']);
+		$reply['replyblurb'] = stripslashes( $_POST['replyblurb']);
+		$reply['messages'] = $_POST['qcf_showmessage'];
+		$reply['dashboard'] = $_POST['qcf_dashboard'];
+		$reply['tracker'] = $_POST['qcf_tracker'];
+		$reply['subject'] = stripslashes( $_POST['subject']);
+		$reply['subjectoption'] = stripslashes( $_POST['subjectoption']);
+		$reply['qcf_redirect'] = $_POST['qcf_redirect'];
+		$reply['qcf_redirect_url'] = $_POST['qcf_redirect_url'];
 		$reply['update'] = 'updated';
 		update_option( 'qcf_reply', $reply);
 		qcf_admin_notice("The reply settings have been updated.");
@@ -479,17 +454,16 @@ function qcf_reply_page() {
 function qcf_error_page() {
 	$error = qcf_get_stored_error();
 	$qcf = qcf_get_stored_options();
-	if( isset( $_POST['Submit']))
-		{
-		for ($i=1; $i<=9; $i++) { $error['field'.$i] = esc_html( $_POST['error'.$i]); }
-		$error['errortitle'] = esc_html( $_POST['errortitle']);
-		$error['errorblurb'] = esc_html( $_POST['errorblurb']);
-		$error['email'] = esc_html( $_POST['email']);
-		$error['telephone'] = esc_html( $_POST['telephone']);
-		$error['mathsmissing'] = esc_html( $_POST['errorsum1']);
-		$error['mathsanswer'] = esc_html( $_POST['errorsum2']);
-		$error['emailcheck'] = esc_html( $_POST['emailcheck']);
-		$error['phonecheck'] = esc_html( $_POST['phonecheck']);
+	if( isset( $_POST['Submit'])) {
+		for ($i=1; $i<=9; $i++) { $error['field'.$i] = stripslashes($_POST['error'.$i]); }
+		$error['errortitle'] = stripslashes( $_POST['errortitle']);
+		$error['errorblurb'] = stripslashes( $_POST['errorblurb']);
+		$error['email'] = stripslashes( $_POST['email']);
+		$error['telephone'] = stripslashes( $_POST['telephone']);
+		$error['mathsmissing'] = stripslashes( $_POST['errorsum1']);
+		$error['mathsanswer'] = stripslashes( $_POST['errorsum2']);
+		$error['emailcheck'] = $_POST['emailcheck'];
+		$error['phonecheck'] = $_POST['phonecheck'];
 		$error['update'] = 'updated';
 		update_option( 'qcf_error', $error );
 		qcf_admin_notice("The reply settings have been updated.");
@@ -579,46 +553,38 @@ function qcf_help() {
 	}
 
 function qcf_reset_page() {
-	if (isset($_POST['qcf_reset']))
-		{
-		if (isset($_POST['qcf_reset_email']))
-			{
+	if (isset($_POST['qcf_reset'])) {
+		if (isset($_POST['qcf_reset_email'])) {
 			$qcf_email = "";
 			update_option('qcf_email', $qcf_email);
 			qcf_admin_notice("<b>Your email adress has been reset.</b> Use the <a href= '?page=quick-contact-form/quick-contact-form.php&tab=setup'>Setup</a> tab to add a new email address");
 			}
-		if (isset($_POST['qcf_reset_options']))
-			{
+		if (isset($_POST['qcf_reset_options'])) {
 			$qcf = qcf_get_default_options();
 			update_option('qcf_settings', $qcf);
 			qcf_admin_notice("<b>Form settings have been reset.</b> Use the <a href= '?page=quick-contact-form/quick-contact-form.php&tab=settings'>Form Settings</a> tab to change the settings");
 			}
-		if (isset($_POST['qcf_reset_attach']))
-			{
+		if (isset($_POST['qcf_reset_attach'])) {
 			$attach = qcf_get_default_attach();
 			update_option('qcf_attach', $attach);
 			qcf_admin_notice("<b>The attachment options have been reset.</b>. Use the <a href= '?page=quick-contact-form/quick-contact-form.php&tab=attach'>Attachments</a> tab to change the settings");
 			}
-		if (isset($_POST['qcf_reset_reply']))
-			{
+		if (isset($_POST['qcf_reset_reply'])) {
 			$reply = qcf_get_default_reply();
 			update_option('qcf_reply', $reply);
 			qcf_admin_notice("<b>The send options have been reset.</b>. Use the <a href= '?page=quick-contact-form/quick-contact-form.php&tab=reply'>Reply Options</a> tab to change the settings");
 			}
-		if (isset($_POST['qcf_reset_styles']))
-			{
+		if (isset($_POST['qcf_reset_styles'])) {
 			$style = qcf_get_default_style();
 			update_option('qcf_style', $style);
 			qcf_admin_notice("<b>The styles have been reset.</b>. Use the <a href= '?page=quick-contact-form/quick-contact-form.php&tab=styles'>Styling</a> tab to change the settings");
 			}
-		if (isset($_POST['qcf_reset_message']))
-			{
+		if (isset($_POST['qcf_reset_message'])) {
 			$qcf_message = array();
 			update_option('qcf_message', $qcf_message);
 			qcf_admin_notice("<b>The message list has been deleted.</b> Only those messages received from today will be displayed.");
 			}
-		if (isset($_POST['qcf_reset_errors']))
-			{
+		if (isset($_POST['qcf_reset_errors'])) {
 			$error = qcf_get_default_error();
 			update_option('qcf_error', $error);
 			qcf_admin_notice("<b>The error messages have been reset.</b> Use the <a href= '?page=quick-contact-form/quick-contact-form.php&tab=error'>Error Messages</a> tab to change the settings.");
@@ -723,8 +689,7 @@ function qcf_verify_form(&$values, &$errors) {
 	return (count($errors) == 0);	
 	}
 
-function qcf_display_form( $values, $errors, $whichpage )
-	{
+function qcf_display_form( $values, $errors, $whichpage ) {
 	$qcf = qcf_get_stored_options();
 	$error = qcf_get_stored_error();
 	$attach = qcf_get_stored_attach();
@@ -743,23 +708,22 @@ function qcf_display_form( $values, $errors, $whichpage )
 	if (!empty($qcf['title'])) $qcf['title'] = '<h2>' . $qcf['title'] . '</h2>';
 	if (!empty($qcf['blurb'])) $qcf['blurb'] = '<p>' . $qcf['blurb'] . '</p>';
 	if (!empty($qcf['mathscaption'])) $qcf['mathscaption'] = '<p class="input">' . $qcf['mathscaption'] . '</p>';
-	$content = '<div id="qcf-style" style="width:' . $width . '"><div id="' . $style['border'] . '" ' . $background . '>';
+	$content = "<div id='qcf-style' style='width:" . $width . "'>\r<div id='" . $style['border'] . "' " . $background . ">\r";
 	if (count($errors) > 0)
-		$content .= '<h2>' . $error['errortitle'] . '</h2><p class="error">' . $error['errorblurb'] . '</p>';
+		$content .= "<h2>" . $error['errortitle'] . "</h2>\r<p class='error'>" . $error['errorblurb'] . "</p>\r";
 	else
-		$content .= $qcf['title'] . $qcf['blurb'];
+		$content .= $qcf['title'] . "\r" . $qcf['blurb'] . "\r";
 	
 	$content .= '<form action="" method="POST" enctype="multipart/form-data">';
 		foreach (explode( ',',$qcf['sort']) as $name)
 		{
 		$required = ( $qcf['required'][$name]) ? 'class="required"' : '';
-		if ($qcf['active_buttons'][$name] == "on")
-			{
+		if ($qcf['active_buttons'][$name] == "on") {
 			switch ( $name )
 				{
 				case 'field1':
 					$content .= $errors['qcfname1'];
-					$content .= '<p><input type="text"' . $required . ' style="width:' . $input . '" label="Name" name="qcfname1" value="' . $values['qcfname1'] . '" onfocus="clickclear(this, \'' . $values['qcfname1'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname1'] . '\'"></p>';
+					$content .= '<p><input type="text" ' . $required . ' style="width:' . $input . '" label="Name" name="qcfname1" value="' . $values['qcfname1'] . '" onfocus="clickclear(this, \'' . $values['qcfname1'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname1'] . '\'"></p>';
 					break;
 				case 'field2':
 					$content .= $errors['qcfname2'];
@@ -817,7 +781,7 @@ function qcf_display_form( $values, $errors, $whichpage )
 					break;
 				case 'field8':
 					$content .= $errors['qcfname8'];
-					$content .= '<p><input type="text"' . $required . ' style="width:' . $input . '" label="Name" name="qcfname8" value="' . $values['qcfname8'] . '" onfocus="clickclear(this, \'' . $values['qcfname8'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname8'] . '\'"></p>';
+					$content .= '<p><input type="text" ' . $required . ' style="width:' . $input . '" label="Name" name="qcfname8" value="' . $values['qcfname8'] . '" onfocus="clickclear(this, \'' . $values['qcfname8'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname8'] . '\'"></p>';
 					break;
 				case 'field9':
 					$content .= $errors['qcfname9'];
@@ -832,8 +796,7 @@ function qcf_display_form( $values, $errors, $whichpage )
 		$size = $attach['qcf_attach_width'];
 		$content .= '<p><input type="file" size="' . $size . '" name="filename"></p>';
 		}
-	if ($qcf['captcha'] == "checked")
-		{
+	if ($qcf['captcha'] == "checked") {
 		if ($errors['captcha']) $content .= $errors['captcha'];
 		else $content .= $qcf['mathscaption']; 
 		$content .= '<p id="sums">' . $values['thesum'] . ' = <input type="text" class="required" style="width:3em; font-size:100%" label="Sum" name="maths"  value="' . $values['maths'] . '"></p> 
@@ -847,8 +810,7 @@ function qcf_display_form( $values, $errors, $whichpage )
 	echo $content;
 	}
 	
-function qcf_process_form($values)
-	{
+function qcf_process_form($values) {
 	$qcf = qcf_get_stored_options();
 	$reply = qcf_get_stored_reply();
 	$qcf_email = get_option('qcf_email');
@@ -866,10 +828,8 @@ function qcf_process_form($values)
 	$content = '';
 	$plain = '';
 	foreach (explode( ',',$qcf['sort']) as $item)
-		if ($qcf['active_buttons'][$item])
-		{
-			switch ( $item )
-				{
+		if ($qcf['active_buttons'][$item]) {
+			switch ( $item ) {
 				case 'field1':
 					if ($values['qcfname1'] == $qcf['label'][$item]) $values['qcfname1'] ='';
 					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags($values['qcfname1']) . '</p>';
@@ -943,25 +903,28 @@ function qcf_process_form($values)
      		fclose($file);								// close the file
      		$data = chunk_split(base64_encode($data));	// encode and split
     		}
-		$bound_text = "x".md5(mt_rand())."x";
-		$bound = 	"--".$bound_text."\r\n";
-		$bound_last = 	"--".$bound_text."--\r\n";
 
-		$headers = 	"From: {$values['qcfname1']}<{$values['qcfname2']}>\r\n"
-			. "MIME-Version: 1.0\r\n"
+			$bound_text = "x".md5(mt_rand())."x";
+			$bound = "--".$bound_text."\r\n";
+			$bound_last = "--".$bound_text."--\r\n";
+ 
+			$headers = "From: {$values['qcfname1']}<{$values['qcfname2']}>\r\n"
+			."MIME-Version: 1.0\r\n"
   			."Content-Type: multipart/mixed; boundary=\"$bound_text\"";
-  	 	$message = "If you can see this MIME than your client doesn't accept MIME types!\r\n"
-  			. $bound."\r\n"
-  	 		. "Content-Type: text/html; charset=\"iso-8859-1\"\r\n"
-			. "Content-Transfer-Encoding: 7bit\r\n\r\n"
-			. $sendcontent."\r\n"
-			. $bound."\r\n"
-  	 		. "Content-Type: ".$type."; name=\"".$name."\"\r\n"
-			. "Content-Transfer-Encoding: base64\r\n"
-			. "Content-disposition: attachment; file=\"".$name."\"\r\n"
-			. "\r\n"
-			. $data . "\r\n"
-			. $bound_last; 
+			$message .= "If you can see this MIME than your client doesn't accept MIME types!\r\n"
+  			.$bound;
+  	 
+			$message .= "Content-Type: text/html; charset=\"iso-8859-1\"\r\n"
+  			."Content-Transfer-Encoding: 7bit\r\n\r\n"
+  			.$sendcontent."\r\n"
+  			.$bound;
+  	  
+			$message .= "Content-Type: ".$type."; name=\"".$name."\"\r\n" 
+  			."Content-Transfer-Encoding: base64\r\n"
+  			."Content-disposition: attachment; file=\"".$name."\"\r\n" 
+  			."\r\n"
+  			.$data
+  			.$bound_last; 
 		}
 	else {
 		$headers = "From: {$values['qcfname1']}<{$values['qcfname2']}>\r\n"
@@ -992,15 +955,13 @@ function qcf_process_form($values)
 	
 function qcf_loop($preview) {
 	ob_start();
-	if (isset($_POST['submit']))
-		{
+	if (isset($_POST['submit'])) {
 		$formvalues = $_POST;
 		$formerrors = array();
     	if (!qcf_verify_form($formvalues, $formerrors, $preview)) qcf_display_form($formvalues, $formerrors, $preview);
     	else qcf_process_form($formvalues);
 		}
-	else
-		{
+	else {
 		$digit1 = mt_rand(1,10);
 		$digit2 = mt_rand(1,10);
 		if( $digit2 >= $digit1 ) {
@@ -1019,28 +980,23 @@ function qcf_loop($preview) {
 	return $output_string;
 	}
 
-class qcf_widget extends WP_Widget
-	{
-	function qcf_widget()
-		{
+class qcf_widget extends WP_Widget {
+	function qcf_widget() {
 		$widget_ops = array('classname' => 'qcf_widget', 'description' => 'Add the Quick Contact Form to your sidebar');
 		$this->WP_Widget('qcf_widget', 'Quick Contact Form', $widget_ops);
 		}
 
-	function form($instance)
-		{
+	function form($instance) {
 		echo '<p>All options for the quick contact form are changed on the plugin <a href="'.get_admin_url().'options-general.php?page=quick-contact-form/quick-contact-form.php">Settings</a> page.</p>';
 		}
 
-	function update($new_instance, $old_instance)
-		{
+	function update($new_instance, $old_instance) {
 		$instance = $old_instance;
 		$instance['email'] = $new_instance['email'];
 		return $instance;
 		}
  
-	function widget($args, $instance)
-		{
+	function widget($args, $instance) {
  	   	extract($args, EXTR_SKIP);
 		echo qcf_loop(14);
 		}
@@ -1048,17 +1004,14 @@ class qcf_widget extends WP_Widget
 
 add_action( 'widgets_init', create_function('', 'return register_widget("qcf_widget");') );
 
-function qcf_add_dashboard_widgets()
-	{
+function qcf_add_dashboard_widgets() {
 	$reply = qcf_get_stored_reply();
-	if ( $reply['dashboard'] == 'checked' )
-		{
+	if ( $reply['dashboard'] == 'checked' ) {
 		wp_add_dashboard_widget( 'qcf_dashboard_widget', 'Latest Messages', 'qcf_dashboard_widget' );	
 		}
 	}
 
-function qcf_dashboard_widget() 
-	{
+function qcf_dashboard_widget() {
 	$message = get_option( 'qcf_message' );
 	if(!is_array($message)) $message = array();
 	$qcf = qcf_get_stored_options ();
@@ -1067,11 +1020,9 @@ function qcf_dashboard_widget()
 		. '<tr>'
 		. '<th>From</th><th>'.$qcf['label']['field2'].'</th><th>'.$qcf['label']['field4'].'</th><th>Date</th>'
 		. '</tr>';
-	foreach(array_reverse( $message ) as $value)
-		{
+	foreach(array_reverse( $message ) as $value) {
 		$dashboard .= '<tr>';
-		foreach($value as $item)
-			{
+		foreach($value as $item) {
 			if (strlen($item) > 25) $ellipses = ' ...';
 			else $ellipses = '';
 			$trim = substr($item, 0 , 25).$ellipses;
@@ -1095,8 +1046,7 @@ function qcf_use_custom_css () {
 function qcf_get_stored_options () {
 	$qcf = get_option('qcf_settings');
 	if(!is_array($qcf)) $qcf = array();
-	if ($qcf['update'] == '') $option_default = qcf_get_update_options();
-	else $option_default = qcf_get_default_options();
+	$option_default = qcf_get_default_options();
 	$qcf = array_merge($option_default, $qcf);
 	return $qcf;
 	}
@@ -1120,43 +1070,8 @@ function qcf_get_default_options () {
 	$qcf['send'] = 'Send it!';
 	$qcf['captcha'] = '';
 	$qcf['mathscaption'] = 'Spambot blocker question';
-	$qcf['update'] = 'updated';
 	return $qcf;
 	}
-
-function qcf_get_update_options() {
-	$qcf_options = get_option('qcf_options');
-	$option_default = qcf_get_default_options();
-	$qcf = array();
-	if(is_array($qcf_options)) {
-		$qcf['label'] = array( 'field1'=>'Your Name' , 'field2'=>'Email' , 'field3'=>'Telephone' , 'field4'=>'Message' , 'field5'=>'Select an option' , 'field6'=>'Check at least one box' ,  'field7'=>'Radio' , 'field8'=>'Website' ,  'field9'=>'Subject');
-		$qcf['sort'] = implode(',',array('field1', 'field2' , 'field3' , 'field4' , 'field5' , 'field6' , 'field7' , 'field8' , 'field9'));
-		$qcf['sort'] = implode(',',array('field1', 'field2' , 'field3' , 'field4' , 'field5' , 'field6' , 'field7' , 'field8' , 'field9'));
-		if ($qcf_options[17] == 'yes') $qcf['active_buttons']['field1'] = 'on';
-		if ($qcf_options[18] == 'yes') $qcf['active_buttons']['field2'] = 'on';
-		if ($qcf_options[19] == 'yes') $qcf['active_buttons']['field3'] = 'on';
-		if ($qcf_options[20] == 'yes') $qcf['active_buttons']['field4'] = 'on';
-		if ($qcf_options[12] == 'required') $qcf['required']['field1'] = 'checked';
-		if ($qcf_options[13] == 'required') $qcf['required']['field2'] = 'checked';
-		if ($qcf_options[16] == 'required') $qcf['required']['field3'] = 'checked';
-		if ($qcf_options[14] == 'required') $qcf['required']['field4'] = 'checked';
-		$qcf['label']['field1'] = $qcf_options[2];
-		$qcf['label']['field2'] = $qcf_options[3];
-		$qcf['label']['field3'] = $qcf_options[15];
-		$qcf['label']['field4'] = $qcf_options[4];
-		$qcf['width'] = $qcf_options[7];
-		$qcf['border'] = $qcf_options[8];
-		$qcf['title'] = $qcf_options[0];
-		$qcf['blurb'] = $qcf_options[1];	
-		$qcf['send'] = $qcf_options[5];
-		if ($qcf_options[9] == 'required') $qcf['captcha'] = 'checked';
-		}
-	$qcf['update'] = 'updated';
-	$qcf = array_merge($option_default, $qcf);
-	update_option( 'qcf_settings', $qcf);
-	return $qcf;
-	}
-
 
 function qcf_get_stored_attach () {
 	$attach = get_option('qcf_attach');
@@ -1181,8 +1096,6 @@ function qcf_get_default_attach () {
 function qcf_get_stored_style() {
 	$style = get_option('qcf_style');
 	if(!is_array($style)) $style = array();
-	if ($style['update'] == '') $option_default = qcf_get_update_style();
-	else $option_default = qcf_get_default_options();
 	$option_default = qcf_get_default_style();
 	$style = array_merge($option_default, $style);
 	return $style;
@@ -1195,27 +1108,13 @@ function qcf_get_default_style() {
 	$style['backgroundhex'] = '#FFF';
 	$style['use_custom'] = '';
 	$style['styles'] = "#qcf_style {\r\n\r\n}";
-	$style['update'] = 'updated';
-	return $style;
-	}
-
-function qcf_get_update_style() {
-	$qcf = get_option('qcf_settings');
-	$style = array();
-	$style['width'] = $qcf['width'];
-	$style['border'] = $qcf['border'];
-	$style['background'] = 'white';
-	$style['backgroundhex'] = '#FFF';
-	$style['update'] = 'updated';
-	update_option( 'qcf_style', $style);
 	return $style;
 	}
 
 function qcf_get_stored_reply () {
 	$reply = get_option('qcf_reply');
 	if(!is_array($reply)) $reply = array();
-	if ($reply['update'] == '') $option_default = qcf_get_update_reply();
-	else $option_default = qcf_get_default_reply();
+	$option_default = qcf_get_default_reply();
 	$reply = array_merge($option_default, $reply);
 	return $reply;
 	}
@@ -1231,34 +1130,13 @@ function qcf_get_default_reply () {
 	$reply['subjectoption'] = 'sendername';
 	$reply['qcf_redirect'] = '';
 	$reply['qcf_redirect_url'] = '';
-	$reply['update'] = 'updated';
-	return $reply;
-}
-
-function qcf_get_update_reply() {
-	$qcf_reply = get_option('qcf_reply');
-	$option_default = qcf_get_default_reply();
-	$reply = array();
-	if(is_array($qcf_reply)) {
-		$reply['replytitle'] = $qcf_reply[0];
-		$reply['replyblurb'] = $qcf_reply[1];
-		$reply['messages'] = $qcf_reply[2];
-		$reply['dashboard'] = $qcf_reply[3];
-		$reply['tracker'] = $qcf_reply[4];
-		}
-	$reply['subject'] = 'Enquiry from';
-	$reply['subjectoption'] = 'sendername';
-	$reply['update'] = 'updated';
-	$reply = array_merge($option_default, $reply);
-	update_option( 'qcf_reply', $reply);
 	return $reply;
 	}
 
 function qcf_get_stored_error () {
 	$error = get_option('qcf_error');
 	if(!is_array($error)) $error = array();
-	if ($error['update'] == '') $option_default = qcf_get_update_error();	
-	else $option_default = qcf_get_default_error(); 	
+	$option_default = qcf_get_default_error(); 	
 	$error = array_merge($option_default, $error);
 	return $error;
 	}
@@ -1285,31 +1163,5 @@ function qcf_get_default_error () {
 	$error['phonecheck'] = '';
 	$error['attach_size'] = 'The File is too big';
 	$error['attach_type'] = 'File type not allowed';
-	$error['update'] = 'updated';
 	return $error;
-	}
-	
-function qcf_get_update_error() {
-	$qcf_error  = get_option('qcf_error');
-	$option_default = qcf_get_default_error();	
-	$error = array();
-	if(is_array($qcf_error)) {
-		$error['field1'] = $qcf_error[2];
-		$error['field2'] = $qcf_error[3];
-		$error['field3'] = $qcf_error[4];
-		$error['field4'] = $qcf_error[5];
-		$error['field5'] = 'Select a option from the list';
-		$error['field6'] = 'Check at least one box';
-		$error['field7'] = 'There is an error';
-		$error['field8'] = 'There is an error';
-		$error['field9'] = 'There is an error';
-		$error['mathsmissing'] = $qcf_error[6];
-		$error['mathsanswer'] = $qcf_error[7];
-		$error['errortitle'] = $qcf_error[0];
-		$error['errorblurb'] = $qcf_error[1];
-		}
-	$error['update'] = 'updated';
-	$error = array_merge($option_default, $error);
-	update_option( 'qcf_error', $error);
-	return $error;	
 	}

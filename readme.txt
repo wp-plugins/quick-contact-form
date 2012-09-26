@@ -67,6 +67,10 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 4.1 = 
+*	Fixed a bug in file attachment processing
+*	Added stripslashes to the admin fields (a few had got missed)
+
 = 4.0 =
 *	Option to send file attachments.
 *	Custom CSS support.
