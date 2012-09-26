@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Quick Contact Form
-Plugin URI: http://www.aerin.co.uk/quick-contact-form
+Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
 Version: 4.1
 Author: fisicx
-Author URI: http://www.aerin.co.uk
+Author URI: http://quick-plugins.com/
 */
 
 add_shortcode('qcf', 'qcf_start');
@@ -532,7 +532,7 @@ function qcf_help() {
 		<p>Some users report that they can&#146;t send emails to gmail, hotmail and other webmail type accounts. This isn&#146;t a problem with the plugin, it&#146;s usually a block with the hosting package. Make sure your host has no restrictions on the php mail function. Some people have found it works by adding asterisks to their code like this:<br>
 		<code>$headers = 	"From: {$values[\'qcfname1\']}<*{$values[\'qcfname2\']}*>\r\n"</code><br>
 		If it does work for you them please let me know (it solved the problem on the <a href="http://wordpress.org/support/topic/contact-form-7-not-working-3/page/5" target="_blank">CF7 and CCF</a> plugins as well.</p>
-		<p>There is some installation info and FAQs on the <a href="http://wordpress.org/extend/plugins/quick-contact-form/installation/" target="_blank">wordpress plugin page</a>. Some development info is on <a href="http://aerin.co.uk/quick-contact-form/" target="_blank">my plugin page</a> along with a feedback form. Or you can email me at <a href="mailto:graham@aerin.co.uk">graham@aerin.co.uk</a>.</p>
+		<p>There is some installation info and FAQs on the <a href="http://wordpress.org/extend/plugins/quick-contact-form/installation/" target="_blank">wordpress plugin page</a>. Some development info is on <a href="http://quick-plugins.com/quick-contact-form/" target="_blank">my plugin page</a> along with a feedback form. Or you can email me at <a href="mailto:graham@aerin.co.uk">graham@aerin.co.uk</a>.</p>
 		</div>
 		</div>
 		<div id="qcf-options"> 

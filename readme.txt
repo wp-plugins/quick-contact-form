@@ -21,7 +21,7 @@ A really, really simple drag and drop contact form. There is nothing to configur
 
 = Developers plugin page =
 
-[quick contact form plugin](http://aerin.co.uk/quick-contact-form/).
+[quick contact form plugin](http://quick-plugins.com/quick-contact-form/).
 
 == Screenshots ==
 1. This is an example of a simple form. Everything on the form is editable.  To see more go to the [quick contact form examples](http://aerin.co.uk/contact-form-examples/) page.
