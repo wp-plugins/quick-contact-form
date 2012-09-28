@@ -14,8 +14,7 @@ A really, really simple drag and drop contact form. There is nothing to configur
 
 = Features =
 
-*	Drag and drop fields with easy to edit labels and captions.
-*	Range of border styles.
+*	Drag and drop form creation with easy to edit labels and captions.
 *	Display latest messages on dashboard
 *	Custom error and thank-you messages
 
@@ -24,7 +23,7 @@ A really, really simple drag and drop contact form. There is nothing to configur
 [quick contact form plugin](http://quick-plugins.com/quick-contact-form/).
 
 == Screenshots ==
-1. This is an example of a simple form. Everything on the form is editable.  To see more go to the [quick contact form examples](http://aerin.co.uk/contact-form-examples/) page.
+1. This is an example of a simple form. Everything on the form is editable.  To see more go to the [quick contact form examples](http://quick-plugins.com/contact-form-examples/) page.
 
 == Installation ==
 
