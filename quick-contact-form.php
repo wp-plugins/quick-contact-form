@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 4.1
+Version: 4.2
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -131,6 +131,7 @@ function qcf_setup () {
 	}
 
 function qcf_form_options () {
+	$qcf = qcf_get_stored_options();
 	$active_buttons = array( 'field1' , 'field2' , 'field3' , 'field4' , 'field5' , 'field6' ,  'field7' , 'field8' ,  'field9' , 'field10');	
 	if( isset( $_POST['Submit']))
 		{
@@ -148,15 +149,12 @@ function qcf_form_options () {
 		$qcf['title'] = $_POST['qcfname_title'];
 		$qcf['blurb'] = $_POST['qcfname_blurb'];
 		$qcf['border'] = $_POST['border'];
-		$qcf['width'] = $_POST['width'];
 		$qcf['captcha'] = $_POST['captcha'];
 		$qcf['mathscaption'] = $_POST['mathscaption'];
 		$qcf['send'] = $_POST['sendcaption'];
-		$qcf['update'] = 'updated';
 		update_option( 'qcf_settings', $qcf);
 		qcf_admin_notice("The form settings have been updated.");
 		}
-	$qcf = qcf_get_stored_options();
 	$content = '
 		<script>
 		jQuery(function() {
@@ -177,21 +175,19 @@ function qcf_form_options () {
 		<p>This is the blurb that will appear below the heading and above the form (leave blank if you don&#146;t want any blurb):</p>
 		<p><input type="text" style="width:100%" name="qcfname_blurb" value="' . $qcf['blurb'] . '" /></p>
 		<h2>Form Fields</h2>
-		<p>Setting up the form fields:</p>
-		<ul class="instructions">
-		<li>Select the fields you want to use on your form</li>
-		<li>Edit the field labels if required.</li>
-		<li>Select which fields you want validating.</li>
-		<li>Drag and drop to change the order of the fields.</li>
-		<li>Set the number of rows in the text (message) area.</li>
-		<li>Update the dropdown, checkbox and radio selections (if used).</li>
-		<li>Don&#146;t forget to save!</li>
-		</ul>
-		<p><b><div style="float:left; margin-left:7px;width:180px;">Field Selection & Label</div><div style="float:left; width:85px;">Field Type</div><div style="float:left; width:85px;">Validation</div><div style="float:right; width:50px;">Position</div></b></p>
+		<p>
+		<span style="margin-left:7px;width:180px;"><a class="tooltip" href="#">Field Selection & Label<span>Check the box to use this field in your contact form</span></a></span>
+		<span style="width:85px;"><a class="tooltip" href="#">Field Type<span>This defines the type of field</span></a></span>
+		<span style="width:85px;"><a class="tooltip" href="#">Validation<span>Select for required feilds. Customise the response using the Error Messages tab</span></a></span>
+		<span style="float:right; width:50px;"><a class="tooltip" href="#">Position<span>Click and hold to change the position of the field</span></a></span></p>
 		<div style="clear:left"></div>
 		<ul id="qcf_sort">';
+		$first = 'first';
+		$sort = explode(",", $qcf['sort']); 
+		$last = array_pop($sort);
 		foreach (explode( ',',$qcf['sort']) as $name)
 			{
+			if ($name == $last && $qcf['active_buttons'][$name] == 'checked') $first = 'last';
 			$checked = ( $qcf['active_buttons'][$name]) ? 'checked' : '';
 			$required = ( $qcf['required'][$name]) ? 'checked' : '';
 			$lines = $qcf['lines'];
@@ -236,7 +232,7 @@ function qcf_form_options () {
 					break;
 				}
 			$li_class = ( $checked) ? 'button_active' : 'button_inactive';
-	$content .= '<li class="ui-state-default '.$li_class.'" id="' . $name . '">
+	$content .= '<li class="ui-state-default '.$li_class.' '.$first.'" id="' . $name . '">
 		<div style="float:left; width:180px;overflow:hidden;">
 		<input type="checkbox" class="button_activate" style="border: none; padding: 0; margin:0;" name="qcf_settings_active_' . $name . '" ' . $checked . ' />
 		<input type="text" style="border: border:1px solid #415063; width:150px; padding: 1px; margin:0;" name="label_' . $name . '" value="' . $qcf['label'][$name] . '"/>
@@ -246,6 +242,7 @@ function qcf_form_options () {
 	if ($name <> 'field7') $content .='<input type="checkbox" class="button_activate" style="border: none; padding: 0; margin:0;" name="required_'.$name.'" '.$required.' /> ';
 	$content .= $options . '</div>
 		</li>';
+	$first = '';
 	}
 	$content .= '
 		</ul>
@@ -299,13 +296,13 @@ function qcf_attach () {
 		<form id="qcf_settings_form" method="post" action="">
 		<h2>Attachment Settings</h2>
 		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_attach"' . $attach['qcf_attach'] . ' value="checked" /> User can attach files</p>
-		<p>Field Label</p>
+		<h3>Field Label</h3>
 		<p><input type="text" style="width:100%;" name="qcf_attach_label" value="' . $attach['qcf_attach_label'] . '" /></p>
-		<p>Maximum File size</p>
+		<h3>Maximum File size</h3>
 		<p><input type="text" style="width:100%;" name="qcf_attach_size" value="' . $attach['qcf_attach_size'] . '" /></p>
-		<p>Allowable file types</p>
+		<h3>Allowable file types</h3>
 		<p><input type="text" style="width:100%;" name="qcf_attach_type" value="' . $attach['qcf_attach_type'] . '" /></p>
-		<p>Field size</p>
+		<h3>Field size</h3>
 		<p>This is a trial and error number. You can&#146;t use a &#146;width&#146;, the size is a number of characters. Test using the live form not the preview.</p>
 		<p><em>Example: A form width of 280 with a plain border has field width of about 15. With no border it&#146;s about 18.</em></p>
 		<p><input type="text" style="width:5em;" name="qcf_attach_width" value="' . $attach['qcf_attach_width'] . '" /></p>
@@ -339,14 +336,8 @@ function qcf_styles() {
 		}
 	$qcf = qcf_get_stored_options();
 	$style = qcf_get_stored_style();
-	if ( $style['border'] == "shadow") $shadow = "checked"; 
-	if ( $style['border'] == "roundshadow") $roundshadow = "checked"; 
-	if ( $style['border'] == "plain") $plain = "checked"; 
-	if ( $style['border'] == "rounded") $rounded = "checked"; 
-	if ( $style['border'] == "none") $none = "checked";
-	if ( $style['background'] == "white") $white = "checked"; 
-	if ( $style['background'] == "theme") $theme = "checked"; 
-	if ( $style['background'] == "color") $color = "checked"; 
+	$$style['border'] = 'checked'; 
+	$$style['background'] = 'checked'; 
 	$content ='
 		<div id="qcf-options"> 
 		<div id="qcf-style"> 
@@ -371,18 +362,14 @@ function qcf_styles() {
 		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /></p>
 		<h2>Custom CSS</h2>
 		<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="use_custom"' . $style['use_custom'] . ' value="checked" /> Use Custom CSS</p>
+		<p><textarea style="width:100%; height: 200px" name="styles">' . $style['styles'] . '</textarea></p>
 		<p>To see all the styling use the <a href="'.get_admin_url().'plugin-editor.php?file=quick-contact-form/quick-contact-form-style.css">CSS editor</a>.</p>
 		<p>The main style wrapper is the <code>#qcf-style</code> id.</p>
 		<p>The form borders are: #none, #plain, #rounded, #shadow, #roundshadow.</p>
 		<p>Errors and required fields have the classes .error and .required</p>
-		<p>The rest of the form styles are pretty much standard HTML tags</p>
-		<p>Most of the other styles in the CSS are for the widgets and plugin admin pages</p>
 		<p>You can&#146;t set widths using custom styles, these are set in the <a href="'.get_admin_url().'plugin-editor.php?file=quick-contact-form/quick-contact-form.php">qcf_display_form</a> function.</p>
-		<p></p>
-		<p><textarea style="width:100%; height: 200px" name="styles">' . $style['styles'] . '</textarea></p>	
 		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /></p>
 		</form>
-		<p>The styling features are a bit naff at the moment. It&#146;s actually easier for you to use the <a href="'.get_admin_url().'plugin-editor.php?file=quick-contact-form/quick-contact-form-style.css">CSS editor</a>. However, if there is something you really want to see then email me at <a href="mailto:graham@aerin.co.uk">graham@aerin.co.uk</a>.</p>
 		</div>
 		</div>
 		<div id="qcf-options"> 
@@ -394,6 +381,8 @@ function qcf_styles() {
 	}
 
 function qcf_reply_page() {
+	$qcf = qcf_get_stored_options();
+	$reply = qcf_get_stored_reply();
 	if( isset( $_POST['Submit'])) {
 		$reply['replytitle'] = stripslashes( $_POST['replytitle']);
 		$reply['replyblurb'] = stripslashes( $_POST['replyblurb']);
@@ -404,15 +393,10 @@ function qcf_reply_page() {
 		$reply['subjectoption'] = stripslashes( $_POST['subjectoption']);
 		$reply['qcf_redirect'] = $_POST['qcf_redirect'];
 		$reply['qcf_redirect_url'] = $_POST['qcf_redirect_url'];
-		$reply['update'] = 'updated';
 		update_option( 'qcf_reply', $reply);
 		qcf_admin_notice("The reply settings have been updated.");
 		}
-	$qcf = qcf_get_stored_options();
-	$reply = qcf_get_stored_reply();
-	if ( $reply['subjectoption'] == "sendername") $sname = "checked"; 
-	if ( $reply['subjectoption'] == "senderpage") $spage = "checked"; 
-	if ( $reply['subjectoption'] == "sendernone") $snone = "checked"; 
+	$$reply['subjectoption'] = "checked"; 
 	$content ='
 		<div id="qcf-options"> 
 		<div id="qcf-style"> 
@@ -421,13 +405,13 @@ function qcf_reply_page() {
 		<h3>Email subject</h3>
 		<p>The message subject has two parts: the bit in the text box plus the option below.</p>
 		<p><input type="text"  style="width:100%" name="subject" value="' . $reply['subject'] . '"/></p>
-		<p><input type="radio" style="margin:0; padding: 0; border: none" name="subjectoption" value="sendername" ' . $sname . '> sender&#146;s name (the contents of the first field)</p>
-		<p><input type="radio" style="margin:0; padding: 0; border: none" name="subjectoption" value="senderpage" ' . $spage . '> page title (only works if sent from a post or a page)</p>
-		<p><input type="radio" style="margin:0; padding: 0; border: none" name="subjectoption" value="sendernone" ' . $snone . '> blank</p>
+		<p><input type="radio" style="margin:0; padding: 0; border: none" name="subjectoption" value="sendername" ' . $sendername . '> sender&#146;s name (the contents of the first field)</p>
+		<p><input type="radio" style="margin:0; padding: 0; border: none" name="subjectoption" value="senderpage" ' . $senderpage . '> page title (only works if sent from a post or a page)</p>
+		<p><input type="radio" style="margin:0; padding: 0; border: none" name="subjectoption" value="sendernone" ' . $sendernone . '> blank</p>
 		<h3>Tracking</h3>
 		<p>Adds the IP address and the current page title to the message you receive.</p>
 		<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_tracker" ' . $reply['tracker'] . ' value="checked"> Show tracking info</p>
-		<h2>Redirection</h2>
+		<h3>Redirection</h3>
 		<p>Send your visitor to new page instead of displaying the thank-you message.</p>
 		<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="qcf_redirect" ' . $reply['qcf_redirect'] . ' value="checked"> Redirect to new page</p>
 		<p>URL: <input type="text"  style="width:100%" name="qcf_redirect_url" value="' . $reply['qcf_redirect_url'] . '"/></p>
@@ -464,7 +448,6 @@ function qcf_error_page() {
 		$error['mathsanswer'] = stripslashes( $_POST['errorsum2']);
 		$error['emailcheck'] = $_POST['emailcheck'];
 		$error['phonecheck'] = $_POST['phonecheck'];
-		$error['update'] = 'updated';
 		update_option( 'qcf_error', $error );
 		qcf_admin_notice("The reply settings have been updated.");
 		}
@@ -482,27 +465,27 @@ function qcf_error_page() {
 		<p><input type="text" style="width:100%" name="error1" value="' .  $error['field1'] . '" /></p>
 		<p>If <em>' .  $qcf['label']['field2'] . '</em> is missing:</p>
 		<p><input type="text" style="width:100%" name="error2" value="' .  $error['field2'] . '" /></p>
-		<p>Error message for an invalid email address:</p>
+		<p>Invalid email address:</p>
 		<p><input type="text" style="width:100%" name="email" value="' .  $error['email'] . '" /></p>
 		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="emailcheck"' . $error['emailcheck'] . ' value="checked" /> Check for invalid email even if field is not required</p>
 		<p>If <em>' .  $qcf['label']['field3'] . '</em> is missing:</p>
 		<p>	<input type="text" style="width:100%" name="error3" value="' .  $error['field3'] . '" /></p>
-		<p>Error message for an invalid telephone number:</p>
+		<p>Invalid telephone number:</p>
 		<p>	<input type="text" style="width:100%" name="telephone" value="' .  $error['telephone'] . '" /></p>
 		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="phonecheck"' . $error['phonecheck'] . ' value="checked" /> Check for invalid phone number even if field is not required</p>
 		<p>If <em>' .  $qcf['label']['field4'] . '</em> is missing:</p>
 		<p>	<input type="text" style="width:100%;" name="error4" value="' .  $error['field4'] . '" /></p>
-		<p>Error message for the drop dopwn list:</p>
+		<p>Drop dopwn list:</p>
 		<p>	<input type="text" style="width:100%;" name="error5" value="' .  $error['field5'] . '" /></p>
-		<p>Error message for the checkboxes:</p>
+		<p>Checkboxes:</p>
 		<p><input type="text" style="width:100%;" name="error6" value="' .  $error['field6'] . '" /></p>
 		<p>If <em>' .  $qcf['label']['field8'] . '</em> is missing:</p>
 		<p><input type="text" style="width:100%;" name="error8" value="' .  $error['field8'] . '" /></p>
 		<p>If <em>' .  $qcf['label']['field9'] . '</em> is missing:</p>
 		<p><input type="text" style="width:100%;" name="error9" value="' .  $error['field9'] . '" /></p>
-		<p>Maths Captcha missing answer error message:</p>
+		<p>Maths Captcha missing answer:</p>
 		<p><input type="text" style="width:100%" name="errorsum1" value="' .  $error['mathsmissing'] . '" /></p>
-		<p>Maths Captcha wrong answer error message:</p>
+		<p>Maths Captcha wrong answer:</p>
 		<p><input type="text" style="width:100%" name="errorsum2" value="' .  $error['mathsanswer'] . '" /></p>
 		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /></p>
 		</form>
@@ -510,7 +493,7 @@ function qcf_error_page() {
 		</div>
 		<div id="qcf-options"> 
 		<h2>Error Checker</h2>
-		<p>Send a blank form to test your error messages.</p>';
+		<p>Try sending end a blank form to test your error messages.</p>';
 	$content .= qcf_loop (null);
 	$content .= '</div>';
 	echo $content;
@@ -521,32 +504,26 @@ function qcf_help() {
 	$content .='
 		<div id="qcf-options"> 
 		<div id="qcf-style"> 
-		<h2>Introduction</h2>
-		<p>This contact form plugin can almost be used straight out the box. All you need to do is add your <a href= "?page=quick-contact-form/quick-contact-form.php&tab=setup">email address</a> and insert the shortcode into your posts and pages.</p>
+		<h2>From settings and options</h2>
 		<p>The <a href= "?page=quick-contact-form/quick-contact-form.php&tab=settings">Form Settings</a> page allows you to select and order which fields are displayed, change the labels and have them validated. You can also add an optional spambot cruncher. When you save the changes the updated form will preview on the right.</p>
 		<p>To change the width of the form, border style and background colour use the <a href= "?page=quick-contact-form/quick-contact-form.php&tab=settings">styling</a> page. You also have the option to add some custom CSS.</p>
 		<p>You can create your own <a href= "?page=quick-contact-form/quick-contact-form.php&tab=error">error messages</a> and configure <a href= "?page=quick-contact-form/quick-contact-form.php&tab=reply">how the message is sent</a> as well.</p>
-		<p>If you want to allow attachments then use the <a href= "?page=quick-contact-form/quick-contact-form.php&tab=error">attachments page</a>. Make sure to restrict the file types people can send. You will also have to adjust the field width. This is because the input field ignores just about all styling. <a href="http://www.quirksmode.org/dom/inputfile.html" target="_blank">Quirksmode</a> has some suggestions on how to manage this but its not easy. Even then, every browser is different so the attachment field won&#146;t look the same every time.</p>
+		<p>If you want to allow attachments then use the <a href= "?page=quick-contact-form/quick-contact-form.php&tab=error">attachments page</a>. Make sure to restrict the file types people can send. You will also have to adjust the field width. This is because the input field ignores just about all styling. <a href="http://www.quirksmode.org/dom/inputfile.html" target="_blank">Quirksmode</a> has some suggestions on how to manage this but it&#146;s not easy. Even then, every browser is different so the attachment field won&#146;t look the same every time.</p>
 		<p>If it all goes a bit pear shaped you can <a href= "?page=quick-contact-form/quick-contact-form.php&tab=reset">reset everything</a> to the defaults.</p>
 		<h2>Problems</h2>
 		<p>Some users report that they can&#146;t send emails to gmail, hotmail and other webmail type accounts. This isn&#146;t a problem with the plugin, it&#146;s usually a block with the hosting package. Make sure your host has no restrictions on the php mail function. Some people have found it works by adding asterisks to their code like this:<br>
 		<code>$headers = 	"From: {$values[\'qcfname1\']}<*{$values[\'qcfname2\']}*>\r\n"</code><br>
-		If it does work for you them please let me know (it solved the problem on the <a href="http://wordpress.org/support/topic/contact-form-7-not-working-3/page/5" target="_blank">CF7 and CCF</a> plugins as well.</p>
+		If it does work for you them please let me know (it solved the problem on the <a href="http://wordpress.org/support/topic/contact-form-7-not-working-3/page/5" target="_blank">CF7 and CCF</a> plugins).</p>
 		<p>There is some installation info and FAQs on the <a href="http://wordpress.org/extend/plugins/quick-contact-form/installation/" target="_blank">wordpress plugin page</a>. Some development info is on <a href="http://quick-plugins.com/quick-contact-form/" target="_blank">my plugin page</a> along with a feedback form. Or you can email me at <a href="mailto:graham@aerin.co.uk">graham@aerin.co.uk</a>.</p>
 		</div>
 		</div>
 		<div id="qcf-options"> 
 		<div id="qcf-style"> 
 		<h2>Validation</h2>
-		<p>I&#146;ve spent quite some time trying to make the validation as usable as possible but keep the configuration as simple as possible. I think I&#146;ve captured most conditions but there might be the odd omission if you set up a weird label.</p>
-		<p>Anyway, here&#146;s how it works.</p>
-		<p>If you tick the "required" checkbox the field will get validated.</p>
-		<p>The first validation removes all the unwanted characters. Essentially this clears out the sort of thing a spammer would use: URLs, HTML and so on leaving just the alphabet, numbers and a few punctuation marks.</p>
-		<p>The second validation checks that the field isn&#146;t empty or that the user has actually typed something in the box. The error message suggests that they need to enter &lt;something&gt; where something is the info you need (name, email, phone number, colour etc).</p>
-		<p>The third validation checks for a valid email address and phone number. This only takes place in the telephone and email fields. If you want the email address and telephone number format validated even if they aren&#146;t reuquired fields, then check the boxes on the <a href= "?page=quick-contact-form/quick-contact-form.php&tab=error">error messages</a> page.</p>
-		<h2>Styling</h2>
-		<p>Everything is wrapped in the <code>qcf-style</code> id. Most of the styles are standard HTML tags. The additional styles are the 5 border options, the required fields and error messages.</p>
-		<p>The colours I&#146;ve used are the result of a whole bunch of tests. Many of them over at <a href="http://usabilityhub.com" target="blank">usabilityhub.com</a>. There are 6 main colours: form border - #888, field colour - #465069, normal field border - #415063, required field border - #00C618, errors - #D31900. The submit button is #343838 with white text.</p>
+		<p>Check the validation box if you want a field checked.</p>
+		<p>Validation removes all the unwanted characters (URLs, HTML, javascript and so on) leaving just the alphabet, numbers and a few punctuation marks).</p>
+		<p>It then checks that the field isn&#146;t empty or that the user has actually typed something in the box. The error message suggests that they need to enter &lt;something&gt; where something is the info you need (name, email, phone number, colour etc).</p>
+		<p>It also checks for a valid email address and phone number. This only takes place in the telephone and email fields. If you want the email address and telephone number format validated even if they aren&#146;t reuquired fields, then check the boxes on the <a href= "?page=quick-contact-form/quick-contact-form.php&tab=error">error messages</a> page.</p>
 		</div>
 		</div>';
 	echo $content;
@@ -597,13 +574,13 @@ function qcf_reset_page() {
 		<p><span style="color:red; font-weight: bold;">Use with caution!</span></p>
 		<p>Select the options you wish to reset and click on the blue button. This will reset the selected settings to the defaults.</p>
 		<form action="" method="POST">
-		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_email"> Reset email address</p>
-		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_options"> Reset the form options</p>
-		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_attach"> Reset attachment options</p>
-		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_styles"> Reset the form styles (also delete any custom CSS)</p>
-		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_reply"> Reset the send and thank-you message options</p>
-		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_errors"> Reset the error messages</p>
-		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_message"> Delete dashboard message list - this won&#146;t delete any emails you have recieved.</p>
+		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_email"> Email address</p>
+		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_options"> Form settings</p>
+		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_attach"> Attachments</p>
+		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_styles"> Styling (also delete any custom CSS)</p>
+		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_reply"> Send and thank-you options</p>
+		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_errors"> Error messages</p>
+		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_reset_message"> Dashboard messages - this won&#146;t delete any emails you have recieved.</p>
 		<input type="submit" class="button-primary" name="qcf_reset" style="color: #FFF" value="Reset Options" onclick="return window.confirm( \'Are you sure you want to reset these settings?\' );"/>
 		</form>
 		</div>
@@ -708,13 +685,13 @@ function qcf_display_form( $values, $errors, $whichpage ) {
 	if (!empty($qcf['title'])) $qcf['title'] = '<h2>' . $qcf['title'] . '</h2>';
 	if (!empty($qcf['blurb'])) $qcf['blurb'] = '<p>' . $qcf['blurb'] . '</p>';
 	if (!empty($qcf['mathscaption'])) $qcf['mathscaption'] = '<p class="input">' . $qcf['mathscaption'] . '</p>';
-	$content = "<div id='qcf-style' style='width:" . $width . "'>\r<div id='" . $style['border'] . "' " . $background . ">\r";
+	$content = "<div id='qcf-style' style='width:" . $width . "'>\r\t<div id='" . $style['border'] . "' " . $background . ">\r\t";
 	if (count($errors) > 0)
-		$content .= "<h2>" . $error['errortitle'] . "</h2>\r<p class='error'>" . $error['errorblurb'] . "</p>\r";
+		$content .= "<h2>" . $error['errortitle'] . "</h2>\r\t<p class='error'>" . $error['errorblurb'] . "</p>\r\t";
 	else
-		$content .= $qcf['title'] . "\r" . $qcf['blurb'] . "\r";
+		$content .= $qcf['title'] . "\r\t" . $qcf['blurb'] . "\r\t";
 	
-	$content .= '<form action="" method="POST" enctype="multipart/form-data">';
+	$content .= "<form action=\"\" method=\"POST\" enctype=\"multipart/form-data\">\r\t";
 		foreach (explode( ',',$qcf['sort']) as $name)
 		{
 		$required = ( $qcf['required'][$name]) ? 'class="required"' : '';
@@ -723,39 +700,35 @@ function qcf_display_form( $values, $errors, $whichpage ) {
 				{
 				case 'field1':
 					$content .= $errors['qcfname1'];
-					$content .= '<p><input type="text" ' . $required . ' style="width:' . $input . '" label="Name" name="qcfname1" value="' . $values['qcfname1'] . '" onfocus="clickclear(this, \'' . $values['qcfname1'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname1'] . '\'"></p>';
+					$content .= '<input type="text" ' . $required . ' style="width:' . $input . '" label="Name" name="qcfname1" value="' . $values['qcfname1'] . '" onfocus="clickclear(this, \'' . $values['qcfname1'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname1'] . '\'">'."\r\t";
 					break;
 				case 'field2':
 					$content .= $errors['qcfname2'];
-					$content .= '<p><input type="text" ' . $required . '  style="width:' . $input . '" label="Name" name="qcfname2"  value="' . $values['qcfname2'] . '" onfocus="clickclear(this, \'' . $values['qcfname2'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname2'] . '\'"></p>';
+					$content .= '<input type="text" ' . $required . '  style="width:' . $input . '" label="Name" name="qcfname2"  value="' . $values['qcfname2'] . '" onfocus="clickclear(this, \'' . $values['qcfname2'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname2'] . '\'">'."\r\t";
 					break;
 				case 'field3':
 					$content .= $errors['qcfname3'];
-					$content .= '<p><input type="text" ' . $required . '  style="width:' . $input . '" label="Name" name="qcfname3"  value="' . $values['qcfname3'] . '" onfocus="clickclear(this, \'' . $values['qcfname3'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname3'] . '\'"></p>';
+					$content .= '<input type="text" ' . $required . '  style="width:' . $input . '" label="Name" name="qcfname3"  value="' . $values['qcfname3'] . '" onfocus="clickclear(this, \'' . $values['qcfname3'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname3'] . '\'">'."\r\t";
 					break;
 				case 'field4':
 					$content .= $errors['qcfname4'];
-					$content .= '<p><textarea ' . $required . '  style="width:' . $input . '" rows="' . $qcf['lines'] . '" label="Name" name="qcfname4" onFocus="this.value=\'\'; this.onfocus=null;">' . strip_tags(stripslashes($values['qcfname4'])) . '</textarea></p>';
+					$content .= '<textarea ' . $required . '  style="width:' . $input . '" rows="' . $qcf['lines'] . '" label="Name" name="qcfname4" onFocus="this.value=\'\'; this.onfocus=null;">' . strip_tags(stripslashes($values['qcfname4'])) . '</textarea>'."\r\t";
 					break;
 				case 'field5':
 					$content .= $errors['qcfname5'];
-					$content .= '
-						<p><select name="qcfname5"' . $required . ' style="width:' . $submit . '">
-						<option value="' . $qcf['label'][$name] . '">' . $qcf['label'][$name] . '</option>';
-						$str=$qcf['dropdownlist'];
-						$arr = explode(",",$str);
+					$content .= '<select name="qcfname5" ' . $required . ' style="width:' . $submit . '"><option value="' . $qcf['label'][$name] . '">' . $qcf['label'][$name] . '</option>'."\r\t";
+						$arr = explode(",",$qcf['dropdownlist']);
 						foreach ($arr as $item) 
 							{
 							$selected = '';
 							if ($values['qcfname5'] == $item) $selected = 'selected';
-							$content .= '<option value="' .  $item . '" ' . $selected .'>' .  $item . '</option>';
+							$content .= '<option value="' .  $item . '" ' . $selected .'>' .  $item . '</option>'."\r\t";
 							}
-					$content .= '</select></p>';
+					$content .= '</select>'."\r\t";
 					break;
 				case 'field6':
 					if ($errors['qcfname6']) $content .= $errors['qcfname6'];
 					else $content .= '<p class="input">' . $qcf['label'][$name] . '</p>';
-					$content .= '<p>';
 					$arr = explode(",",$qcf['checklist']);
 					foreach ($arr as $item)
 						{
@@ -763,13 +736,10 @@ function qcf_display_form( $values, $errors, $whichpage ) {
 						if ($values['qcfname6_'. str_replace(' ','',$item)] == $item) $checked = 'checked';
 						$content .= '<input type="checkbox" style="margin:0; padding: 0; border: none" name="qcfname6_' . str_replace(' ','',$item) . '" value="' .  $item . '" ' . $checked . '> ' .  $item . '<br>';
 						}
-					$content .= '</p>';
 					break;
 					case 'field7':
 					$content .= '<p class="input">' . $qcf['label'][$name] . '</p>';
-					$content .= '<p>';
-					$str=$qcf['radiolist'];
-					$arr = explode(",",$str);
+					$arr = explode(",",$qcf['radiolist']);
 					foreach ($arr as $item)
 						{
 						$checked = '';
@@ -777,24 +747,23 @@ function qcf_display_form( $values, $errors, $whichpage ) {
 						if ($item === reset($arr)) $content .= '<input type="radio" style="margin:0; padding: 0; border: none" name="qcfname7" value="' .  $item . '" checked> ' .  $item . ' ';
 						else $content .=  '<input type="radio" style="margin:0; padding: 0; border: none" name="qcfname7" value="' .  $item . '" ' . $checked . '> ' .  $item . ' ';
 						}
-					$content .= '</p>';
 					break;
 				case 'field8':
 					$content .= $errors['qcfname8'];
-					$content .= '<p><input type="text" ' . $required . ' style="width:' . $input . '" label="Name" name="qcfname8" value="' . $values['qcfname8'] . '" onfocus="clickclear(this, \'' . $values['qcfname8'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname8'] . '\'"></p>';
+					$content .= '<input type="text" ' . $required . ' style="width:' . $input . '" label="Name" name="qcfname8" value="' . $values['qcfname8'] . '" onfocus="clickclear(this, \'' . $values['qcfname8'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname8'] . '\'">'."\r\t";
 					break;
 				case 'field9':
 					$content .= $errors['qcfname9'];
-					$content .= '<p><input type="text" ' . $required . '  style="width:' . $input . '" label="Name" name="qcfname9"  value="' . $values['qcfname9'] . '" onfocus="clickclear(this, \'' . $values['qcfname9'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname9'] . '\'"></p>';
+					$content .= '<input type="text" ' . $required . '  style="width:' . $input . '" label="Name" name="qcfname9"  value="' . $values['qcfname9'] . '" onfocus="clickclear(this, \'' . $values['qcfname9'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname9'] . '\'">'."\r\t";
 					break;
 				}
 			}
 		}
 	if ($attach['qcf_attach'] == "checked") {
 		if ($errors['attach']) $content .= $errors['attach'];
-		else $content .= '<p class="input">' . $attach['qcf_attach_label'] . '</p>';
+		else $content .= '<p class="input">' . $attach['qcf_attach_label'] . '</p>'."\r\t";
 		$size = $attach['qcf_attach_width'];
-		$content .= '<p><input type="file" size="' . $size . '" name="filename"></p>';
+		$content .= '<input type="file" size="' . $size . '" name="filename">'."\r\t";
 		}
 	if ($qcf['captcha'] == "checked") {
 		if ($errors['captcha']) $content .= $errors['captcha'];
@@ -803,18 +772,18 @@ function qcf_display_form( $values, $errors, $whichpage ) {
 		<input type="hidden" name="answer" value="' . $values['answer'] . '" />
 		<input type="hidden" name="thesum" value="' . $values['thesum'] . '" />';
 		}
-	$content .= '<p><input type="submit" id="submit" style="width:' .  $submit . '" name="submit" value="' . $qcf['send'] . '"></p>
-		</form>
-		</div>
-		</div>';
+	$content .= '<input type="submit" id="submit" style="width:' .  $submit . '" name="submit" value="' . $qcf['send'] . '">'."\r\t".
+		'</form>'."\r\t".
+		'</div>'."\r\t".
+		'</div>'."\r\t";
 	echo $content;
 	}
 	
 function qcf_process_form($values) {
 	$qcf = qcf_get_stored_options();
 	$reply = qcf_get_stored_reply();
+	$style = get_option('qcf_style');
 	$qcf_email = get_option('qcf_email');
-	if (empty($qcf_email)) $qcf_email = $qcf[6];
 	if (!empty($reply['replytitle'])) $reply['replytitle'] = '<h2>' . $reply['replytitle'] . '</h2>';
 	if (!empty($reply['replyblurb'])) $reply['replyblurb'] = '<p>' . $reply['replyblurb'] . '</p>';
 	$pagetitle = get_the_title();
@@ -826,58 +795,46 @@ function qcf_process_form($values) {
 	$url = $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
 	$page = get_the_title();
 	$content = '';
-	$plain = '';
 	foreach (explode( ',',$qcf['sort']) as $item)
 		if ($qcf['active_buttons'][$item]) {
 			switch ( $item ) {
 				case 'field1':
 					if ($values['qcfname1'] == $qcf['label'][$item]) $values['qcfname1'] ='';
 					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags($values['qcfname1']) . '</p>';
-					$plain .= $qcf['label'][$item] . ": " . strip_tags($values['qcfname1']) . "\r\n";
 					break;
 				case 'field2':
 					if ($values['qcfname2'] == $qcf['label'][$item]) $values['qcfname2'] ='';
 					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags($values['qcfname2']) . '</p>';
-					$plain .= $qcf['label'][$item] . ": " . strip_tags($values['qcfname2']) . "\r\n";
 					break;
 				case 'field3':
 					if ($values['qcfname3'] == $qcf['label'][$item]) $values['qcfname3'] ='';
 					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags($values['qcfname3']) . '</p>';
-					$plain .= $qcf['label'][$item] . ": " . strip_tags($values['qcfname3']) . "\r\n";
 					break;
 				case 'field4':
 					if ($values['qcfname4'] == $qcf['label'][$item]) $values['qcfname4'] ='';
 					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags(stripslashes($values['qcfname4'])) . '</p>';
-					$plain .= $qcf['label'][$item] . ": " . strip_tags($values['qcfname4']) . "\r\n";
 					break;
 				case 'field5':
 					if ($values['qcfname5'] == $qcf['label'][$item]) $values['qcfname5'] ='';
 					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . $values['qcfname5'] . '</p>';
-					$plain .= $qcf['label'][$item] . ": " . strip_tags($values['qcfname5']) . "\r\n";
 					break;
 				case 'field6':
 					$arr = explode(",",$qcf['checklist']);
 					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>';
-					$plain .= $qcf['label'][$item] . ": ";
 					foreach ($arr as $key) if ($values['qcfname6_' . str_replace(' ','',$key)]) $checks .= $key . ', ';
-					$content .= rtrim( $checks , ', ' );
-					$plain .= rtrim( $checks , ', ' );
-					$content .='</p>';
+					$content .= rtrim( $checks , ', ' ) . '</p>';
 					break;
 				case 'field7':
 					if ($values['qcfname7'] == $qcf['label'][$item]) $values['qcfname7'] ='';
 					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . $values['qcfname7'] . '</p>';
-					$plain .= $qcf['label'][$item] . ": " . strip_tags($values['qcfname7']) . "\r\n";
 					break;
 				case 'field8':
 					if ($values['qcfname8'] == $qcf['label'][$item]) $values['qcfname8'] ='';
 					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags($values['qcfname8']) . '</p>';
-					$plain .= $qcf['label'][$item] . ": " . strip_tags($values['qcfname8']) . "\r\n";
 					break;
 				case 'field9':
 					if ($values['qcfname9'] == $qcf['label'][$item]) $values['qcfname9'] ='';
 					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags($values['qcfname9']) . '</p>';
-					$plain .= $qcf['label'][$item] . ": " . strip_tags($values['qcfname9']) . "\r\n";
 				}
 			}
 	$sendcontent = "<html><h2>The message is:</h2>".$content;
@@ -886,29 +843,23 @@ function qcf_process_form($values) {
 	
 	$subject = "{$reply['subject']} {$addon}";
 			
-	// store the file information to variables for easier access
 	$tmp_name = $_FILES['filename']['tmp_name'];
 	$type = $_FILES['filename']['type'];
 	$name = $_FILES['filename']['name'];
 	$size = $_FILES['filename']['size'];
-				
-	// if the upload succeded, the file will exist
 	if (file_exists($tmp_name))
 		{
- 		// check to make sure that it is an uploaded file and not a system file
-		if(is_uploaded_file($tmp_name))
+ 		if(is_uploaded_file($tmp_name))
 		 	{
 			$file = fopen($tmp_name,'rb');				//open the file
      		$data = fread($file,filesize($tmp_name));	//read the file
      		fclose($file);								// close the file
      		$data = chunk_split(base64_encode($data));	// encode and split
     		}
-
 			$bound_text = "x".md5(mt_rand())."x";
 			$bound = "--".$bound_text."\r\n";
 			$bound_last = "--".$bound_text."--\r\n";
- 
-			$headers = "From: {$values['qcfname1']}<{$values['qcfname2']}>\r\n"
+ 			$headers = "From: {$values['qcfname1']}<{$values['qcfname2']}>\r\n"
 			."MIME-Version: 1.0\r\n"
   			."Content-Type: multipart/mixed; boundary=\"$bound_text\"";
 			$message .= "If you can see this MIME than your client doesn't accept MIME types!\r\n"
@@ -941,9 +892,10 @@ function qcf_process_form($values) {
 		}
 	else {
 		echo '<div id="qcf-style">
-		<div id="'.$qcf['border'].'" style="width:'.$qcf['width'].'px;">'
-		.$reply['replytitle'].$reply['replyblurb']
-		.$content.'</div></div>'; 
+		<div id="'.$style['border'].'" style="width:'.$style['width'].'px;">'
+		.$reply['replytitle'].$reply['replyblurb'];
+		if ($reply['messages']) echo $content;
+		echo '</div></div>'; 
 		}	
 	$qcf_message = get_option('qcf_message');
 	if(!is_array($qcf_message)) $qcf_message = array();
@@ -1062,9 +1014,6 @@ function qcf_get_default_options () {
 	$qcf['dropdownlist'] = 'Pound,Dollar,Euro,Yen,Triganic Pu';
 	$qcf['checklist'] = 'Donald Duck,Mickey Mouse,Goofy';
 	$qcf['radiolist'] = 'Large,Medium,Small';
-	$qcf['width'] = 280;
-	$qcf['border'] = 'rounded';
-	$qcf['background'] = '#666';
 	$qcf['title'] = 'Enquiry Form';
 	$qcf['blurb'] = 'Fill in the form below and we will be in touch soon';
 	$qcf['send'] = 'Send it!';
@@ -1107,7 +1056,7 @@ function qcf_get_default_style() {
 	$style['background'] = 'white';
 	$style['backgroundhex'] = '#FFF';
 	$style['use_custom'] = '';
-	$style['styles'] = "#qcf_style {\r\n\r\n}";
+	$style['styles'] = "#qcf-style {\r\n\r\n}";
 	return $style;
 	}
 
@@ -1161,7 +1110,5 @@ function qcf_get_default_error () {
 	$error['errorblurb'] = 'Can you sort out the details highlighted below.';
 	$error['emailcheck'] = '';
 	$error['phonecheck'] = '';
-	$error['attach_size'] = 'The File is too big';
-	$error['attach_type'] = 'File type not allowed';
 	return $error;
 	}

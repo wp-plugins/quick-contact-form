@@ -55,21 +55,19 @@
 	padding: 0;
 	}
 
-#qcf-style input, #qcf-style textarea{
+#qcf-style form p span{
+	display:block;
+	float:left;
+	font-weight:bold;
+	}
+
+#qcf-style input, #qcf-style textarea, #qcf-style select {
 	font-family: arial, sans-serif;
-	margin: 5px 0 5px 0;
+	margin: 5px 0 7px 0;
 	padding: 6px;
 	color: #465069;
 	font-size: 120%;
 	border:1px solid #415063;
-	}
-
-#qcf-style select {
-	color: #465069;
-	border:1px solid #415063;
-	color: #465069;
-	font-size: 120%;
-	padding: 2px;
 	}
 
 #qcf-style #sums , #qcf-style .input {
@@ -121,14 +119,10 @@
 #qcf_sort { list-style-type: none; margin: 0; padding: 0; width:100%; }
 #qcf_sort li { margin: 3px 0; padding: 0.3em 0.8em 0.3em 0.5em; min-height: 1.6em; cursor:pointer; border:1px solid #888; clear:left}
 #qcf_sort li.button_active { background-color: white; background: url(updown.gif) no-repeat right center;}
+#qcf_sort li.button_active.first { background-color: white; background: url(down.gif) no-repeat right center;}
+#qcf_sort li.button_active.last { background-color: white; background: url(up.gif) no-repeat right center;}
 #qcf_sort li.button_inactive { background-color: #E0E0E0;}
 #qcf_sort li div {overflow:hidden;}
-
-.qcf-hack {
-	margin: 0;
-	padding: 0;
-	border: 1px solid red;
-	}
 
 #qcf-options {
 	border: 1px solid #C3CFF5;
@@ -162,3 +156,32 @@
 	list-style-position: inside;
 	margin: 1px 0;
 	}
+
+#qcf-options .tooltip {
+	border-bottom: 1px dotted #000000;
+ 	color: #000000; outline: none;
+	cursor: help; text-decoration: none;
+	position: relative;
+	}
+
+#qcf-options .tooltip span {
+ 	margin-left: -999em;
+	position: absolute;
+	}
+
+#qcf-options .tooltip:hover span {
+	position: absolute;
+	left: 1em;
+	top: 2em;
+	z-index: 99;
+	margin-left: 0;
+	width: 250px;
+	background: #CCC;
+	color: #005F6B;
+	border: 1px solid #343838;
+	border-radius: 5px 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	}
+
+#qcf-style form p span span { padding: 0.8em 1em; }
