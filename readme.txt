@@ -67,6 +67,11 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 4.2 =
+*	Cleaned out a whole load of code - file is now 6Kb smaller.
+*	Rewritten the help files simpler
+*	Tweaked the validation function
+
 = 4.1 = 
 *	Fixed a bug in file attachment processing
 *	Added stripslashes to the admin fields (a few had got missed)
