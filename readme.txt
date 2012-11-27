@@ -48,7 +48,7 @@ Go to your plugin list and scroll down until you see 'Quick Contact Form' and cl
 [qcf]
 
 = How do I change the colours? =
-Change the background in the plugin settings 'Styling' page. Or edit the 'quick-contact-form-styles.css'.
+Edit the 'quick-contact-form-styles.css' or used the Custom CSS option on the plugin settings pages.
 
 = Can I add more fields? =
 No.
@@ -66,6 +66,9 @@ I did, and so have you.  Maybe there will be more, who knows.
 No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
+
+= 4.3 =
+*	Added option for 100% width (for responsive themes)
 
 = 4.2 =
 *	Cleaned out a whole load of code - file is now 6Kb smaller.

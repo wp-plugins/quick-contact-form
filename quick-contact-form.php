@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 4.2
+Version: 4.3
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -28,7 +28,7 @@ wp_register_style('qcf_style', $myStyleUrl);
 wp_enqueue_style( 'qcf_style');
 
 function qcf_start() {
-	return qcf_loop(14);
+	return qcf_loop();
 	}
 
 function qcf_page_init() {
@@ -106,6 +106,9 @@ function qcf_setup () {
 		<p>To send to multiple addresses, put a comma betweeen each address.</p>
 		<p><input type="text" style="width:100%" label="Email" name="qcf_email" value="' . $qcf_email . '" /></p>
 		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /></p>
+		<h2>Version 4.3</h2>
+		<p>Not much new in this version. I&#146;ve added a new bit to the styling options so you can set the width to 100% which makes it much more suitable for responsive themes.</p>
+		<p>I&#146;ve also got rid of some more superfluous code.</p>
 		<h2>If you have upgraded from Version 2</h2>
 		<p>The way the plugin writes to the database has totally changed. Please check your settings to make sure nothing has got mussed up.</p>
 		<p>Your dashboard messages will have gone.  Sorry but it was just too complicated and buggy to get them transferred.</p>
@@ -269,7 +272,7 @@ function qcf_form_options () {
 		<div id="qcf-options"> 
 		<h2>Form Preview</h2>
 		<p>Note: The preview form uses the wordpress admin styles. Your form will use the theme styles so won&#146;t look exactly like the one below.</p>';
-	$content .=	qcf_loop (null);
+	$content .=	qcf_loop();
 	$content .= '<p>Have you set up your <a href="?page=quick-contact-form/quick-contact-form.php&tab=reply">reply options</a>?</p>
 		<p>If you are not using English then you can customise your <a href="?page=quick-contact-form/quick-contact-form.php&tab=error">error messages</a>.</p>
 		</div>';
@@ -318,7 +321,7 @@ function qcf_attach () {
 		<div id="qcf-options"> 
 		<h2>Form Preview</h2>
 		<p>Note: The preview form uses the wordpress admin styles. Your form will use the theme styles so won&#146;t look exactly like the one below.</p>';
-	$content .=	qcf_loop (null);
+	$content .=	qcf_loop();
 	$content .= '</div>';
 	echo $content;
 	}
@@ -326,6 +329,7 @@ function qcf_attach () {
 function qcf_styles() {
 	if( isset( $_POST['Submit'])) {
 		$style['width'] = $_POST['width'];
+		$style['widthtype'] = $_POST['widthtype'];
 		$style['border'] = $_POST['border'];
 		$style['background'] = $_POST['background'];
 		$style['backgroundhex'] = stripslashes( $_POST['backgroundhex']);
@@ -338,13 +342,17 @@ function qcf_styles() {
 	$style = qcf_get_stored_style();
 	$$style['border'] = 'checked'; 
 	$$style['background'] = 'checked'; 
+	$$style['widthtype'] = 'checked';
 	$content ='
 		<div id="qcf-options"> 
 		<div id="qcf-style"> 
 		<form method="post" action="">
 		<h2>Form Width</h2>
-		<p>Enter the width of the form in pixels. Just enter the value, no need to add &#146;px&#146;. The current width is as you see it here.</p>
-		<p><input type="text" style="width:4em" label="width" name="width" value="' . $style['width'] . '" /> px</p>
+	<p>
+	<input style="margin: 0; padding: 0; border: none;" type="radio" name="widthtype" value="percent" ' . $percent . ' /> 100% (fill the available space)<br />
+	<input style="margin: 0; padding: 0; border: none;" type="radio" name="widthtype" value="pixel" ' . $pixel . ' /> Pixel (fixed)</p>
+	<p>Enter the width of the form in pixels. Just enter the value, no need to add &#146;px&#146;. The current width is as you see it here.</p>
+	<p><input type="text" style="width:4em" label="width" name="width" value="' . $style['width'] . '" /> px</p>
 		<h2>Form Border</h2>
 		<p>Note: The rounded corners and shadows only work on CSS3 supported browsers and even then not in IE8. Don&#146;t blame me, blame Microsoft.</p>
 		<p>
@@ -375,7 +383,7 @@ function qcf_styles() {
 		<div id="qcf-options"> 
 		<h2>Test Form</h2>
 		<p>If you are using your theme colours as the background they will only display when you use the form on your the site (because that&#146;s how WordPress works).</p>';
-	$content .= qcf_loop (null);
+	$content .= qcf_loop();
 	$content .= '</div>';
 	echo $content;
 	}
@@ -430,7 +438,7 @@ function qcf_reply_page() {
 		<div id="qcf-options"> 
 		<h2>Test Form</h2>
 		<p>Use the form below to test your thank-you message settings. You will see what your visitors will see when the complete and send the form.</p>';
-	$content .= qcf_loop (null);
+	$content .= qcf_loop();
 	$content .= '</div>';
 	echo $content;
 	}
@@ -494,7 +502,7 @@ function qcf_error_page() {
 		<div id="qcf-options"> 
 		<h2>Error Checker</h2>
 		<p>Try sending end a blank form to test your error messages.</p>';
-	$content .= qcf_loop (null);
+	$content .= qcf_loop();
 	$content .= '</div>';
 	echo $content;
 	}
@@ -666,26 +674,26 @@ function qcf_verify_form(&$values, &$errors) {
 	return (count($errors) == 0);	
 	}
 
-function qcf_display_form( $values, $errors, $whichpage ) {
+function qcf_display_form( $values, $errors) {
 	$qcf = qcf_get_stored_options();
 	$error = qcf_get_stored_error();
 	$attach = qcf_get_stored_attach();
 	$style = qcf_get_stored_style();
-	$width = preg_replace("/[^0-9]/", "", $style['width']);
 	if ($style['background'] == 'white') $background = 'style="background:#FFF"';
 	if ($style['background'] == 'color') $background = 'style="background: ' . $style['backgroundhex'] . '"';
 	if ($style['border'] == "none") $padding = 0;
-	if ($style['border'] == "plain") $padding = 22;
-	if ($style['border'] == "rounded") $padding = 22;
-	if ($style['border'] == "shadow") $padding = 32;
-	if ($style['border'] == "roundshadow") $padding = 32;
-	$input = ($width - $padding - $whichpage) . 'px';
-	$submit = ($width - $padding) . 'px';
-	$width = $width.'px';
+	else $padding = 6;
+	if ($style['widthtype'] == 'pixel') {
+		$width = ' style="width: ' . preg_replace("/[^0-9]/", "", $style['width']) . 'px"';
+		}
+	else {
+		$width = ' style="width: 100%;"';
+		$submit = ' style="width: calc(100% - 14px);"';
+		}
 	if (!empty($qcf['title'])) $qcf['title'] = '<h2>' . $qcf['title'] . '</h2>';
 	if (!empty($qcf['blurb'])) $qcf['blurb'] = '<p>' . $qcf['blurb'] . '</p>';
 	if (!empty($qcf['mathscaption'])) $qcf['mathscaption'] = '<p class="input">' . $qcf['mathscaption'] . '</p>';
-	$content = "<div id='qcf-style' style='width:" . $width . "'>\r\t<div id='" . $style['border'] . "' " . $background . ">\r\t";
+	$content = "<div id='qcf-style' " . $width . ">\r\t<div id='" . $style['border'] . "' " . $background . ">\r\t";
 	if (count($errors) > 0)
 		$content .= "<h2>" . $error['errortitle'] . "</h2>\r\t<p class='error'>" . $error['errorblurb'] . "</p>\r\t";
 	else
@@ -700,23 +708,23 @@ function qcf_display_form( $values, $errors, $whichpage ) {
 				{
 				case 'field1':
 					$content .= $errors['qcfname1'];
-					$content .= '<input type="text" ' . $required . ' style="width:' . $input . '" label="Name" name="qcfname1" value="' . $values['qcfname1'] . '" onfocus="clickclear(this, \'' . $values['qcfname1'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname1'] . '\'">'."\r\t";
+					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname1" value="' . $values['qcfname1'] . '" onfocus="clickclear(this, \'' . $values['qcfname1'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname1'] . '\'">'."\r\t";
 					break;
 				case 'field2':
 					$content .= $errors['qcfname2'];
-					$content .= '<input type="text" ' . $required . '  style="width:' . $input . '" label="Name" name="qcfname2"  value="' . $values['qcfname2'] . '" onfocus="clickclear(this, \'' . $values['qcfname2'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname2'] . '\'">'."\r\t";
+					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname2"  value="' . $values['qcfname2'] . '" onfocus="clickclear(this, \'' . $values['qcfname2'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname2'] . '\'">'."\r\t";
 					break;
 				case 'field3':
 					$content .= $errors['qcfname3'];
-					$content .= '<input type="text" ' . $required . '  style="width:' . $input . '" label="Name" name="qcfname3"  value="' . $values['qcfname3'] . '" onfocus="clickclear(this, \'' . $values['qcfname3'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname3'] . '\'">'."\r\t";
+					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname3"  value="' . $values['qcfname3'] . '" onfocus="clickclear(this, \'' . $values['qcfname3'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname3'] . '\'">'."\r\t";
 					break;
 				case 'field4':
 					$content .= $errors['qcfname4'];
-					$content .= '<textarea ' . $required . '  style="width:' . $input . '" rows="' . $qcf['lines'] . '" label="Name" name="qcfname4" onFocus="this.value=\'\'; this.onfocus=null;">' . strip_tags(stripslashes($values['qcfname4'])) . '</textarea>'."\r\t";
+					$content .= '<textarea ' . $required . '  rows="' . $qcf['lines'] . '" label="Name" name="qcfname4" onFocus="this.value=\'\'; this.onfocus=null;">' . strip_tags(stripslashes($values['qcfname4'])) . '</textarea>'."\r\t";
 					break;
 				case 'field5':
 					$content .= $errors['qcfname5'];
-					$content .= '<select name="qcfname5" ' . $required . ' style="width:' . $submit . '"><option value="' . $qcf['label'][$name] . '">' . $qcf['label'][$name] . '</option>'."\r\t";
+					$content .= '<select name="qcfname5" ' . $required . ' ><option value="' . $qcf['label'][$name] . '">' . $qcf['label'][$name] . '</option>'."\r\t";
 						$arr = explode(",",$qcf['dropdownlist']);
 						foreach ($arr as $item) 
 							{
@@ -750,11 +758,11 @@ function qcf_display_form( $values, $errors, $whichpage ) {
 					break;
 				case 'field8':
 					$content .= $errors['qcfname8'];
-					$content .= '<input type="text" ' . $required . ' style="width:' . $input . '" label="Name" name="qcfname8" value="' . $values['qcfname8'] . '" onfocus="clickclear(this, \'' . $values['qcfname8'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname8'] . '\'">'."\r\t";
+					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname8" value="' . $values['qcfname8'] . '" onfocus="clickclear(this, \'' . $values['qcfname8'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname8'] . '\'">'."\r\t";
 					break;
 				case 'field9':
 					$content .= $errors['qcfname9'];
-					$content .= '<input type="text" ' . $required . '  style="width:' . $input . '" label="Name" name="qcfname9"  value="' . $values['qcfname9'] . '" onfocus="clickclear(this, \'' . $values['qcfname9'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname9'] . '\'">'."\r\t";
+					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname9"  value="' . $values['qcfname9'] . '" onfocus="clickclear(this, \'' . $values['qcfname9'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname9'] . '\'">'."\r\t";
 					break;
 				}
 			}
@@ -772,7 +780,7 @@ function qcf_display_form( $values, $errors, $whichpage ) {
 		<input type="hidden" name="answer" value="' . $values['answer'] . '" />
 		<input type="hidden" name="thesum" value="' . $values['thesum'] . '" />';
 		}
-	$content .= '<input type="submit" id="submit" style="width:' .  $submit . '" name="submit" value="' . $qcf['send'] . '">'."\r\t".
+	$content .= '<input type="submit" id="submit" ' .  ' name="submit" value="' . $qcf['send'] . '">'."\r\t".
 		'</form>'."\r\t".
 		'</div>'."\r\t".
 		'</div>'."\r\t";
@@ -905,12 +913,12 @@ function qcf_process_form($values) {
 	update_option('qcf_message',$qcf_message);
 	}
 	
-function qcf_loop($preview) {
+function qcf_loop() {
 	ob_start();
 	if (isset($_POST['submit'])) {
 		$formvalues = $_POST;
 		$formerrors = array();
-    	if (!qcf_verify_form($formvalues, $formerrors, $preview)) qcf_display_form($formvalues, $formerrors, $preview);
+    	if (!qcf_verify_form($formvalues, $formerrors)) qcf_display_form($formvalues, $formerrors);
     	else qcf_process_form($formvalues);
 		}
 	else {
@@ -925,7 +933,7 @@ function qcf_loop($preview) {
 		}
 		$qcf = qcf_get_stored_options();
 		for ($i=1; $i<=9; $i++) { $values['qcfname'.$i] = $qcf['label']['field'.$i]; }
-		qcf_display_form( $values , null , $preview );
+		qcf_display_form( $values , null );
 		}
 	$output_string=ob_get_contents();
 	ob_end_clean();
@@ -937,20 +945,17 @@ class qcf_widget extends WP_Widget {
 		$widget_ops = array('classname' => 'qcf_widget', 'description' => 'Add the Quick Contact Form to your sidebar');
 		$this->WP_Widget('qcf_widget', 'Quick Contact Form', $widget_ops);
 		}
-
 	function form($instance) {
 		echo '<p>All options for the quick contact form are changed on the plugin <a href="'.get_admin_url().'options-general.php?page=quick-contact-form/quick-contact-form.php">Settings</a> page.</p>';
 		}
-
 	function update($new_instance, $old_instance) {
 		$instance = $old_instance;
 		$instance['email'] = $new_instance['email'];
 		return $instance;
 		}
- 
 	function widget($args, $instance) {
  	   	extract($args, EXTR_SKIP);
-		echo qcf_loop(14);
+		echo qcf_loop();
 		}
 	}
 
@@ -1052,6 +1057,7 @@ function qcf_get_stored_style() {
 
 function qcf_get_default_style() {
 	$style['width'] = 280;
+	$style['widthtype'] = 'pixel';
 	$style['border'] = 'rounded';
 	$style['background'] = 'white';
 	$style['backgroundhex'] = '#FFF';
