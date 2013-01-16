@@ -16,13 +16,13 @@
 	}
 
 #qcf-style #plain {
-	border: 1px solid #888; 
+	border: 1px solid #415063;
 	padding: 10px;
 	margin: 0;
 	}
 
 #qcf-style #rounded {
-	border: 1px solid #888;
+	border: 1px solid #415063;
 	padding: 10px;
 	-moz-border-radius: 10px;
 	-webkit-box-shadow: 10px;
@@ -30,21 +30,21 @@
 	}
 
 #qcf-style #shadow {
-	border: 1px solid #888;
+	border: 1px solid #415063;
 	padding: 10px;
 	margin: 0 10px 20px 0;
-	-webkit-box-shadow: 5px 5px 5px #888;
-	-moz-box-shadow: 5px 5px 5px #888;
-	box-shadow: 5px 5px 5px #888;
+	-webkit-box-shadow: 5px 5px 5px #415063;
+	-moz-box-shadow: 5px 5px 5px #415063;
+	box-shadow: 5px 5px 5px #415063;
 	}
 
 #qcf-style #roundshadow {
-	border: 1px solid #888; 
+	border: 1px solid #415063;
 	padding: 10px; 
 	margin: 0 10px 20px 0; 
-	-webkit-box-shadow: 5px 5px 5px #888; 
-	-moz-box-shadow: 5px 5px 5px #888; 
-	box-shadow: 5px 5px 5px #888;
+	-webkit-box-shadow: 5px 5px 5px #415063;
+	-moz-box-shadow: 5px 5px 5px #415063;
+	box-shadow: 5px 5px 5px #415063;
 	-moz-border-radius: 10px; 
 	-webkit-box-shadow: 10px; 
 	border-radius: 10px;
@@ -86,8 +86,7 @@
 #qcf-style .error {
 	color: #D31900;
 	}
-
-#qcf-style .required {
+#qcf-style input[type=text].required, #qcf-style textarea.required {
 	border: 1px solid #00C618;
 	}
 
@@ -117,7 +116,7 @@
 	}
 
 #qcf_sort { list-style-type: none; margin: 0; padding: 0; width:100%; }
-#qcf_sort li { margin: 3px 0; padding: 0.3em 0.8em 0.3em 0.5em; min-height: 1.6em; cursor:pointer; border:1px solid #888; clear:left}
+#qcf_sort li { margin: 3px 0; padding: 0.3em 0.8em 0.3em 0.5em; height: 1.6em; cursor:pointer; border:1px solid #888; clear:left}
 #qcf_sort li.button_active { background-color: white; background: url(updown.gif) no-repeat right center;}
 #qcf_sort li.button_active.first { background-color: white; background: url(down.gif) no-repeat right center;}
 #qcf_sort li.button_active.last { background-color: white; background: url(up.gif) no-repeat right center;}

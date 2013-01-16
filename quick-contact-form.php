@@ -106,9 +106,6 @@ function qcf_setup () {
 		<p>To send to multiple addresses, put a comma betweeen each address.</p>
 		<p><input type="text" style="width:100%" label="Email" name="qcf_email" value="' . $qcf_email . '" /></p>
 		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /></p>
-		<h2>Version 4.3</h2>
-		<p>Not much new in this version. I&#146;ve added a new bit to the styling options so you can set the width to 100% which makes it much more suitable for responsive themes.</p>
-		<p>I&#146;ve also got rid of some more superfluous code.</p>
 		<h2>If you have upgraded from Version 2</h2>
 		<p>The way the plugin writes to the database has totally changed. Please check your settings to make sure nothing has got mussed up.</p>
 		<p>Your dashboard messages will have gone.  Sorry but it was just too complicated and buggy to get them transferred.</p>
@@ -180,8 +177,8 @@ function qcf_form_options () {
 		<h2>Form Fields</h2>
 		<p>
 		<span style="margin-left:7px;width:180px;"><a class="tooltip" href="#">Field Selection & Label<span>Check the box to use this field in your contact form</span></a></span>
-		<span style="width:85px;"><a class="tooltip" href="#">Field Type<span>This defines the type of field</span></a></span>
-		<span style="width:85px;"><a class="tooltip" href="#">Validation<span>Select for required feilds. Customise the response using the Error Messages tab</span></a></span>
+		<span style="width:80px;"><a class="tooltip" href="#">Field Type<span>This defines the type of field</span></a></span>
+		<span style="width:90px;"><a class="tooltip" href="#">Validation<span>Select for required feilds. Customise the response using the Error Messages tab</span></a></span>
 		<span style="float:right; width:50px;"><a class="tooltip" href="#">Position<span>Click and hold to change the position of the field</span></a></span></p>
 		<div style="clear:left"></div>
 		<ul id="qcf_sort">';
@@ -218,7 +215,7 @@ function qcf_form_options () {
 					$options = 'Ensure a selection is made';
 					break;
 				case 'field6':
-					$type = 'Checkboxes';
+					$type = 'Checkbox';
 					$options = 'Ensure a box is checked';
 					break;
 				case 'field7':
@@ -240,7 +237,7 @@ function qcf_form_options () {
 		<input type="checkbox" class="button_activate" style="border: none; padding: 0; margin:0;" name="qcf_settings_active_' . $name . '" ' . $checked . ' />
 		<input type="text" style="border: border:1px solid #415063; width:150px; padding: 1px; margin:0;" name="label_' . $name . '" value="' . $qcf['label'][$name] . '"/>
 		</div>
-		<div style="float:left; width:85px;">' . $type . '</div>
+		<div style="float:left; width:70px;">' . $type . '</div>
 		<div style="float:left;">';
 	if ($name <> 'field7') $content .='<input type="checkbox" class="button_activate" style="border: none; padding: 0; margin:0;" name="required_'.$name.'" '.$required.' /> ';
 	$content .= $options . '</div>
@@ -522,7 +519,7 @@ function qcf_help() {
 		<p>Some users report that they can&#146;t send emails to gmail, hotmail and other webmail type accounts. This isn&#146;t a problem with the plugin, it&#146;s usually a block with the hosting package. Make sure your host has no restrictions on the php mail function. Some people have found it works by adding asterisks to their code like this:<br>
 		<code>$headers = 	"From: {$values[\'qcfname1\']}<*{$values[\'qcfname2\']}*>\r\n"</code><br>
 		If it does work for you them please let me know (it solved the problem on the <a href="http://wordpress.org/support/topic/contact-form-7-not-working-3/page/5" target="_blank">CF7 and CCF</a> plugins).</p>
-		<p>There is some installation info and FAQs on the <a href="http://wordpress.org/extend/plugins/quick-contact-form/installation/" target="_blank">wordpress plugin page</a>. Some development info is on <a href="http://quick-plugins.com/quick-contact-form/" target="_blank">my plugin page</a> along with a feedback form. Or you can email me at <a href="mailto:graham@aerin.co.uk">graham@aerin.co.uk</a>.</p>
+		<p>There is some installation info and FAQs on the <a href="http://wordpress.org/extend/plugins/quick-contact-form/installation/" target="_blank">wordpress plugin page</a>. Some development info is on <a href="http://quick-plugins.com/quick-contact-form/" target="_blank">my plugin page</a> along with a feedback form. Or you can email me at <a href="mailto:mail@quick-plugins.com">mail@quick-plugins.com</a>.</p>
 		</div>
 		</div>
 		<div id="qcf-options"> 

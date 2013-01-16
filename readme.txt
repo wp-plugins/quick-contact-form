@@ -67,6 +67,9 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 4.4 =
+*	Fixed a minor bug in the CSS
+
 = 4.3 =
 *	Added option for 100% width (for responsive themes)
 
