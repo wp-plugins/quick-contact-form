@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 4.3
+Version: 4.4
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
