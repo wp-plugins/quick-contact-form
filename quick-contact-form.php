@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 4.4
+Version: 4.4.1
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -705,15 +705,15 @@ function qcf_display_form( $values, $errors) {
 				{
 				case 'field1':
 					$content .= $errors['qcfname1'];
-					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname1" value="' . $values['qcfname1'] . '" onfocus="clickclear(this, \'' . $values['qcfname1'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname1'] . '\'">'."\r\t";
+					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname1" value="' . $values['qcfname1'] . '" onfocus="clickclear(this, \'' . $values['qcfname1'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname1'] . '\')">'."\r\t";
 					break;
 				case 'field2':
 					$content .= $errors['qcfname2'];
-					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname2"  value="' . $values['qcfname2'] . '" onfocus="clickclear(this, \'' . $values['qcfname2'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname2'] . '\'">'."\r\t";
+					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname2"  value="' . $values['qcfname2'] . '" onfocus="clickclear(this, \'' . $values['qcfname2'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname2'] . '\')">'."\r\t";
 					break;
 				case 'field3':
 					$content .= $errors['qcfname3'];
-					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname3"  value="' . $values['qcfname3'] . '" onfocus="clickclear(this, \'' . $values['qcfname3'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname3'] . '\'">'."\r\t";
+					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname3"  value="' . $values['qcfname3'] . '" onfocus="clickclear(this, \'' . $values['qcfname3'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname3'] . '\')">'."\r\t";
 					break;
 				case 'field4':
 					$content .= $errors['qcfname4'];
@@ -755,11 +755,11 @@ function qcf_display_form( $values, $errors) {
 					break;
 				case 'field8':
 					$content .= $errors['qcfname8'];
-					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname8" value="' . $values['qcfname8'] . '" onfocus="clickclear(this, \'' . $values['qcfname8'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname8'] . '\'">'."\r\t";
+					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname8" value="' . $values['qcfname8'] . '" onfocus="clickclear(this, \'' . $values['qcfname8'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname8'] . '\')">'."\r\t";
 					break;
 				case 'field9':
 					$content .= $errors['qcfname9'];
-					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname9"  value="' . $values['qcfname9'] . '" onfocus="clickclear(this, \'' . $values['qcfname9'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname9'] . '\'">'."\r\t";
+					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname9"  value="' . $values['qcfname9'] . '" onfocus="clickclear(this, \'' . $values['qcfname9'] . '\')" onblur="clickrecall(this, \'' . $values['qcfname9'] . '\')">'."\r\t";
 					break;
 				}
 			}
