@@ -2,8 +2,8 @@
 
 Contributors: 
 Tags: contact form
-Requires at least: 2.7
-Tested up to: 3.4.2
+Requires at least: 3.0
+Tested up to: 3.5.1
 Stable tag: trunk
 
 Simple plug and play contact form. 
@@ -28,10 +28,9 @@ A really, really simple drag and drop contact form. There is nothing to configur
 
 == Installation ==
 
-1.	Download the plugin.
-2.	Login to your wordpress dashboard.
-3.	Go to 'Plugins', 'Add New' then 'Upload'.
-4.	Browse to the downloaded plugin then then 'Install Now'.
+1.	Login to your wordpress dashboard.
+3.	Go to 'Plugins', 'Add New' then search for 'Quick Contact Form'.
+4.	Follow the on screen instructions.
 5.	Activate the plugin.
 6.	Go to the plugin 'Settings' page to add the recipient's email address.
 7.	Edit any of the form settings if you wish.
@@ -57,7 +56,7 @@ No.
 Well OK yes you can add more fields if you want but you are going to have to fiddle about with the php file which needs a bit of care an attention. Everything you need to know is in the [wordpress codex](http://codex.wordpress.org/Writing_a_Plugin).
 
 = It's all gone wrong! =
-If it all goes wrong, just reinstall the plugin and start again. If you need help then [contact me](http://aerin.co.uk/contact-me/).
+If it all goes wrong, just reinstall the plugin and start again. If you need help then [contact me](http://quick-plugins.com/contact-me/).
 
 = Does anybody read these things? =
 I did, and so have you.  Maybe there will be more, who knows.
@@ -67,7 +66,13 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
-= 4.4 & 4.4.1=
+= 4.5
+*	Put all the admin functions in a seperate file (700 lines of code less for your visitors to load).
+*	Added options to change the fonts and field borders.
+*	Moved the styles to the documment head (no longer inline).
+*	Improved the tracking options.
+
+= 4.4 & 4.4.1 =
 *	Bug fixes in the CSS
 *	Tweaked the admin code to make the UI a bit less sensitive to user settings
 

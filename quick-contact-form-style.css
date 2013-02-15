@@ -1,5 +1,4 @@
 #qcf-style {
-	font-family: arial, sans-serif;
 	text-align: left;
 	margin: 0 0 10px 0;
 	padding: 0;
@@ -50,23 +49,16 @@
 	border-radius: 10px;
 	}
 
-#qcf-style form p {
-	margin: 0 0 2px 0;
+#qcf-style p {
+	margin:  4px 0 4px 0;
 	padding: 0;
 	}
 
-#qcf-style form p span{
-	display:block;
-	float:left;
-	font-weight:bold;
-	}
-
 #qcf-style input[type=text], #qcf-style textarea, #qcf-style select, #qcf-style #submit {
-	font-family: arial, sans-serif;
 	margin: 5px 0 7px 0;
 	padding: 6px;
 	color: #465069;
-	font-size: 120%;
+	font-size: 100%;
 	border:1px solid #415063;
 	width: 100%; 
 	-moz-box-sizing: border-box; 
@@ -85,6 +77,7 @@
 
 #qcf-style .error {
 	color: #D31900;
+	margin: 4px 0;
 	}
 #qcf-style input[type=text].required, #qcf-style textarea.required {
 	border: 1px solid #00C618;
@@ -96,91 +89,3 @@
 	text-align: center;
 	cursor: pointer;
 	}
-
-#qcf-style td, #qcf-widget td {
-	border-top: 1px solid #005F6B;
-	padding: 5px 10px 5px 0;
-	max-width: 400px;
-	vertical-align:top;
-	}
-
-#qcf-style td b, #qcf-widget td b {
-	color: #005F6B;
-	}
-
-#qcf-style th, #qcf-widget th {
-	padding: 5px 10px 5px 0;
-	max-width: 400px;
-	text-align: left;
-	color: #005F6B;
-	}
-
-#qcf_sort { list-style-type: none; margin: 0; padding: 0; width:100%; }
-#qcf_sort li { margin: 3px 0; padding: 0.3em 0.8em 0.3em 0.5em; height: 1.6em; cursor:pointer; border:1px solid #888; clear:left}
-#qcf_sort li.button_active { background-color: white; background: url(updown.gif) no-repeat right center;}
-#qcf_sort li.button_active.first { background-color: white; background: url(down.gif) no-repeat right center;}
-#qcf_sort li.button_active.last { background-color: white; background: url(up.gif) no-repeat right center;}
-#qcf_sort li.button_inactive { background-color: #E0E0E0;}
-#qcf_sort li div {overflow:hidden;}
-
-#qcf-options {
-	border: 1px solid #C3CFF5;
-	padding: 0 10px 10px 10px;
-	margin: 10px 10px 0 0 ;
-	float: left;
-	width: 45%;
-	}
-
-#qcf-options h2 {
-	color: #005F6B;
-	}
-
-#qcf-options h3 {
-	color: #717DD7;
-	margin: 4px 0 0 0;
-	padding: 0;
-	}
-
-#qcf-options submit input:focus {
-	color: #FFF;
-	}
-	
-#qcf-options ul {
-	margin: 0;
-	padding: 0;
-	}
-	
-#qcf-options .instructions li {
-	list-style-type: disc;
-	list-style-position: inside;
-	margin: 1px 0;
-	}
-
-#qcf-options .tooltip {
-	border-bottom: 1px dotted #000000;
- 	color: #000000; outline: none;
-	cursor: help; text-decoration: none;
-	position: relative;
-	}
-
-#qcf-options .tooltip span {
- 	margin-left: -999em;
-	position: absolute;
-	}
-
-#qcf-options .tooltip:hover span {
-	position: absolute;
-	left: 1em;
-	top: 2em;
-	z-index: 99;
-	margin-left: 0;
-	width: 250px;
-	background: #CCC;
-	color: #005F6B;
-	border: 1px solid #343838;
-	border-radius: 5px 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	}
-
-#qcf-style form p span span { padding: 0.8em 1em; }
