@@ -468,7 +468,7 @@ function qcf_get_stored_style($id) {
 	return $style;
 	}
 function qcf_get_default_style() {
-	$style['font'] = 'theme';
+	$style['font'] = 'plugin';
 	$style['font-family'] = 'arial, sans-serif';
 	$style['font-size'] = '1.2em';
 	$style['width'] = 280;
