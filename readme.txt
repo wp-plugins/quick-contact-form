@@ -18,6 +18,7 @@ A really, really simple drag and drop contact form. There is nothing to configur
 *	Range of border styles.
 *	Display latest messages on dashboard
 *	Custom error and thank-you messages
+*	Multiple form support
 
 = Developers plugin page =
 
@@ -37,6 +38,8 @@ A really, really simple drag and drop contact form. There is nothing to configur
 8.	Drag and drop the 'Quick Contact Form' widget to your sidebar.
 9.	To use the form in your posts and pages add the shortcode `[qcf]`.
 10.	To use the form in your theme files use the code `<?php echo do_shortcode('[qcf]'); ?>`.
+
+If you wany more than on form on your site just create a new form on the setup page and save.
 
 == Frequently Asked Questions ==
 
@@ -66,6 +69,8 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 5.0 = Multiple forms! Something that has been a long time coming.
+
 = 4.5
 *	Put all the admin functions in a seperate file (700 lines of code less for your visitors to load).
 *	Added options to change the fonts and field borders.
@@ -81,7 +86,7 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 = 4.2 =
 *	Cleaned out a whole load of code - file is now 6Kb smaller.
-*	Rewritten the help files simpler
+*	Rewritten the help files
 *	Tweaked the validation function
 
 = 4.1 = 
