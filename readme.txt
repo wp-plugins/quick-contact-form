@@ -25,7 +25,8 @@ A really, really simple drag and drop contact form. There is nothing to configur
 [quick contact form plugin](http://quick-plugins.com/quick-contact-form/).
 
 == Screenshots ==
-1. This is an example of a simple form. Everything on the form is editable.  To see more go to the [quick contact form examples](http://aerin.co.uk/contact-form-examples/) page.
+1. This is an example of multiple forms on a single page. Everything on the form is editable.
+2. This is the home admin screen.
 
 == Installation ==
 
@@ -71,7 +72,7 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 = 5.0 = Multiple forms! Something that has been a long time coming.
 
-= 4.5
+= 4.5 =
 *	Put all the admin functions in a seperate file (700 lines of code less for your visitors to load).
 *	Added options to change the fonts and field borders.
 *	Moved the styles to the documment head (no longer inline).
