@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 5.0
+Version: 5.1
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -282,10 +282,10 @@ function qcf_process_form($values,$id) {
 	if (file_exists($tmp_name))
 		{
  		if(is_uploaded_file($tmp_name)) {
-			$file = fopen($tmp_name,'rb');			//open the file
-     			$data = fread($file,filesize($tmp_name));	//read the file
-     			fclose($file);					// close the file
-     			$data = chunk_split(base64_encode($data));	// encode and split
+			$file = fopen($tmp_name,'rb');
+     			$data = fread($file,filesize($tmp_name));
+     			fclose($file);
+     			$data = chunk_split(base64_encode($data));
     			}
 			$bound_text = "x".md5(mt_rand())."x";
 			$bound = "--".$bound_text."\r\n";
@@ -322,7 +322,7 @@ function qcf_process_form($values,$id) {
 		echo "<meta http-equiv='refresh' content='0;url=$location' />";
 		}
 	else {
-	$replycontent = "<div id='qcf-style'>\r\t
+	$replycontent = "<div class='qcf-style ".$id."'>\r\t
 	<div id='" . $style['border'] . "'>\r\t";
 		$replycontent .= $reply['replytitle'].$reply['replyblurb'];
 		if ($reply['messages']) $replycontent .= $content;
@@ -342,7 +342,7 @@ function qcf_loop($id) {
 	if (isset($_POST['submit'.$id])) {
 		$formvalues = $_POST;
 		$formerrors = array();
-    	if (!qcf_verify_form($formvalues, $formerrors,$id)) qcf_display_form($formvalues, $formerrors,$id);
+		if (!qcf_verify_form($formvalues, $formerrors,$id)) qcf_display_form($formvalues, $formerrors,$id);
     	else qcf_process_form($formvalues,$id);
 		}
 	else {
@@ -510,10 +510,10 @@ function qcf_get_stored_error ($id) {
 	return $error;
 	}
 function qcf_get_default_error ($id) {
-	$qcf = get_option('qcf_settings'.$id);
+	$qcf = qcf_get_stored_options($id);
 	$error = array();
-	$error['field1'] = 'Giving me '. strtolower($qcf['label']['field1']) . ' would really help';
-	$error['field2'] = 'Please enter your email address';
+	$error['field1'] = 'Giving me '. strtolower($qcf['label']['field1']) . ' would really help.';
+	$error['field2'] = 'Please enter your '. strtolower($qcf['label']['field2']) . ' address';
 	$error['field3'] = 'A telephone number is needed';
 	$error['field4'] = 'What is the '. strtolower($qcf['label']['field4']);
 	$error['field5'] = 'Select a option from the list';

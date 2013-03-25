@@ -70,6 +70,11 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 5.1 =
+*	Reset buttons on each page
+*	Simple validation of form names (replaces spaces with hyphens)
+*	Code tweaks
+
 = 5.0 = Multiple forms! Something that has been a long time coming.
 
 = 4.5 =
