@@ -70,6 +70,11 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 5.2 =
+*	Changed to wp_mail to fix webhosts blocking gmail and other webmail services
+*	Changed language to UTF-8
+*	Code tweaks
+
 = 5.1 =
 *	Reset buttons on each page
 *	Simple validation of form names (replaces spaces with hyphens)

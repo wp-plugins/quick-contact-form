@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 5.1
+Version: 5.2
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -296,7 +296,7 @@ function qcf_process_form($values,$id) {
 			$message .= "If you can see this MIME than your client doesn't accept MIME types!\r\n"
   			.$bound;
   	 
-			$message .= "Content-Type: text/html; charset=\"iso-8859-1\"\r\n"
+			$message .= "Content-Type: text/html; charset=\"utf-8\"\r\n"
   			."Content-Transfer-Encoding: 7bit\r\n\r\n"
   			.$sendcontent."\r\n"
   			.$bound;
@@ -315,15 +315,15 @@ function qcf_process_form($values,$id) {
 			$message = $sendcontent;
 			}
 
-	mail($qcf_email, $subject, $message, $headers);
+	wp_mail($qcf_email, $subject, $message, $headers);
 
 	if ( $reply['qcf_redirect'] == 'checked') {
 		$location = $reply['qcf_redirect_url'];	
 		echo "<meta http-equiv='refresh' content='0;url=$location' />";
 		}
 	else {
-	$replycontent = "<div class='qcf-style ".$id."'>\r\t
-	<div id='" . $style['border'] . "'>\r\t";
+		$replycontent = "<div class='qcf-style ".$id."'>\r\t
+		<div id='" . $style['border'] . "'>\r\t";
 		$replycontent .= $reply['replytitle'].$reply['replyblurb'];
 		if ($reply['messages']) $replycontent .= $content;
 		$replycontent.='</div></div>';

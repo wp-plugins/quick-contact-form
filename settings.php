@@ -113,8 +113,8 @@ function qcf_setup ($id) {
 		<p>To change the way the form looks use the <a href="?page=quick-contact-form/settings.php&tab=styles">styling</a> tab.</p>
 		<p>You can also customise the <a href="?page=quick-contact-form/settings.php&tab=error">error messages</a>.</p>
 		<p>If it all goes wrong you can <a href="?page=quick-contact-form/settings.php&tab=reset">reset</a> everything.</p>
-		<h2>Version 5.0: What\'s New</h2>
-		<p>It\'s taken a year but I\'ve finally worked out how to create multiple forms. I hope you appreciate the hours and hours of coding this has required along with more debugging than a windscreen in the summer.</p>
+		<h2>Version 5.2: What\'s New</h2>
+		<p>Small change here. Instead of using the php mail() function the plugin now uses wp_mail(). This will hopefully solve the problem of gmail and hotmail being blocked.</p>
 		<p>Please send bug reorts to <a href="mailto:mail@quick-plugins.com">mail@quick-plugins.com</a>.</p>	
 		</div>';
 	echo $content;
@@ -473,11 +473,7 @@ function qcf_help($id) {
 		<p>You can create your own <a href= "?page=quick-contact-form/settings.php&tab=error">error messages</a> and configure <a href= "?page=quick-contact-form/settings.php&tab=reply">how the message is sent</a> as well.</p>
 		<p>If you want to allow attachments then use the <a href= "?page=quick-contact-form/settings.php&tab=attach">attachments page</a>. Make sure to restrict the file types people can send. You will also have to adjust the field width. This is because the input field ignores just about all styling. <a href="http://www.quirksmode.org/dom/inputfile.html" target="_blank">Quirksmode</a> has some suggestions on how to manage this but it\'s not easy. Even then, every browser is different so the attachment field won\'t look the same every time.</p>
 		<p>If it all goes a bit pear shaped you can <a href= "?page=quick-contact-form/settings.php&tab=reset">reset everything</a> to the defaults.</p>
-		<h2>Problems</h2>
-		<p>Some users report that they can\'t send emails to gmail, hotmail and other webmail type accounts. This isn\'t a problem with the plugin, it\'s usually a block with the hosting package. Make sure your host has no restrictions on the php mail function. Some people have found it works by adding asterisks to their code like this:</p>
-		<p><code>$headers = "From: {$values[\'qcfname1\']}<*{$values[\'qcfname2\']}*>\r\n"</code></p>
-		<p>If it does work for you them please let me know (it solved the problem on the <a href="http://wordpress.org/support/topic/contact-form-7-not-working-3/page/5" target="_blank">CF7 and CCF</a> plugins).</p>
-		<p>There is some installation info and FAQs on the <a href="http://wordpress.org/extend/plugins/quick-contact-form/installation/" target="_blank">wordpress plugin page</a>. Some development info is on <a href="http://quick-plugins.com/quick-contact-form/" target="_blank">my plugin page</a> along with a feedback form. Or you can email me at <a href="mailto:mail@quick-plugins.com">mail@quick-plugins.com</a>.</p>
+		<p>There is some development info on <a href="http://quick-plugins.com/quick-contact-form/" target="_blank">my plugin page</a> along with a feedback form. Or you can email me at <a href="mailto:mail@quick-plugins.com">mail@quick-plugins.com</a>.</p>
 		</div>
 		<div class="qcf-options"> 
 		<h2>Validation</h2>
