@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 5.2
+Version: 5.2.1
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -290,7 +290,7 @@ function qcf_process_form($values,$id) {
 			$bound_text = "x".md5(mt_rand())."x";
 			$bound = "--".$bound_text."\r\n";
 			$bound_last = "--".$bound_text."--\r\n";
- 			$headers = "From: {$values['qcfname1']}<{$values['qcfname2']}>\r\n"
+ 			$headers = "From: {$values['qcfname1']} <{$values['qcfname2']}>\r\n"
 			."MIME-Version: 1.0\r\n"
   			."Content-Type: multipart/mixed; boundary=\"$bound_text\"";
 			$message .= "If you can see this MIME than your client doesn't accept MIME types!\r\n"
@@ -309,7 +309,7 @@ function qcf_process_form($values,$id) {
   			.$bound_last; 
 			}
 		else {
-			$headers = "From: {$values['qcfname1']}<{$values['qcfname2']}>\r\n"
+			$headers = "From: {$values['qcfname1']} <{$values['qcfname2']}>\r\n"
 			. "MIME-Version: 1.0\r\n"
 			. "Content-Type: text/html; charset=\"utf-8\"\r\n"; 
 			$message = $sendcontent;
