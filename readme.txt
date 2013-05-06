@@ -15,7 +15,7 @@ A really, really simple drag and drop contact form. There is nothing to configur
 = Features =
 
 *	Drag and drop fields with easy to edit labels and captions.
-*	Range of border styles.
+*	Range of built in styles with custon CSS support.
 *	Display latest messages on dashboard
 *	Custom error and thank-you messages
 *	Multiple form support
@@ -34,7 +34,7 @@ A really, really simple drag and drop contact form. There is nothing to configur
 3.	Go to 'Plugins', 'Add New' then search for 'Quick Contact Form'.
 4.	Follow the on screen instructions.
 5.	Activate the plugin.
-6.	Go to the plugin 'Settings' page to add the recipient's email address.
+6.	Go to the plugin 'Settings' page to edit the recipient's email address.
 7.	Edit any of the form settings if you wish.
 8.	Drag and drop the 'Quick Contact Form' widget to your sidebar.
 9.	To use the form in your posts and pages add the shortcode `[qcf]`.
@@ -69,6 +69,12 @@ I did, and so have you.  Maybe there will be more, who knows.
 No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
+
+= 5.3 =
+*	Changed the order of the columns in the form settings page
+*	Made it easier to swap between named forms in the settings pages
+*	Fixed some spellings errors
+*	Bug fix: you can now add multiple email addresses on a fresh install
 
 = 5.2.1 =
 *	Bug fix: wp_mail chopped the last character of the senders name off!
