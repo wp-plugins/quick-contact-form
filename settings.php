@@ -51,7 +51,7 @@ function qcf_setup ($id) {
 		$qcf_setup['alternative'] = $_POST['alternative'];
 		if (!empty($_POST['new_form'])) {
 			$qcf_setup['current'] = stripslashes($_POST['new_form']);
-			$qcf_setup['current'] = str_replace(' ','-',$qcf_setup['current']);
+			$qcf_setup['current'] = str_replace(' ','',$qcf_setup['current']);
 			$qcf_setup['alternative'] = $qcf_setup['current'].','.$qcf_setup['alternative'];
 			}
 		else $qcf_setup['current'] = $_POST['current'];
@@ -113,8 +113,8 @@ function qcf_setup ($id) {
 		<p>To change the way the form looks use the <a href="?page=quick-contact-form/settings.php&tab=styles">styling</a> tab.</p>
 		<p>You can also customise the <a href="?page=quick-contact-form/settings.php&tab=error">error messages</a>.</p>
 		<p>If it all goes wrong you can <a href="?page=quick-contact-form/settings.php&tab=reset">reset</a> everything.</p>
-		<h2>Version 5.2: What\'s New</h2>
-		<p>Small change here. Instead of using the php mail() function the plugin now uses wp_mail(). This will hopefully solve the problem of gmail and hotmail being blocked.</p>
+		<h2>Version 5.4: What\'s New</h2>
+		<p>No change at the front end, this just adds a dropdown to the widget so you can select named forms.</p>
 		<p>Please send bug reorts to <a href="mailto:mail@quick-plugins.com">mail@quick-plugins.com</a>.</p>	
 		</div>';
 	echo $content;

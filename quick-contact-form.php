@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 5.3
+Version: 5.4
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -26,7 +26,6 @@ function qcf_start($atts) {
 	extract(shortcode_atts(array( 'id' => '' ), $atts));
 	return qcf_loop($id);
 	}
-
 function qcf_plugin_action_links($links, $file ) {
 	if ( $file == plugin_basename( __FILE__ ) ) {
 		$qcf_links = '<a href="'.get_admin_url().'options-general.php?page=quick-contact-form/settings.php">'.__('Settings').'</a>';
@@ -34,7 +33,6 @@ function qcf_plugin_action_links($links, $file ) {
 		}
 	return $links;
 	}
-
 function qcf_verify_form(&$values, &$errors,$id) {
 	$qcf = qcf_get_stored_options($id);
 	$error = qcf_get_stored_error($id);
@@ -105,7 +103,6 @@ function qcf_verify_form(&$values, &$errors,$id) {
 			}
 	return (count($errors) == 0);	
 	}
-
 function qcf_display_form( $values, $errors, $id ) {
 	$qcf_form = qcf_get_stored_setup();
 	$qcf = qcf_get_stored_options($id);
@@ -120,15 +117,12 @@ function qcf_display_form( $values, $errors, $id ) {
 	if (count($errors) > 0)
 		$content .= "<h2>" . $error['errortitle'] . "</h2>\r\t<p class='error'>" . $error['errorblurb'] . "</p>\r\t";
 	else
-		$content .= $qcf['title'] . "\r\t" . $qcf['blurb'] . "\r\t";
-	
+		$content .= $qcf['title'] . "\r\t" . $qcf['blurb'] . "\r\t";	
 	$content .= "<form action=\"\" method=\"POST\" enctype=\"multipart/form-data\">\r\t";
-		foreach (explode( ',',$qcf['sort']) as $name)
-		{
+		foreach (explode( ',',$qcf['sort']) as $name) {
 		$required = ( $qcf['required'][$name]) ? 'class="required"' : '';
 		if ($qcf['active_buttons'][$name] == "on") {
-			switch ( $name )
-				{
+			switch ( $name ) {
 				case 'field1':
 					$content .= $errors['qcfname1'];
 					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname1" value="' . $values['qcfname1'] . '" onfocus="qcfclear(this, \'' . $values['qcfname1'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname1'] . '\')">'."\r\t";
@@ -149,8 +143,7 @@ function qcf_display_form( $values, $errors, $id ) {
 					$content .= $errors['qcfname5'];
 					$content .= '<select name="qcfname5" ' . $required . ' ><option value="' . $qcf['label'][$name] . '">' . $qcf['label'][$name] . '</option>'."\r\t";
 						$arr = explode(",",$qcf['dropdownlist']);
-						foreach ($arr as $item) 
-							{
+						foreach ($arr as $item) {
 							$selected = '';
 							if ($values['qcfname5'] == $item) $selected = 'selected';
 							$content .= '<option value="' .  $item . '" ' . $selected .'>' .  $item . '</option>'."\r\t";
@@ -161,8 +154,7 @@ function qcf_display_form( $values, $errors, $id ) {
 					if ($errors['qcfname6']) $content .= $errors['qcfname6'];
 					else $content .= '<p class="input">' . $qcf['label'][$name] . '</p>';
 					$arr = explode(",",$qcf['checklist']);
-					foreach ($arr as $item)
-						{
+					foreach ($arr as $item) {
 						$checked = '';
 						if ($values['qcfname6_'. str_replace(' ','',$item)] == $item) $checked = 'checked';
 						$content .= '<input type="checkbox" style="margin:0; padding: 0; border: none" name="qcfname6_' . str_replace(' ','',$item) . '" value="' .  $item . '" ' . $checked . '> ' .  $item . '<br>';
@@ -171,12 +163,11 @@ function qcf_display_form( $values, $errors, $id ) {
 					case 'field7':
 					$content .= '<p class="input">' . $qcf['label'][$name] . '</p>';
 					$arr = explode(",",$qcf['radiolist']);
-					foreach ($arr as $item)
-						{
+					foreach ($arr as $item) {
 						$checked = '';
 						if ($values['qcfname7'] == $item) $checked = 'checked';
-						if ($item === reset($arr)) $content .= '<input type="radio" style="margin:0; padding: 0; border: none" name="qcfname7" value="' .  $item . '" checked> ' .  $item . ' ';
-						else $content .=  '<input type="radio" style="margin:0; padding: 0; border: none" name="qcfname7" value="' .  $item . '" ' . $checked . '> ' .  $item . ' ';
+						if ($item === reset($arr)) $content .= '<input type="radio" style="margin:0; padding: 0; border: none" name="qcfname7" value="' .  $item . '" checked> ' .  $item . '<br>';
+						else $content .=  '<input type="radio" style="margin:0; padding: 0; border: none" name="qcfname7" value="' .  $item . '" ' . $checked . '> ' .  $item . '<br>';
 						}
 					break;
 				case 'field8':
@@ -209,7 +200,6 @@ function qcf_display_form( $values, $errors, $id ) {
 		'</div>'."\r\t";
 	echo $content;
 	}
-
 function qcf_process_form($values,$id) {
 	$qcf = qcf_get_stored_options($id);
 	$reply = qcf_get_stored_reply($id);
@@ -218,7 +208,7 @@ function qcf_process_form($values,$id) {
 	$qcf_email = $qcfemail[$id];
 	if (!empty($reply['replytitle'])) $reply['replytitle'] = '<h2>' . $reply['replytitle'] . '</h2>';
 	if (!empty($reply['replyblurb'])) $reply['replyblurb'] = '<p>' . $reply['replyblurb'] . '</p>';
-		if ( $reply['subjectoption'] == "sendername") $addon = $values['qcfname1'];
+	if ( $reply['subjectoption'] == "sendername") $addon = $values['qcfname1'];
 	if ( $reply['subjectoption'] == "senderpage") $addon = $pagetitle;
 	if ( $reply['subjectoption'] == "sendernone") $addon = ''; 
 	$ip=$_SERVER['REMOTE_ADDR'];
@@ -272,15 +262,12 @@ function qcf_process_form($values,$id) {
 	if ($reply['tracker']) $sendcontent .= "<p>Senders IP address: <b>".$ip."</b></p>";
 	if ($reply['url']) $sendcontent .= "<p>URL: <b>".$url."</b></p>";
 	$sendcontent .="</html>";
-
 	$subject = "{$reply['subject']} {$addon}";
-			
 	$tmp_name = $_FILES['filename']['tmp_name'];
 	$type = $_FILES['filename']['type'];
 	$name = $_FILES['filename']['name'];
 	$size = $_FILES['filename']['size'];
-	if (file_exists($tmp_name))
-		{
+	if (file_exists($tmp_name)) {
  		if(is_uploaded_file($tmp_name)) {
 			$file = fopen($tmp_name,'rb');
      			$data = fread($file,filesize($tmp_name));
@@ -294,13 +281,11 @@ function qcf_process_form($values,$id) {
 			."MIME-Version: 1.0\r\n"
   			."Content-Type: multipart/mixed; boundary=\"$bound_text\"";
 			$message .= "If you can see this MIME than your client doesn't accept MIME types!\r\n"
-  			.$bound;
-  	 
+  			.$bound; 
 			$message .= "Content-Type: text/html; charset=\"utf-8\"\r\n"
   			."Content-Transfer-Encoding: 7bit\r\n\r\n"
   			.$sendcontent."\r\n"
-  			.$bound;
-  	  
+  			.$bound; 	  
 			$message .= "Content-Type: ".$type."; name=\"".$name."\"\r\n" 
   			."Content-Transfer-Encoding: base64\r\n"
   			."Content-disposition: attachment; file=\"".$name."\"\r\n" 
@@ -336,7 +321,6 @@ function qcf_process_form($values,$id) {
 	$qcf_message[] = array('field1' => $values['qcfname1'] , 'field2' => $values['qcfname2'] , 'field4' => $values['qcfname4'] , date => $sentdate,);
 	update_option('qcf_message',$qcf_message);
 	}
-	
 function qcf_loop($id) {
 	ob_start();
 	if (isset($_POST['submit'.$id])) {
@@ -372,8 +356,18 @@ class qcf_widget extends WP_Widget {
 	function form($instance) {
 		$instance = wp_parse_args( (array) $instance, array( 'formname' => '' ) );
 		$formname = $instance['formname'];
+		$qcf_setup = qcf_get_stored_setup();
+		echo 'Select Form:</ br>';
+		?><select class="widefat" name="<?php echo $this->get_field_name('formname'); ?>"><?php
+		$arr = explode(",",$qcf_setup['alternative']);
+		foreach ($arr as $item) {
+			if ($item == '') {$showname = 'default'; $item='';} else $showname = $item;
+			if ($showname == $formname || $formname == '') $selected = 'selected'; else $selected = '';
+			?><option value="<?php echo attribute_escape($item); ?>" id="<?php echo $this->get_field_id('formname'); ?>" <?php echo $selected; ?>><?php echo $showname; ?></option>
+			<?php  
+			}
 		?>
-		<p><label for="<?php echo $this->get_field_id('formname'); ?>">Form Name: <input class="widefat" id="<?php echo $this->get_field_id('formname'); ?>" name="<?php echo $this->get_field_name('formname'); ?>" type="text" value="<?php echo attribute_escape($formname); ?>" /></label></p>
+		</select>
 		<p>All options for the quick contact form are changed on the plugin <a href="options-general.php?page=quick-contact-form/settings.php">Settings</a> page.</p>
 		<?php
 		}
@@ -388,7 +382,6 @@ class qcf_widget extends WP_Widget {
 		echo qcf_loop($id);
 		}
 	}
-
 add_action( 'widgets_init', create_function('', 'return register_widget("qcf_widget");') );
 
 function qcf_use_custom_css () {
@@ -423,7 +416,6 @@ function qcf_get_stored_options ($id) {
 	$qcf = array_merge($default, $qcf);
 	return $qcf;
 	}
-
 function qcf_get_default_options () {
 	$qcf = array();
 	$qcf['active_buttons'] = array( 'field1'=>'on' , 'field2'=>'on' , 'field3'=>'' , 'field4'=>'on' , 'field5'=>'' , 'field6'=>'' ,  'field7'=>'' , 'field8'=>'' ,  'field9'=>'');	

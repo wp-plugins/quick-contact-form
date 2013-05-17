@@ -70,6 +70,9 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 5.4 =
+*	Added dropdown to sidebar widget so you can select named forms
+
 = 5.3 =
 *	Changed the order of the columns in the form settings page
 *	Made it easier to swap between named forms in the settings pages
@@ -89,7 +92,8 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 *	Simple validation of form names (replaces spaces with hyphens)
 *	Code tweaks
 
-= 5.0 = Multiple forms! Something that has been a long time coming.
+= 5.0 = 
+*	Multiple forms! Something that has been a long time coming.
 
 = 4.5 =
 *	Put all the admin functions in a seperate file (700 lines of code less for your visitors to load).
