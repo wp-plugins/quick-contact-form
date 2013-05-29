@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 5.4
+Version: 5.5
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -300,7 +300,8 @@ function qcf_process_form($values,$id) {
 			$message = $sendcontent;
 			}
 
-	wp_mail($qcf_email, $subject, $message, $headers);
+	if ($reply['mail'] == 'wp-mail') wp_mail($qcf_email, $subject, $message, $headers);
+	else mail($qcf_email, $subject, $message, $headers);
 
 	if ( $reply['qcf_redirect'] == 'checked') {
 		$location = $reply['qcf_redirect_url'];	
@@ -492,6 +493,7 @@ function qcf_get_default_reply () {
 	$reply['subjectoption'] = 'sendername';
 	$reply['qcf_redirect'] = '';
 	$reply['qcf_redirect_url'] = '';
+	$reply['qcfmail'] = 'wpemail';
 	return $reply;
 	}
 function qcf_get_stored_error ($id) {

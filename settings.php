@@ -113,8 +113,8 @@ function qcf_setup ($id) {
 		<p>To change the way the form looks use the <a href="?page=quick-contact-form/settings.php&tab=styles">styling</a> tab.</p>
 		<p>You can also customise the <a href="?page=quick-contact-form/settings.php&tab=error">error messages</a>.</p>
 		<p>If it all goes wrong you can <a href="?page=quick-contact-form/settings.php&tab=reset">reset</a> everything.</p>
-		<h2>Version 5.4: What\'s New</h2>
-		<p>No change at the front end, this just adds a dropdown to the widget so you can select named forms.</p>
+		<h2>Version 5.5: What\'s New</h2>
+		<p>To cope with the occasional hosting block there is now an option to send using php or the WordPress mail functions on the <a href="?page=quick-contact-form/settings.php&tab=reply">Send Options</a> page.</p>
 		<p>Please send bug reorts to <a href="mailto:mail@quick-plugins.com">mail@quick-plugins.com</a>.</p>	
 		</div>';
 	echo $content;
@@ -361,7 +361,7 @@ function qcf_styles($id) {
 function qcf_reply_page($id) {
 	qcf_change_form_update();
 	if( isset( $_POST['Submit'])) {
-		$options = array( 'replytitle' , 'replyblurb' , 'messages' , 'tracker' , 'url' ,  'page' , 'subject' ,  'subjectoption' , 'qcf_redirect','qcf_redirect_url');
+		$options = array( 'replytitle' , 'replyblurb' , 'messages' , 'tracker' , 'url' ,  'page' , 'subject' ,  'subjectoption' , 'qcf_redirect','qcf_redirect_url','qcfmail');
 		foreach ( $options as $item) $reply[$item] = stripslashes($_POST[$item]);
 		update_option('qcf_reply'.$id, $reply);
 		if ($id) qcf_admin_notice("The send settings for " . $id . " have been updated.");
@@ -375,6 +375,7 @@ function qcf_reply_page($id) {
 	$id=$qcf_setup['current'];
 	$reply = qcf_get_stored_reply($id);
 	$$reply['subjectoption'] = "checked";
+	$$reply['qcfmail'] = "checked";
 	qcf_use_custom_css();
 	$content .='<div class="qcf-options">';
 	if ($id) $content .='<h2 style="color:#B52C00">Send options for ' . $id . '</h2>';
@@ -382,6 +383,9 @@ function qcf_reply_page($id) {
 	$content .= qcf_change_form($qcf_setup);
 	$content .='<form method="post" action="">
 		<h2>Send Options</h2>
+		<h3>Send Function</h3>
+		<input style="margin:0; padding:0; border:none" type="radio" name="qcfmail" value="wpemail" ' . $wpemail . '> Use WP-mail (better for hotmail, gmail, yahoo or aol email addresses)<br />
+		<input style="margin:0; padding:0; border:none" type="radio" name="qcfmail" value="phpmail" ' . $phpmail . '> Use PHP Mail (if you have a domain email address)</p>
 		<h3>Email subject</h3>
 		<p>The message subject has two parts: the bit in the text box plus the option below.</p>
 		<p><input style="width:100%" type="text" name="subject" value="' . $reply['subject'] . '"/></p>

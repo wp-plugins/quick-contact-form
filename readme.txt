@@ -70,6 +70,9 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 5.5 =
+*	Option to select mail function
+
 = 5.4 =
 *	Added dropdown to sidebar widget so you can select named forms
 
