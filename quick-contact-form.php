@@ -541,7 +541,12 @@ function qcf_get_default_setup () {
 	}
 function qcf_get_stored_email () {
 	$qcf_email = get_option('qcf_email');
+	qcf_get_stored_setup ();
+	global $current_user;
+	get_currentuserinfo();
+	$new_email = $current_user->user_email;
 	if(!is_array($qcf_email)) { $old_email = $qcf_email; $qcf_email = array(); $qcf_email[''] = $old_email;}
+	if ($qcf_setup['alternative'] == '' && $qcf_email[''] == '') $qcf_email[''] = $new_email;
 	$default = qcf_get_default_email();
 	$qcf_email = array_merge($default, $qcf_email);
 	return $qcf_email;

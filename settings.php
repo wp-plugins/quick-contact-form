@@ -68,10 +68,6 @@ function qcf_setup ($id) {
 		}
 	$qcf_setup = qcf_get_stored_setup();
 	$qcf_email = qcf_get_stored_email();
-	global $current_user;
-	get_currentuserinfo();
-	$new_email = $current_user->user_email;
-	if ($qcf_setup['alternative'] == '' && $qcf_email[''] == '') $qcf_email[''] = $new_email;
 	$content ='
 		<div class="qcf-options">
 		<form method="post" action="">';
