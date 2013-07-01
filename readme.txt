@@ -70,6 +70,9 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 5.6 =
+*	New form field. Adds a date picker to your forms. Only works on new forms, you can't add the date field to exisitng forms (yet)
+
 = 5.5 =
 *	Option to select mail function
 

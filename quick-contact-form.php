@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 5.5
+Version: 5.6
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -14,13 +14,11 @@ add_filter('plugin_action_links', 'qcf_plugin_action_links', 10, 2 );
 
 if (is_admin()) require_once( plugin_dir_path( __FILE__ ) . '/settings.php' );
 
-$myScriptUrl = plugins_url('quick-contact-form-javascript.js', __FILE__);
-wp_register_script('qcf_script', $myScriptUrl);
-wp_enqueue_script( 'qcf_script');
+wp_enqueue_script( 'qcf_script',plugins_url('quick-contact-form-javascript.js', __FILE__));
 
-$myStyleUrl = plugins_url('quick-contact-form-style.css', __FILE__);
-wp_register_style('qcf_style', $myStyleUrl);
-wp_enqueue_style( 'qcf_style');
+wp_enqueue_style( 'qcf_style',plugins_url('quick-contact-form-style.css', __FILE__));
+wp_enqueue_script('jquery-ui-datepicker');
+wp_enqueue_style('jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 
 function qcf_start($atts) {
 	extract(shortcode_atts(array( 'id' => '' ), $atts));
@@ -85,6 +83,10 @@ function qcf_verify_form(&$values, &$errors,$id) {
 				case 'field9':
 					if (empty($values['qcfname9']) || $values['qcfname9'] == $qcf['label'][$name])
 						$errors['qcfname9'] = '<p class="error">' . $error['field9'] . '</p>';
+					break;
+				case 'field10':
+					if (empty($values['qcfname10']) || $values['qcfname10'] == $qcf['label'][$name])
+						$errors['qcfname10'] = '<p class="error">' . $error['field10'] . '</p>';
 					break;
 				}
 			}
@@ -178,6 +180,11 @@ function qcf_display_form( $values, $errors, $id ) {
 					$content .= $errors['qcfname9'];
 					$content .= '<input type="text" ' . $required . ' label="Name" name="qcfname9"  value="' . $values['qcfname9'] . '" onfocus="qcfclear(this, \'' . $values['qcfname9'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname9'] . '\')">'."\r\t";
 					break;
+				case 'field10':
+					$content .= $errors['qcfname10'];
+					$content .= '<input type="text" id="qcfdate" ' . $required . ' label="Date" name="qcfname10"  value="' . $values['qcfname10'] . '" onfocus="qcfclear(this, \'' . $values['qcfname10'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname10'] . '\')">
+					<script type="text/javascript">jQuery(document).ready(function() {jQuery(\'#qcfdate\').datepicker({dateFormat : \'dd M yy\'});});</script>'."\r\t";
+					break;		
 				}
 			}
 		}
@@ -255,6 +262,9 @@ function qcf_process_form($values,$id) {
 				case 'field9':
 					if ($values['qcfname9'] == $qcf['label'][$item]) $values['qcfname9'] ='';
 					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags($values['qcfname9']) . '</p>';
+				case 'field10':
+					if ($values['qcfname10'] == $qcf['label'][$item]) $values['qcfname10'] ='';
+					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags($values['qcfname10']) . '</p>';
 				}
 			}
 	$sendcontent = "<html><h2>The message is:</h2>".$content;
@@ -302,7 +312,6 @@ function qcf_process_form($values,$id) {
 
 	if ($reply['mail'] == 'wp-mail') wp_mail($qcf_email, $subject, $message, $headers);
 	else mail($qcf_email, $subject, $message, $headers);
-
 	if ( $reply['qcf_redirect'] == 'checked') {
 		$location = $reply['qcf_redirect_url'];	
 		echo "<meta http-equiv='refresh' content='0;url=$location' />";
@@ -341,7 +350,7 @@ function qcf_loop($id) {
 		$values['answer'] = $digit1 - $digit2;
 		}
 		$qcf = qcf_get_stored_options($id);
-		for ($i=1; $i<=9; $i++) { $values['qcfname'.$i] = $qcf['label']['field'.$i]; }
+		for ($i=1; $i<=10; $i++) { $values['qcfname'.$i] = $qcf['label']['field'.$i]; }
 		qcf_display_form( $values , null,$id );
 		}
 	$output_string=ob_get_contents();
@@ -364,7 +373,7 @@ class qcf_widget extends WP_Widget {
 		foreach ($arr as $item) {
 			if ($item == '') {$showname = 'default'; $item='';} else $showname = $item;
 			if ($showname == $formname || $formname == '') $selected = 'selected'; else $selected = '';
-			?><option value="<?php echo attribute_escape($item); ?>" id="<?php echo $this->get_field_id('formname'); ?>" <?php echo $selected; ?>><?php echo $showname; ?></option>
+			?><option value="<?php echo $item; ?>" id="<?php echo $this->get_field_id('formname'); ?>" <?php echo $selected; ?>><?php echo $showname; ?></option>
 			<?php  
 			}
 		?>
@@ -393,17 +402,18 @@ function qcf_use_custom_css () {
 		$style = qcf_get_stored_style($item);
 		if ($item !='') $id = '.'.$item; else $id = '';
 		if ($style['font'] == 'plugin') {
-			$font = "font-family: ".$style['font-family']."; font-size: ".$style['font-size']."; ";
-			$input = ".qcf-style".$id." input[type=text], .qcf-style".$id." textarea, .qcf-style".$id." select, .qcf-style".$id." .submit {".$font."}\r\n";
+			$font = "font-family: ".$style['font-family']."; font-size: ".$style['font-size'].";color: ".$style['font-colour'].";";			
 			}
+		$input = ".qcf-style".$id." input[type=text], .qcf-style".$id." textarea, .qcf-style".$id." select {border: ".$style['input-border'].";".$font."}\r\n";
+		$required = ".qcf-style".$id." input[type=text].required, .qcf-style textarea.required {border: ".$style['input-required'].";}\r\n";
 		if ($style['background'] == 'white') $background = ".qcf-style".$id." div {background:#FFF;}\r\n";
 		if ($style['background'] == 'color') $background = ".qcf-style".$id." div {background:".$style['backgroundhex'].";}\r\n";
 		if ($style['widthtype'] == 'pixel') $width = preg_replace("/[^0-9]/", "", $style['width']) . 'px';
 		else $width = '100%';
 		if ($style['corners'] == 'round') $corner = '5px'; else $corner = '0';
-		$corners = ".qcf-style".$id." input[type=text], .qcf-style".$id." textarea, .qcf-style".$id." select, .qcf-style".$id." .submit {border-radius:".$corner.";}\r\n";
+		$corners = ".qcf-style".$id." input[type=text], .qcf-style".$id." textarea, .qcf-style".$id." select, .qcf-style".$id." #submit {border-radius:".$corner.";}\r\n";
 		if ($style['corners'] == 'theme') $corners = '';
-		$code .= "<style type=\"text/css\" media=\"screen\">\r\n.qcf-style".$id." {width:".$width.";}\r\n".$corners.$input.$background;
+		$code .= "<style type=\"text/css\" media=\"screen\">\r\n.qcf-style".$id." {width:".$width.";}\r\n".$corners.$input.$required.$background;
 		if ($style['use_custom'] == 'checked') $code .= $style['styles'] . "\r\n";
 		$code .= "</style>\r\n";
 		echo $code;
@@ -415,16 +425,21 @@ function qcf_get_stored_options ($id) {
 	if(!is_array($qcf)) $qcf = array();
 	$default = qcf_get_default_options();
 	$qcf = array_merge($default, $qcf);
+	if (empty($qcf['label']['field10'])) {
+	$qcf['label']['field10'] = 'Select date';
+	$qcf['sort'] = $qcf['sort'].',field10';
+	}
 	return $qcf;
 	}
 function qcf_get_default_options () {
 	$qcf = array();
-	$qcf['active_buttons'] = array( 'field1'=>'on' , 'field2'=>'on' , 'field3'=>'' , 'field4'=>'on' , 'field5'=>'' , 'field6'=>'' ,  'field7'=>'' , 'field8'=>'' ,  'field9'=>'');	
-	$qcf['required'] = array('field1'=>'checked' , 'field2'=>'checked' , 'field3'=>'' , 'field4'=>'' , 'field5'=>'' , 'field6'=>'' , 'field7'=>'' , 'field8'=>'' , 'field9'=>'');
-	$qcf['label'] = array( 'field1'=>'Your Name' , 'field2'=>'Email' , 'field3'=>'Telephone' , 'field4'=>'Message' , 'field5'=>'Select an option' , 'field6'=>'Check at least one box' ,  'field7'=>'Radio' , 'field8'=>'Website' ,  'field9'=>'Subject');
-	$qcf['sort'] = implode(',',array('field1', 'field2' , 'field3' , 'field4' , 'field5' , 'field6' , 'field7' , 'field8' , 'field9'));
+	$qcf['active_buttons'] = array( 'field1'=>'on' , 'field2'=>'on' , 'field3'=>'' , 'field4'=>'on' , 'field5'=>'' , 'field6'=>'' ,  'field7'=>'' , 'field8'=>'' , 'field9'=>'' , 'field10'=>'');	
+	$qcf['required'] = array('field1'=>'checked' , 'field2'=>'checked' , 'field3'=>'' , 'field4'=>'' , 'field5'=>'' , 'field6'=>'' , 'field7'=>'' , 'field8'=>'' , 'field9'=>'' , 'field10'=>'');
+	$qcf['label'] = array( 'field1'=>'Your Name' , 'field2'=>'Email' , 'field3'=>'Telephone' , 'field4'=>'Message' , 'field5'=>'Select an option' , 'field6'=>'Check at least one box' ,  'field7'=>'Radio' , 'field8'=>'Website' , 'field9'=>'Subject', 'field10'=>'Select date');
+	$qcf['sort'] = implode(',',array('field1', 'field2' , 'field3' , 'field4' , 'field5' , 'field6' , 'field7' , 'field10' , 'field8' , 'field9'));
 	$qcf['type'] = array( 'field1' => 'text' , 'field2' => 'email' , 'field3' => 'phone' , );
 	$qcf['lines'] = 6;
+	$qcf['datepicker'] = 'checked';
 	$qcf['dropdownlist'] = 'Pound,Dollar,Euro,Yen,Triganic Pu';
 	$qcf['checklist'] = 'Donald Duck,Mickey Mouse,Goofy';
 	$qcf['radiolist'] = 'Large,Medium,Small';
@@ -464,9 +479,15 @@ function qcf_get_default_style() {
 	$style['font'] = 'plugin';
 	$style['font-family'] = 'arial, sans-serif';
 	$style['font-size'] = '1.2em';
+	$style['font-colour'] = '#465069';
 	$style['width'] = 280;
 	$style['widthtype'] = 'pixel';
 	$style['border'] = 'plain';
+	$style['input-border'] = '1px solid #415063';
+	$style['input-required'] = '1px solid #00C618';
+	$style['bordercolour'] = '#415063';
+	$style['inputborderdefault'] = '1px solid #415063';
+	$style['inputborderrequired'] = '1px solid #00C618';
 	$style['background'] = 'white';
 	$style['backgroundhex'] = '#FFF';
 	$style['corners'] = 'corner';
@@ -494,6 +515,7 @@ function qcf_get_default_reply () {
 	$reply['qcf_redirect'] = '';
 	$reply['qcf_redirect_url'] = '';
 	$reply['qcfmail'] = 'wpemail';
+	$reply['bodyhead'] = 'The message is:';
 	return $reply;
 	}
 function qcf_get_stored_error ($id) {
@@ -515,6 +537,7 @@ function qcf_get_default_error ($id) {
 	$error['field7'] = 'There is an error';
 	$error['field8'] = 'The ' . strtolower($qcf['label']['field8']) . ' is missing';
 	$error['field9'] = 'What is your '. strtolower($qcf['label']['field9']) . '?';
+	$error['field10'] = 'Please select a date';
 	$error['email'] = 'There&#146;s a problem with your email address';
 	$error['telephone'] = 'Please check your phone number';
 	$error['mathsmissing'] = 'Answer the sum please';
@@ -541,12 +564,7 @@ function qcf_get_default_setup () {
 	}
 function qcf_get_stored_email () {
 	$qcf_email = get_option('qcf_email');
-	qcf_get_stored_setup ();
-	global $current_user;
-	get_currentuserinfo();
-	$new_email = $current_user->user_email;
 	if(!is_array($qcf_email)) { $old_email = $qcf_email; $qcf_email = array(); $qcf_email[''] = $old_email;}
-	if ($qcf_setup['alternative'] == '' && $qcf_email[''] == '') $qcf_email[''] = $new_email;
 	$default = qcf_get_default_email();
 	$qcf_email = array_merge($default, $qcf_email);
 	return $qcf_email;
