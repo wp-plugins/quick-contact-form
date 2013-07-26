@@ -15,7 +15,7 @@ A really, really simple drag and drop contact form. There is nothing to configur
 = Features =
 
 *	Drag and drop fields with easy to edit labels and captions.
-*	Range of built in styles with custon CSS support.
+*	Range of built in styles with custom CSS support.
 *	Display latest messages on dashboard
 *	Custom error and thank-you messages
 *	Multiple form support
@@ -70,8 +70,11 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 5.7 =
+*	More options when you send the form.
+
 = 5.6 =
-*	New form field. Adds a date picker to your forms. Only works on new forms, you can't add the date field to exisitng forms (yet)
+*	New form field. Adds a date picker to your forms.
 
 = 5.5 =
 *	Option to select mail function

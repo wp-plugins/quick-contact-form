@@ -111,11 +111,11 @@ function qcf_setup ($id) {
 		<p>To change the way the form looks use the <a href="?page=quick-contact-form/settings.php&tab=styles">styling</a> tab.</p>
 		<p>You can also customise the <a href="?page=quick-contact-form/settings.php&tab=error">error messages</a>.</p>
 		<p>If it all goes wrong you can <a href="?page=quick-contact-form/settings.php&tab=reset">reset</a> everything.</p>
-		<h2>Version 5.6: What\'s New</h2>
-		<p>There is a new field that allows you to add a date selector to your forms. It uses the <a href="http://jqueryui.com/datepicker/">datepicker</a> built into wordpress.</p>
-		<p>Other changes are some new style options (field border and font colour)</p>
-		<p>I\'m also working on a message download thing. It will display all your messages (in full) and allow you to download as a CSV. I need people to help with the UI. If you are interested then please get in contact.</p>
-		<p>Please send bug reorts to <a href="mailto:mail@quick-plugins.com">mail@quick-plugins.com</a>.</p>	
+		<h2>Version 5.7: What\'s New</h2>
+		<p>Main changes are to the send options. You can now use the subject field as the email subject. There is an option to send a copy of the message to the visitor and you can refresh the page after the thank-you message.</p>
+		<h2>Coming Soon!</h2>
+		<p>I\'m working on a message download thing. It will display all your messages (in full) and allow you to download as a CSV. I need people to help with the UI. If you are interested then please get in contact.</p>
+		<p>Please send bug reports to <a href="mailto:mail@quick-plugins.com">mail@quick-plugins.com</a>.</p>	
 		</div>';
 	echo $content;
 	}
@@ -371,7 +371,7 @@ function qcf_styles($id) {
 function qcf_reply_page($id) {
 	qcf_change_form_update();
 	if( isset( $_POST['Submit'])) {
-		$options = array( 'replytitle' , 'replyblurb' , 'messages' , 'tracker' , 'url' ,  'page' , 'subject' ,  'subjectoption' , 'qcf_redirect','qcf_redirect_url','qcfmail','sendcopy','bodyhead');
+		$options = array( 'replytitle' , 'replyblurb' , 'messages' , 'tracker' , 'url' ,  'page' , 'subject' ,  'subjectoption' , 'qcf_redirect','qcf_reload','qcf_reload_time','qcf_redirect_url','qcfmail','sendcopy','copy_message','bodyhead');
 		foreach ( $options as $item) $reply[$item] = stripslashes($_POST[$item]);
 		update_option('qcf_reply'.$id, $reply);
 		if ($id) qcf_admin_notice("The send settings for " . $id . " have been updated.");
@@ -401,6 +401,7 @@ function qcf_reply_page($id) {
 		<p><input style="width:100%" type="text" name="subject" value="' . $reply['subject'] . '"/></p>
 		<p>
 		<input style="margin:0; padding:0; border:none" type="radio" name="subjectoption" value="sendername" ' . $sendername . '> sender\'s name (the contents of the first field)<br />
+		<input style="margin:0; padding:0; border:none" type="radio" name="subjectoption" value="sendersubj" ' . $sendersubj . '> Contents of the subject field (if used)<br />
 		<input style="margin:0; padding:0; border:none" type="radio" name="subjectoption" value="senderpage" ' . $senderpage . '> page title (only works if sent from a post or a page)<br />
 		<input style="margin:0; padding:0; border:none" type="radio" name="subjectoption" value="sendernone" ' . $sendernone . '> blank
 		</p>
@@ -424,6 +425,10 @@ function qcf_reply_page($id) {
 		<p>This is the blurb that will appear below the thank you heading and above the actual message (leave blank if you don\'t want any blurb):</p>
 		<p><input style="width:100%" type="text" name="replyblurb" value="' . $reply['replyblurb'] . '" /></p>
 		<p><input style="margin:0; padding:0; border:none" type="checkbox" name="messages" ' . $reply['messages'] . ' value="checked"> Show the sender the content of their message.</p>
+		<p><input style="margin:0; padding:0; border:none" type="checkbox" name="sendcopy" ' . $reply['sendcopy'] . ' value="checked"> Send a copy of the message to the sender.</p>
+		<p>These are the words that will appear above the copy of the message (leave blank if you don\'t want any words):</p>
+		<p><input style="width:100%" type="text" name="copy_message" value="' . $reply['copy_message'] . '" /></p>
+		<p><input style="margin:0; padding:0; border:none" type="checkbox" name="qcf_reload" ' . $reply['qcf_reload'] . ' value="checked"> Refresh the page <input style="width:2em" type="text" name="qcf_reload_time" value="' . $reply['qcf_reload_time'] . '" /> seconds after the thank-you message.</p>
 		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the reply settings for '.$id.'?\' );"/></p>
 		</form>
 		</div>
@@ -492,7 +497,7 @@ function qcf_error_page($id) {
 		<p><input type="text" style="width:100%" name="mathsmissing" value="' .  $error['mathsmissing'] . '" /></p>
 		<p>Maths Captcha wrong answer:</p>
 		<p><input type="text" style="width:100%" name="mathsanswer" value="' .  $error['mathsanswer'] . '" /></p>
-		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the error settings for '.$id.'?\' );"/></p>
+		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="submit" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the error settings for '.$id.'?\' );"/></p>
 		</form>
 		</div>
 		<div class="qcf-options"> 

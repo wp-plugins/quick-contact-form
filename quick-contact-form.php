@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 5.6
+Version: 5.7
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -109,6 +109,7 @@ function qcf_display_form( $values, $errors, $id ) {
 	$qcf_form = qcf_get_stored_setup();
 	$qcf = qcf_get_stored_options($id);
 	$error = qcf_get_stored_error($id);
+	$reply = qcf_get_stored_reply($id);
 	$attach = qcf_get_stored_attach($id);
 	$style = qcf_get_stored_style($id);
 	if (!empty($qcf['title'])) $qcf['title'] = '<h2>' . $qcf['title'] . '</h2>';
@@ -213,9 +214,13 @@ function qcf_process_form($values,$id) {
 	$style = qcf_get_stored_style($id);
 	$qcfemail = qcf_get_stored_email();
 	$qcf_email = $qcfemail[$id];
+	if (empty($qcf_email)) {global $current_user;
+	get_currentuserinfo();
+	$qcf_email = $current_user->user_email;}
 	if (!empty($reply['replytitle'])) $reply['replytitle'] = '<h2>' . $reply['replytitle'] . '</h2>';
 	if (!empty($reply['replyblurb'])) $reply['replyblurb'] = '<p>' . $reply['replyblurb'] . '</p>';
 	if ( $reply['subjectoption'] == "sendername") $addon = $values['qcfname1'];
+	if ( $reply['subjectoption'] == "sendersubj") $addon = $values['qcfname9'];
 	if ( $reply['subjectoption'] == "senderpage") $addon = $pagetitle;
 	if ( $reply['subjectoption'] == "sendernone") $addon = ''; 
 	$ip=$_SERVER['REMOTE_ADDR'];
@@ -267,11 +272,13 @@ function qcf_process_form($values,$id) {
 					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags($values['qcfname10']) . '</p>';
 				}
 			}
-	$sendcontent = "<html><h2>The message is:</h2>".$content;
+	$sendcontent = "<html><h2>".$reply['bodyhead']."</h2>".$content;
+	$copycontent = "<html><h2>".$reply['copy_message']."</h2>".$content;
 	if ($reply['page']) $sendcontent .= "<p>Message was sent from: <b>".$page."</b></p>";
 	if ($reply['tracker']) $sendcontent .= "<p>Senders IP address: <b>".$ip."</b></p>";
 	if ($reply['url']) $sendcontent .= "<p>URL: <b>".$url."</b></p>";
 	$sendcontent .="</html>";
+	$copycontent .="</html>";
 	$subject = "{$reply['subject']} {$addon}";
 	$tmp_name = $_FILES['filename']['tmp_name'];
 	$type = $_FILES['filename']['type'];
@@ -312,6 +319,16 @@ function qcf_process_form($values,$id) {
 
 	if ($reply['mail'] == 'wp-mail') wp_mail($qcf_email, $subject, $message, $headers);
 	else mail($qcf_email, $subject, $message, $headers);
+	
+	if ($reply['sendcopy']) mail($values['qcfname2'], 'Message Copy', $copycontent, $headers);
+	
+	$qcf_message = get_option('qcf_message');
+	if(!is_array($qcf_message)) $qcf_message = array();
+	if ($values['qcfname1'] == $qcf['label']['field1']) $values['qcfname1'] ='';
+	$sentdate = date('d M Y');
+	$qcf_message[] = array('field1' => $values['qcfname1'] , 'field2' => $values['qcfname2'] , 'field4' => $values['qcfname4'] , date => $sentdate,);
+	update_option('qcf_message',$qcf_message);
+	
 	if ( $reply['qcf_redirect'] == 'checked') {
 		$location = $reply['qcf_redirect_url'];	
 		echo "<meta http-equiv='refresh' content='0;url=$location' />";
@@ -323,13 +340,11 @@ function qcf_process_form($values,$id) {
 		if ($reply['messages']) $replycontent .= $content;
 		$replycontent.='</div></div>';
 		echo $replycontent; 
-		}	
-	$qcf_message = get_option('qcf_message');
-	if(!is_array($qcf_message)) $qcf_message = array();
-	if ($values['qcfname1'] == $qcf['label']['field1']) $values['qcfname1'] ='';
-	$sentdate = date('d M Y');
-	$qcf_message[] = array('field1' => $values['qcfname1'] , 'field2' => $values['qcfname2'] , 'field4' => $values['qcfname4'] , date => $sentdate,);
-	update_option('qcf_message',$qcf_message);
+		if ( $reply['qcf_reload'] == 'checked') {
+			$_POST = array();
+			echo '<meta http-equiv="refresh" content="'.$reply['qcf_reload_time'].'">';
+			}
+		}
 	}
 function qcf_loop($id) {
 	ob_start();
@@ -514,6 +529,9 @@ function qcf_get_default_reply () {
 	$reply['subjectoption'] = 'sendername';
 	$reply['qcf_redirect'] = '';
 	$reply['qcf_redirect_url'] = '';
+	$reply['copy_message'] = 'Thank you for your enquiry. This is a copy of your message';
+	$reply['qcf_reload'] = '';
+	$reply['qcf_reload_time'] = '5';
 	$reply['qcfmail'] = 'wpemail';
 	$reply['bodyhead'] = 'The message is:';
 	return $reply;
