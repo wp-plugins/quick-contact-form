@@ -16,7 +16,7 @@ A really, really simple drag and drop contact form. There is nothing to configur
 
 *	Drag and drop fields with easy to edit labels and captions.
 *	Range of built in styles with custom CSS support.
-*	Display latest messages on dashboard
+*	Display and download messages
 *	Custom error and thank-you messages
 *	Multiple form support
 
@@ -25,8 +25,9 @@ A really, really simple drag and drop contact form. There is nothing to configur
 [quick contact form plugin](http://quick-plugins.com/quick-contact-form/).
 
 == Screenshots ==
-1. This is an example of multiple forms on a single page. Everything on the form is editable.
-2. This is the home admin screen.
+1. This is main admin screen.
+2. This is the messages screen (a copy of all the emails sent from the form).
+3. This is an example of multiple forms on a single page. Everything on the form is editable.
 
 == Installation ==
 
@@ -34,7 +35,7 @@ A really, really simple drag and drop contact form. There is nothing to configur
 3.	Go to 'Plugins', 'Add New' then search for 'Quick Contact Form'.
 4.	Follow the on screen instructions.
 5.	Activate the plugin.
-6.	Go to the plugin 'Settings' page to edit the recipient's email address.
+6.	Go to the plugin 'Settings' page to edit your email address.
 7.	Edit any of the form settings if you wish.
 8.	Drag and drop the 'Quick Contact Form' widget to your sidebar.
 9.	To use the form in your posts and pages add the shortcode `[qcf]`.
@@ -51,7 +52,7 @@ Go to your plugin list and scroll down until you see 'Quick Contact Form' and cl
 [qcf]
 
 = How do I change the colours? =
-Edit the 'quick-contact-form-styles.css' or used the Custom CSS option on the plugin settings pages.
+Edit the 'quick-contact-form-styles.css' or use the styling options.
 
 = Can I add more fields? =
 No.
@@ -69,6 +70,10 @@ I did, and so have you.  Maybe there will be more, who knows.
 No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
+
+= 6.0 =
+*	Whole new message display and download option.
+*	Fixed a bug that displayed empty message fields
 
 = 5.7 =
 *	More options when you send the form.

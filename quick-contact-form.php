@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 5.7
+Version: 6.0
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -267,9 +267,11 @@ function qcf_process_form($values,$id) {
 				case 'field9':
 					if ($values['qcfname9'] == $qcf['label'][$item]) $values['qcfname9'] ='';
 					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags($values['qcfname9']) . '</p>';
+					break;
 				case 'field10':
 					if ($values['qcfname10'] == $qcf['label'][$item]) $values['qcfname10'] ='';
-					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags($values['qcfname10']) . '</p>';
+					if (!empty($values['qcfname10'])) $content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags($values['qcfname10']) . '</p>';
+					break;
 				}
 			}
 	$sendcontent = "<html><h2>".$reply['bodyhead']."</h2>".$content;
@@ -322,12 +324,12 @@ function qcf_process_form($values,$id) {
 	
 	if ($reply['sendcopy']) mail($values['qcfname2'], 'Message Copy', $copycontent, $headers);
 	
-	$qcf_message = get_option('qcf_message');
-	if(!is_array($qcf_message)) $qcf_message = array();
+	$qcf_messages = get_option('qcf_messages'.$id);
+	if(!is_array($qcf_messages)) $qcf_messages = array();
 	if ($values['qcfname1'] == $qcf['label']['field1']) $values['qcfname1'] ='';
-	$sentdate = date('d M Y');
-	$qcf_message[] = array('field1' => $values['qcfname1'] , 'field2' => $values['qcfname2'] , 'field4' => $values['qcfname4'] , date => $sentdate,);
-	update_option('qcf_message',$qcf_message);
+	$sentdate = date_i18n('d M Y');
+	$qcf_messages[] = array('field0'=>$sentdate,'field1' => $values['qcfname1'] , 'field2' => $values['qcfname2'] , 'field3' => $values['qcfname3'], 'field4' => $values['qcfname4'], 'field5' => $values['qcfname5'], 'field6' => $values['qcfname6'], 'field7' => $values['qcfname7'], 'field8' => $values['qcfname8'], 'field9' => $values['qcfname9'], 'field10' => $values['qcfname10'],date => $sentdate,);
+	update_option('qcf_messages'.$id,$qcf_messages);
 	
 	if ( $reply['qcf_redirect'] == 'checked') {
 		$location = $reply['qcf_redirect_url'];	
@@ -434,16 +436,15 @@ function qcf_use_custom_css () {
 		echo $code;
 		}
 	}
-
 function qcf_get_stored_options ($id) {
 	$qcf = get_option('qcf_settings'.$id);
 	if(!is_array($qcf)) $qcf = array();
 	$default = qcf_get_default_options();
 	$qcf = array_merge($default, $qcf);
 	if (empty($qcf['label']['field10'])) {
-	$qcf['label']['field10'] = 'Select date';
-	$qcf['sort'] = $qcf['sort'].',field10';
-	}
+		$qcf['label']['field10'] = 'Select date';
+		$qcf['sort'] = $qcf['sort'].',field10';
+		}
 	return $qcf;
 	}
 function qcf_get_default_options () {
@@ -591,4 +592,17 @@ function qcf_get_default_email () {
 	$qcf_email = array();
 	$qcf_email[''] = '';
 	return $qcf_email;
+	}
+function qcf_get_stored_msg () {
+	$messageoptions = get_option('qcf_messageoptions');
+	if(!is_array($messageoptions)) $messageoptions = array();
+	$default = qcf_get_default_msg();
+	$messageoptions = array_merge($default, $messageoptions);
+	return $messageoptions;
+	}
+function qcf_get_default_msg () {
+	$messageoptions = array();
+	$messageoptions['messageqty'] = 'fifty';
+	$messageoptions['messageorder'] = 'newest';
+	return $messageoptions;
 	}

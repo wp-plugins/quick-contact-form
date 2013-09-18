@@ -3,7 +3,12 @@
 add_action('init', 'qcf_init');
 add_action('admin_menu', 'qcf_page_init');
 add_action('admin_notices', 'qcf_admin_notice' );
-add_action('wp_dashboard_setup', 'qcf_add_dashboard_widgets' );
+add_action( 'admin_menu', 'add_admin_pages' );
+add_action( 'admin_enqueue_scripts', 'qcf_admin_pointers_header' );
+
+function add_admin_pages() {
+	add_menu_page('Messages', 'Messages', 'manage_options','quick-contact-form/quick-contact-messages.php');
+	}
 
 wp_enqueue_style('qcf_settings',plugins_url('settings.css', __FILE__));
 
@@ -17,7 +22,7 @@ function qcf_page_init() {
 function qcf_admin_tabs($current = 'settings') { 
 	$tabs = array( 'setup' => 'Setup' , 'settings' => 'Form Settings', 'attach' => 'Attachments' , 'styles' => 'Styling' , 'reply' => 'Send Options' , 'error' => 'Error Messages' , 'help' => 'Help' , 'reset' => 'Reset' , ); 
 	$links = array();  
-	echo '<div id="icon-themes" class="icon32"><br></div>';
+	echo '';
 	echo '<h2 class="nav-tab-wrapper">';
 	foreach( $tabs as $tab => $name ) {
 		$class = ( $tab == $current ) ? ' nav-tab-active' : '';
@@ -93,14 +98,12 @@ function qcf_setup ($id) {
 		<p>Enter your email address. To send to multiple addresses, put a comma betweeen each address.</p>
 		<p><input type="text" style="width:100%" label="new_email" name="new_email" value="'.$new_email.'" /></p>
 		<input type="hidden" name="alternative" value="' . $qcf_setup['alternative'] . '" />
-		<h2>Dashboard Widget</h2>
-		<p><input style="margin:0; padding:0; border:none" type="checkbox" name="dashboard" ' . $qcf_setup['dashboard'] . ' value="checked"> Display the most recent messages on your dashboard</p>
-		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Settings" /></p>
+		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Create New Form" /></p>
 		</form>
 		</div>
 		<div class="qcf-options"> 
 		<h2>Adding the contact form to your site</h2>
-		<p>To add the basic contact form your posts or pages use the shortcode: <code>[qcf]</code>.<br />
+		<p>To add the basic contact form to your posts or pages use the shortcode: <code>[qcf]</code>.<br />
 		<p>If you have a named form the shortcode is <code>[qcf id="form name"]</code>.<br />
 		<p>To add the form to your theme files use <code>&lt;?php echo do_shortcode("[qcf]"); ?&gt;</code></p>
 		<p>There is also a widget called "Quick Contact Form" you can drag and drop into a sidebar.</p>
@@ -111,10 +114,9 @@ function qcf_setup ($id) {
 		<p>To change the way the form looks use the <a href="?page=quick-contact-form/settings.php&tab=styles">styling</a> tab.</p>
 		<p>You can also customise the <a href="?page=quick-contact-form/settings.php&tab=error">error messages</a>.</p>
 		<p>If it all goes wrong you can <a href="?page=quick-contact-form/settings.php&tab=reset">reset</a> everything.</p>
-		<h2>Version 5.7: What\'s New</h2>
-		<p>Main changes are to the send options. You can now use the subject field as the email subject. There is an option to send a copy of the message to the visitor and you can refresh the page after the thank-you message.</p>
-		<h2>Coming Soon!</h2>
-		<p>I\'m working on a message download thing. It will display all your messages (in full) and allow you to download as a CSV. I need people to help with the UI. If you are interested then please get in contact.</p>
+		<p>To see all your messages click on the <b>Messages</b> tab in the dashboard menu or <a href="?page=quick-contact-form/quick-contact-messages.php">click here</a>.</p>
+		<h2>Version 6.0: What\'s New</h2>
+		<p>All your messages are now saved in seperate files (one for each form). To get to the messages use the <b>Messages</b> link in the dashboard menu. There are some display settings and you can download as a CSV or delete he lot if you wish.</p>
 		<p>Please send bug reports to <a href="mailto:mail@quick-plugins.com">mail@quick-plugins.com</a>.</p>	
 		</div>';
 	echo $content;
@@ -350,7 +352,6 @@ function qcf_styles($id) {
 		<input style="margin:0; padding:0; border:none;" type="radio" name="background" value="theme" ' . $theme . ' /> Use theme colours<br />
 		<input style="margin:0; padding:0; border:none;" type="radio" name="background" value="color" ' . $color . ' /> Set your own (enter HEX code or color name below)</p>
 	<p><input type="text" style="width:7em" label="background" name="backgroundhex" value="' . $style['backgroundhex'] . '" /></p>
-	<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /></p>
 	<h2>Custom CSS</h2>
 	<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="use_custom"' . $style['use_custom'] . ' value="checked" /> Use Custom CSS</p>
 	<p><textarea style="width:100%; height: 200px" name="styles">' . $style['styles'] . '</textarea></p>
@@ -497,7 +498,7 @@ function qcf_error_page($id) {
 		<p><input type="text" style="width:100%" name="mathsmissing" value="' .  $error['mathsmissing'] . '" /></p>
 		<p>Maths Captcha wrong answer:</p>
 		<p><input type="text" style="width:100%" name="mathsanswer" value="' .  $error['mathsanswer'] . '" /></p>
-		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="submit" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the error settings for '.$id.'?\' );"/></p>
+		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the error settings for '.$id.'?\' );"/></p>
 		</form>
 		</div>
 		<div class="qcf-options"> 
@@ -512,22 +513,25 @@ function qcf_help($id) {
 		<div class="qcf-options"> 
 		<h2>Getting Started</h2>
 		<p>A default form is already installed and ready to use. To add to a page or a post just add the shortcode <code>[qcf]</code>. If you want to add the form to a sidebar use the Quick Contact Form widget.</p>
-		<p>You can now use the tabbed options on this page to change any of settings. If you haven\'t already, save your email address for the default form.</p>
+		<p>You can now use the tabbed options on this page to change any of settings. If you haven\'t already, check and save your email address for the default form.</p>
 		<h2>Form settings and options</h2>
-		<p>You can create as many different forms as you like each with their own settings. Just name the form and add an email address on the setup page. To use a named form change the shortcode to <code>[qcf id="name-of-form"]</code>. If you are using a sidebar widget, enter the name of the form. If you leave it blank or there is an error the default form will display.</p>
+		<p>You can create as many different forms as you like each with their own settings. Just name the form and add an email address on the setup page. To use a named form change the shortcode to <code>[qcf id="name-of-form"]</code>. If you are using a sidebar widget, select the form from the dropdown options.</p>
 		<p>The <a href= "?page=quick-contact-form/settings.php&tab=settings">Form Settings</a> page allows you to select and order which fields are displayed, change the labels and have them validated. You can also add an optional spambot cruncher. When you save the changes the updated form will preview on the right.</p>
-		<p>To change the width of the form, border style and background colour use the <a href= "?page=quick-contact-form/settings.php&tab=styles">styling</a> page. You also have the option to add some custom CSS.</p>
-		<p>You can create your own <a href= "?page=quick-contact-form/settings.php&tab=error">error messages</a> and configure <a href= "?page=quick-contact-form/settings.php&tab=reply">how the message is sent</a> as well.</p>
-		<p>If you want to allow attachments then use the <a href= "?page=quick-contact-form/settings.php&tab=attach">attachments page</a>. Make sure to restrict the file types people can send. You will also have to adjust the field width. This is because the input field ignores just about all styling. <a href="http://www.quirksmode.org/dom/inputfile.html" target="_blank">Quirksmode</a> has some suggestions on how to manage this but it\'s not easy. Even then, every browser is different so the attachment field won\'t look the same every time.</p>
+		<p>To change the width of the form, fonts, colours, border and other styles use the <a href= "?page=quick-contact-form/settings.php&tab=styles">Styling</a> page. You also have the option to add some custom CSS.</p>
+		<p>You can create your own <a href= "?page=quick-contact-form/settings.php&tab=error">Error Messages</a> and configure the <a href= "?page=quick-contact-form/settings.php&tab=reply">Send Options</a> as well.</p>
+		<p>If you want to allow attachments then use the <a href= "?page=quick-contact-form/settings.php&tab=attach">Attachments</a> page. Make sure to restrict the file types people can send. You will also have to adjust the field width. This is because the input field ignores just about all styling. <a href="http://www.quirksmode.org/dom/inputfile.html" target="_blank">Quirksmode</a> has some suggestions on how to manage this but it\'s not easy. Even then, every browser is different so the attachment field won\'t look the same every time.</p>
 		<p>If it all goes a bit pear shaped you can <a href= "?page=quick-contact-form/settings.php&tab=reset">reset everything</a> to the defaults.</p>
 		<p>There is some development info on <a href="http://quick-plugins.com/quick-contact-form/" target="_blank">my plugin page</a> along with a feedback form. Or you can email me at <a href="mailto:mail@quick-plugins.com">mail@quick-plugins.com</a>.</p>
 		</div>
 		<div class="qcf-options"> 
 		<h2>Validation</h2>
-		<p>Check the validation box if you want a field checked.</p>
+		<p>On the <a href= "?page=quick-contact-form/settings.php&tab=settings">Form Settings</a> page check the validation box if you want a field checked.</p>
 		<p>Validation removes all the unwanted characters (URLs, HTML, javascript and so on) leaving just the alphabet, numbers and a few punctuation marks).</p>
 		<p>It then checks that the field isn\'t empty or that the user has actually typed something in the box. The error message suggests that they need to enter &lt;something&gt; where something is the info you need (name, email, phone number, colour etc).</p>
 		<p>It also checks for a valid email address and phone number. This only takes place in the telephone and email fields. If you want the email address and telephone number format validated even if they aren\'t reuquired fields, then check the boxes on the <a href= "?page=quick-contact-form/settings.php&tab=error">error messages</a> page.</p>
+		<h2>Messages</h2>
+		<p>Older versions of the plugin displayed sent messages on the dashboard. The problem was if you had multiple forms you couldn\'t tell which message came from what form.</p>
+		<p>All messages are now displayed in full with a download option using the <b>Messages</b> link in the dashboard menu.</p>
 		</div>';
 	echo $content;
 	}
@@ -549,7 +553,7 @@ function qcf_reset_page($id) {
 		if (isset($_POST['qcf_reset_form'])) {
 			delete_things($id);
 			if ($id) qcf_admin_notice("<b>The form called ".$id. " has been reset.</b> Use the <a href= '?page=quick-contact-form/settings.php&tab=setup'>Setup</a> tab to add a new named form");
-			else qcf_admin_notice("<b>The default form called has been reset.</b> Use the <a href= '?page=quick-contact-form/settings.php&tab=setup'>Setup</a> tab to add a new named form");
+			else qcf_admin_notice("<b>The default form has been reset.</b>");
 			}
 		if (isset($_POST['qcf_reset_options'])) {
 			delete_option('qcf_settings'.$id);
@@ -571,11 +575,6 @@ function qcf_reset_page($id) {
 			if ($id) qcf_admin_notice("<b>The styles for ".$id." have been reset.</b>. Use the <a href= '?page=quick-contact-form/settings.php&tab=styles'>Styling</a> tab to change the settings");
 			else qcf_admin_notice("<b>The default styles have been reset.</b>. Use the <a href= '?page=quick-contact-form/settings.php&tab=styles'>Styling</a> tab to change the settings");
 			}
-		if (isset($_POST['qcf_reset_message'])) {
-			$qcf_message = array();
-			update_option('qcf_message', $qcf_message);
-			if ($id) qcf_admin_notice("<b>The message list for has been deleted.</b> Only those messages received from today will be displayed.");
-			}
 		if (isset($_POST['qcf_reset_errors'])) {
 			delete_option('qcf_error'.$id);
 			if ($id) qcf_admin_notice("<b>The error messages for ".$id." have been reset.</b> Use the <a href= '?page=quick-contact-form/settings.php&tab=error'>Error Messages</a> tab to change the settings.");
@@ -594,7 +593,7 @@ function qcf_reset_page($id) {
 		}
 	$qcf_setup = qcf_get_stored_setup();
 	$id=$qcf_setup['current'];
-	$content .='<div class="qcf-options" style="width:90%">';
+	$content .='<div class="qcf-options">';
 	if ($id) $content .='<h2 style="color:#B52C00">Reset the options for ' . $id . '</h2>';
 	else $content .='<h2 style="color:#B52C00">Reset the default form</h2>';
 	$content .= qcf_change_form($qcf_setup);
@@ -611,8 +610,6 @@ function qcf_reset_page($id) {
 		<input style="margin:0; padding:0; border:none;" type="checkbox" name="qcf_reset_form"> Reset this form to default settings';
 		if ($id) $content .= '<br /><input style="margin:0; padding:0; border:none;" type="checkbox" name="qcf_delete_form"> Delete '.$id.'</p>';
 		$content .= '<hr>
-		<p>
-		<input style="margin:0; padding:0; border:none;" type="checkbox" name="qcf_reset_message"> Clear all dashboard messages - this won\'t delete any emails you have recieved.</p>
 		<p>
 		<input type="submit" class="button-primary" name="qcf_reset" style="color: #FFF" value="Reset Options" onclick="return window.confirm( \'Are you sure you want to reset these settings?\' );"/>
 		</form>
@@ -637,6 +634,7 @@ function delete_things($id) {
 	}
 function qcf_init() {
 	wp_enqueue_script('jquery-ui-sortable');
+	qcf_generate_csv();
 	return;
 	}
 function qcf_admin_notice($message) {
@@ -664,12 +662,6 @@ function qcf_change_form_update() {
 		update_option( 'qcf_setup', $qcf_setup);
 		}
 	}
-function qcf_add_dashboard_widgets() {
-	$qcf_setup = qcf_get_stored_setup();
-	if ( $qcf_setup['dashboard'] == 'checked' ) {
-		wp_add_dashboard_widget( 'qcf_dashboard_widget', 'Latest Messages', 'qcf_dashboard_widget' );	
-		}
-	}
 function qcf_dashboard_widget() {
 	$message = get_option( 'qcf_message' );
 	if(!is_array($message)) $message = array();
@@ -692,4 +684,83 @@ function qcf_dashboard_widget() {
 	$dashboard .= '</table>'
 			. '</div>';
 	echo $dashboard;
+	}
+function qcf_admin_pointers_header() {
+	if ( qcf_admin_pointers_check() ) {
+		add_action( 'admin_print_footer_scripts', 'qcf_admin_pointers_footer' );
+		wp_enqueue_script( 'wp-pointer' );
+		wp_enqueue_style( 'wp-pointer' );
+		}
+	}
+function qcf_admin_pointers_check() {
+	$admin_pointers = qcf_admin_pointers();
+	foreach ( $admin_pointers as $pointer => $array ) {
+		if ( $array['active'] ) return true;
+		}
+	}
+function qcf_admin_pointers_footer() {
+	$admin_pointers = qcf_admin_pointers();
+	?>
+	<script type="text/javascript">
+	/* <![CDATA[ */
+	( function($) {
+   	<?php
+	foreach ( $admin_pointers as $pointer => $array ) {
+		if ( $array['active'] ) {
+		?>
+		$( '<?php echo $array['anchor_id']; ?>' ).pointer( {
+			content: '<?php echo $array['content']; ?>',
+			position: {
+			edge: '<?php echo $array['edge']; ?>',
+			align: '<?php echo $array['align']; ?>'
+			},
+		close: function() {
+		$.post( ajaxurl, {pointer: '<?php echo $pointer; ?>',action: 'dismiss-wp-pointer'} );
+		}
+	} ).pointer( 'open' );
+	<?php } } ?>
+	} )(jQuery);
+	/* ]]> */
+	</script>
+	<?php
+	}
+function qcf_admin_pointers() {
+	$dismissed = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
+	$version = '6_0';
+	$prefix = 'qcf_admin_pointers' . $version . '_';
+	$new_pointer_content = '<h3>Quick Contact Form</h3>';
+	$new_pointer_content .= '<p>Welcome to the new and improved plugin - if you are upgrading your messages will now appear here.</p><p>If you are new to the plugin then start on the <a href="options-general.php?page=quick-contact-form/settings.php">Settings</a> page.</p>';
+	return array(
+		$prefix . 'new_items' => array(
+		'content' => $new_pointer_content,
+		'anchor_id' => '#toplevel_page_quick-contact-form-quick-contact-messages',
+		'edge' => 'left',
+		'align' => 'left',
+		'active' => ( ! in_array( $prefix . 'new_items', $dismissed ) )
+		),);
+	}
+function qcf_generate_csv() {
+	if(isset($_POST['download_csv'])) {
+	$id = $_POST['formname'];
+		$filename = urlencode($id.'.csv');
+		if ($id == '') $filename = urlencode('default.csv');
+		header( 'Content-Description: File Transfer' );
+		header( 'Content-Disposition: attachment; filename="'.$filename.'"');
+		header( 'Content-Type: text/csv');$outstream = fopen("php://output",'w');
+		$message = get_option( 'qcf_messages'.$id );
+		if(!is_array($message))$message = array();
+		$qcf = qcf_get_stored_options ($id);
+		$headerrow = array();
+		foreach (explode( ',',$qcf['sort']) as $name) {if ($qcf['active_buttons'][$name] == "on") array_push($headerrow, $qcf['label'][$name]);}
+		array_push($headerrow,'Date Sent');
+		fputcsv($outstream,$headerrow, ',', '"');
+		foreach(array_reverse( $message ) as $value) {
+			$cells = array();
+			foreach (explode( ',',$qcf['sort']) as $name) {if ($qcf['active_buttons'][$name] == "on") array_push($cells,$value[$name]);}
+			array_push($cells,$value['field0']);
+			fputcsv($outstream,$cells, ',', '"');
+			}
+		fclose($outstream); 
+		exit;
+		}
 	}
