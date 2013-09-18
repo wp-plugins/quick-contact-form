@@ -25,9 +25,9 @@ A really, really simple drag and drop contact form. There is nothing to configur
 [quick contact form plugin](http://quick-plugins.com/quick-contact-form/).
 
 == Screenshots ==
-1. This is main admin screen.
-2. This is the messages screen (a copy of all the emails sent from the form).
-3. This is an example of multiple forms on a single page. Everything on the form is editable.
+1.	This is main admin screen.
+2.	This is an example of multiple forms on a single page. Everything on the form is editable.
+3.	This is the messages screen (a copy of all the emails sent from the form).
 
 == Installation ==
 
