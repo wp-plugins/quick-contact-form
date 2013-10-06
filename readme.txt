@@ -71,6 +71,13 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 6.1 =
+*	Small bug fix to stop duplicate info being sent.
+*	Improved the way fonts are managed
+*	Added styling options for the submit button
+*	Added XSS filters
+*	Custom CSS now loads as an external file
+
 = 6.0 =
 *	Whole new message display and download option.
 *	Fixed a bug that displayed empty message fields
