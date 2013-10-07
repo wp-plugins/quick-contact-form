@@ -14,7 +14,7 @@ add_filter('plugin_action_links', 'qcf_plugin_action_links', 10, 2 );
 if (is_admin()) require_once( plugin_dir_path( __FILE__ ) . '/settings.php' );
 
 $css_dir = plugin_dir_path( __FILE__ ) . '/quick-contact-form-custom.css' ;
-if (!file_exists($css_dir)) generate_options_css(); 
+if (!file_exists($css_dir)) qcf_options_css(); 
 
 wp_enqueue_script( 'qcf_script',plugins_url('quick-contact-form-javascript.js', __FILE__));
 
@@ -427,7 +427,7 @@ class qcf_widget extends WP_Widget {
 	}
 add_action( 'widgets_init', create_function('', 'return register_widget("qcf_widget");') );
 
-function generate_options_css() {
+function qcf_options_css() {
 	$qcf_form = qcf_get_stored_setup();
 	$arr = explode(",",$qcf_form['alternative']);
 	foreach ($arr as $item) {

@@ -294,7 +294,7 @@ function qcf_styles($id) {
 		$options = array( 'font','font-family','font-size','font-colour','input-border','input-required','border','width','widthtype','background','backgroundhex','corners','use_custom','styles','usetheme','submit-colour','submit-background','submit-button');
 		foreach ( $options as $item) $style[$item] = stripslashes($_POST[$item]);
 		update_option( 'qcf_style'.$id, $style);
-		generate_options_css();
+		qcf_options_css();
 		qcf_admin_notice("The form styles have been updated.");
 		}
 	if( isset( $_POST['Reset'])) {
@@ -724,8 +724,6 @@ function qcf_admin_pointers() {
 		'active' => ( ! in_array( $prefix . 'new_items', $dismissed ) )
 		),);
 	}
-
-
 function qcf_generate_csv() {
 	if(isset($_POST['download_csv'])) {
 	$id = $_POST['formname'];
