@@ -299,6 +299,7 @@ function qcf_styles($id) {
 		}
 	if( isset( $_POST['Reset'])) {
 		delete_option('qcf_style'.$id);
+		qcf_options_css();
 		if ($id) qcf_admin_notice("The style settings for ".$id. " have been reset.");
 		else qcf_admin_notice("The default form settings have been updated.");
 		}
