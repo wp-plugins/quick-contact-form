@@ -71,6 +71,9 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 6.2.2 =
+*	Fixed a complete cock up on the message styling
+
 = 6.1 =
 *	Small bug fix to stop duplicate info being sent.
 *	Improved the way fonts are managed
