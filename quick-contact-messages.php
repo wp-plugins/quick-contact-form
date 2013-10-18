@@ -64,7 +64,7 @@ function qcf_show_messages($id) {
 			foreach (explode( ',',$qcf['sort']) as $name) {
 				if ($qcf['active_buttons'][$name] == "on") {
 					if ($value[$name]) $report = 'messages';
-					$content .= '<td>'.$value[$name].'</td>';
+					$content .= '<td>'.strip_tags($value[$name]).'</td>';
 					}
 				}
 			$content .= '<td>'.$value['field0'].'</td></tr>';
@@ -78,14 +78,14 @@ function qcf_show_messages($id) {
 			foreach (explode( ',',$qcf['sort']) as $name) {
 				if ($qcf['active_buttons'][$name] == "on") {
 					if ($value[$name]) $report = 'messages';
-					$content .= '<td>'.$value[$name].'</td>';
+					$content .= '<td>'.strip_tags($value[$name]).'</td>';
 					}
 				}
 			$content .= '<td>'.$value['field0'].'</td></tr>';
 			$count = $count+1;	}		
 			}
 		}	
-	if ($report) $dashboard .= strip_tags($content).'</table>';
+	if ($report) $dashboard .= $content.'</table>';
 	else $dashboard .= '</table><p>No messages found</p>';
 	$dashboard .='<form method="post" id="download_form" action=""><input type="hidden" name="formname" value = "'.$id.'" /><input type="submit" name="download_csv" class="submit" value="Export to CSV" /> <input type="submit" name="qcf_reset_message'.$id.'" class="submit" style="color: #FFF;" value="Delete Messages" onclick="return window.confirm( \'Are you sure you want to delete the messages for '.$title.'?\' );"/></form></div></div>';		
 	echo $dashboard;

@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 6.1
+Version: 6.2.2
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -14,10 +14,10 @@ add_filter('plugin_action_links', 'qcf_plugin_action_links', 10, 2 );
 if (is_admin()) require_once( plugin_dir_path( __FILE__ ) . '/settings.php' );
 
 $css_dir = plugin_dir_path( __FILE__ ) . '/quick-contact-form-custom.css' ;
-if (!file_exists($css_dir)) qcf_options_css(); 
+$filename = plugin_dir_path( __FILE__ );
+if (is_writable($filename) && !file_exists($css_dir)) qcf_options_css();
 
 wp_enqueue_script( 'qcf_script',plugins_url('quick-contact-form-javascript.js', __FILE__));
-
 wp_enqueue_style( 'qcf_style',plugins_url('quick-contact-form-style.css', __FILE__));
 wp_enqueue_style( 'qcf_custom',plugins_url('quick-contact-form-custom.css', __FILE__));
 wp_enqueue_script('jquery-ui-datepicker');
@@ -335,6 +335,11 @@ function qcf_process_form($values,$id) {
 			$message = $sendcontent;
 			}
 
+	if (function_exists('qcf_select_email')) {
+		$email = qcf_select_email($id,$values['qcfname5']);
+		if ($email) $qcf_email = $email;
+		}
+	
 	if ($reply['mail'] == 'wp-mail') wp_mail($qcf_email, $subject, $message, $headers);
 	else mail($qcf_email, $subject, $message, $headers);
 	
@@ -435,13 +440,13 @@ function qcf_options_css() {
 		$style = qcf_get_stored_style($item);
 		if ($item !='') $id = '.'.$item; else $id = '.default';
 		if ($style['font'] == 'plugin') {
-			$font = "font-family: ".$style['font-family']."; font-size: ".$style['font-size'].";color: ".$style['font-colour'].";line-height:100%;";
-			$inputfont = "font-family: ".$style['font-family']."; color: ".$style['font-colour'].";";
+			$font = "font-family: ".$style['text-font-family']."; font-size: ".$style['text-font-size'].";color: ".$style['text-font-colour'].";line-height:100%;";
+			$inputfont = "font-family: ".$style['font-family']."; font-size: ".$style['font-size']."; color: ".$style['font-colour'].";";
 			$submitfont = "font-family: ".$style['font-family'];
 			}
-		$input = ".qcf-style".$id." input[type=text], .qcf-style".$id." textarea, .qcf-style".$id." select {border: ".$style['input-border'].";".$font.";}\r\n";
-		$paragraph = ".qcf-style".$id." .input{".$font.";}\r\n";
-		$required = ".qcf-style".$id." input[type=text].required, .qcf-style".$id." select.required, .qcf-style textarea.required {border: ".$style['input-required'].";}\r\n";
+		$input = ".qcf-style".$id." input[type=text], .qcf-style".$id." textarea, .qcf-style".$id." select {border: ".$style['input-border'].";".$inputfont.";}\r\n";
+		$paragraph = ".qcf-style".$id." p, .qcf-style".$id." select{".$font.";}\r\n";
+		$required = ".qcf-style".$id." input[type=text].required, .qcf-style".$id." select.required, .qcf-style".$id." textarea.required {border: ".$style['input-required'].";}\r\n";
 		$submit = ".qcf-style".$id." #submit{color:".$style['submit-colour'].";background:".$style['submit-background'].";".$submitfont.";font-size: inherit;}\r\n";
 		if ($style['background'] == 'white') $background = ".qcf-style".$id." div {background:#FFF;}\r\n";
 		if ($style['background'] == 'color') $background = ".qcf-style".$id." div {background:".$style['backgroundhex'].";}\r\n";
@@ -519,6 +524,9 @@ function qcf_get_default_style() {
 	$style['font-family'] = 'arial, sans-serif';
 	$style['font-size'] = '1.2em';
 	$style['font-colour'] = '#465069';
+$style['text-font-family'] = 'arial, sans-serif';
+	$style['text-font-size'] = '1.2em';
+	$style['text-font-colour'] = '#465069';
 	$style['width'] = 280;
 	$style['widthtype'] = 'pixel';
 	$style['border'] = 'plain';
@@ -534,7 +542,7 @@ function qcf_get_default_style() {
 	$style['submit-button'] = '';
 	$style['corners'] = 'corner';
 	$style['use_custom'] = '';
-	$style['styles'] = "#qcf-style {\r\n\r\n}";
+	$style['styles'] = ".qcf-style {\r\n\r\n}";
 	return $style;
 	}
 function qcf_get_stored_reply ($id) {

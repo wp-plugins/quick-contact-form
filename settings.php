@@ -6,7 +6,6 @@ add_action('admin_notices', 'qcf_admin_notice' );
 add_action( 'admin_menu', 'add_admin_pages' );
 // add_action( 'admin_enqueue_scripts', 'qcf_admin_pointers_header' ); //
 
-wp_enqueue_style( 'qcf_custom',plugins_url('quick-contact-form-custom.css', __FILE__));
 wp_enqueue_style('qcf_settings',plugins_url('settings.css', __FILE__));
 
 function add_admin_pages() {
@@ -291,7 +290,7 @@ function qcf_attach ($id) {
 function qcf_styles($id) {
 	qcf_change_form_update();
 	if( isset( $_POST['Submit'])) {
-		$options = array( 'font','font-family','font-size','font-colour','input-border','input-required','border','width','widthtype','background','backgroundhex','corners','use_custom','styles','usetheme','submit-colour','submit-background','submit-button');
+		$options = array( 'font','font-family','font-size','font-colour','text-font-family','text-font-size','text-font-colour','input-border','input-required','border','width','widthtype','background','backgroundhex','corners','use_custom','styles','usetheme','submit-colour','submit-background','submit-button');
 		foreach ( $options as $item) $style[$item] = stripslashes($_POST[$item]);
 		update_option( 'qcf_style'.$id, $style);
 		qcf_options_css();
@@ -323,30 +322,14 @@ function qcf_styles($id) {
 		<input style="margin:0; padding:0; border:none;" type="radio" name="widthtype" value="pixel" ' . $pixel . ' /> Pixel (fixed)</p>
 	<p>Enter the width of the form in pixels. Just enter the value, no need to add \'px\'. The current width is as you see it here.</p>
 	<p><input type="text" style="width:4em" label="width" name="width" value="' . $style['width'] . '" /> px</p>
-	<h2>Font Options</h2>
-	<p>
-		<input style="margin:0; padding:0; border:none" type="radio" name="font" value="theme" ' . $theme . ' /> Use your theme font styles<br />
-		<input style="margin:0; padding:0; border:none" type="radio" name="font" value="plugin" ' . $plugin . ' /> Use Plugin font styles (enter font family and size below)
-	</p>
-	<p>Font Family: <input type="text" style="width:15em" label="font-family" name="font-family" value="' . $style['font-family'] . '" /></p>
-	<p>Font Size: <input type="text" style="width:6em" label="font-size" name="font-size" value="' . $style['font-size'] . '" /></p>
-	<p>Font Colour: <input type="text" style="width:15em" label="font-colour" name="font-colour" value="' . $style['font-colour'] . '" /></p>
-	<h2>Input Fields</h2>
-	<h3>Borders</h3>
-	<p>Normal Border: <input type="text" style="width:15em" label="input-border" name="input-border" value="' . $style['input-border'] . '" /></p>
-	<p>Required Fields: <input type="text" style="width:15em" label="input-required" name="input-required" value="' . $style['input-required'] . '" /></p>
-	<h3>Corners</h3>
-	<p>
-		<input style="margin:0; padding:0; border:none;" type="radio" name="corners" value="corner" ' . $corner . ' /> Use theme settings<br />
-		<input style="margin:0; padding:0; border:none;" type="radio" name="corners" value="square" ' . $square . ' /> Square corners<br />
-		<input style="margin:0; padding:0; border:none;" type="radio" name="corners" value="round" ' . $round . ' /> 5px rounded corners
-	</p>
-	<h2>Submit Button</h2>
-		<p>Font Colour: <input type="text" style="width:15em" label="submit-colour" name="submit-colour" value="' . $style['submit-colour'] . '" /></p>
-		<p>Background: <input type="text" style="width:15em" label="submit-background" name="submit-background" value="' . $style['submit-background'] . '" /></p>
-		<p>Button Image: <input type="text" style="width:25em" label="submit-button" name="submit-button" value="' . $style['submit-button'] . '" /><br>
-		Leave blank if you don\'t want to use an image</p>
-	<h2>Form Border</h2>
+	<h2>Borders</h2>
+<table>
+<tr><td colspan="2"><h3>Input Fields</h3></td></tr>
+	<tr><td>Normal Border: </td><td><input type="text" style="width:15em" label="input-border" name="input-border" value="' . $style['input-border'] . '" /></td></tr>
+	<tr><td>Required Fields: </td><td><input type="text" style="width:15em" label="input-required" name="input-required" value="' . $style['input-required'] . '" /></td></tr>
+	<tr><td>Corners: </td><td><input style="margin:0; padding:0; border:none;" type="radio" name="corners" value="corner" ' . $corner . ' /> Use theme settings <input style="margin:0; padding:0; border:none;" type="radio" name="corners" value="square" ' . $square . ' /> Square corners 	<input style="margin:0; padding:0; border:none;" type="radio" name="corners" value="round" ' . $round . ' /> 5px rounded corners</td></tr>
+</table>
+		<h3>Form Border</h3>
 	<p>Note: The rounded corners and shadows only work on CSS3 supported browsers and even then not in IE8. Don\'t blame me, blame Microsoft.</p>
 	<p>
 		<input style="margin:0; padding:0; border:none;" type="radio" name="border" value="none" ' . $none . ' /> No border<br />
@@ -360,11 +343,31 @@ function qcf_styles($id) {
 		<input style="margin:0; padding:0; border:none;" type="radio" name="background" value="theme" ' . $theme . ' /> Use theme colours<br />
 		<input style="margin:0; padding:0; border:none;" type="radio" name="background" value="color" ' . $color . ' /> Set your own (enter HEX code or color name below)</p>
 	<p><input type="text" style="width:7em" label="background" name="backgroundhex" value="' . $style['backgroundhex'] . '" /></p>
-	<h2>Custom CSS</h2>
+<h2>Font Options</h2>
+	<p>
+		<input style="margin:0; padding:0; border:none" type="radio" name="font" value="theme" ' . $theme . ' /> Use your theme font styles<br />
+		<input style="margin:0; padding:0; border:none" type="radio" name="font" value="plugin" ' . $plugin . ' /> Use Plugin font styles (enter font family and size below)
+	</p>
+<table>
+<tr><td colspan="2"><h3>Input Fields</h3></td></tr>
+<tr><td>Font Family: </td><td><input type="text" style="width:15em" label="font-family" name="font-family" value="' . $style['font-family'] . '" /></td></tr>
+<tr><td>Font Size: </td><td><input type="text" style="width:6em" label="font-size" name="font-size" value="' . $style['font-size'] . '" /></td></tr>
+<tr><td>Font Colour: </td><td><input type="text" style="width:15em" label="font-colour" name="font-colour" value="' . $style['font-colour'] . '" /></td></tr>
+<tr><td colspan="2"><h3>Other text content</h3></td></tr>
+
+<tr><td>Font Family: </td><td><input type="text" style="width:15em" label="text-font-family" name="text-font-family" value="' . $style['text-font-family'] . '" /></td></tr>
+	<tr><td>Font Size: </td><td><input type="text" style="width:6em" label="text-font-size" name="text-font-size" value="' . $style['text-font-size'] . '" /></td></tr>
+	<tr><td>Font Colour: </td><td><input type="text" style="width:15em" label="text-font-colour" name="text-font-colour" value="' . $style['text-font-colour'] . '" /></td></tr>
+<tr><td td colspan="2"><h3>Submit Button</h3></td></tr>
+	<tr><td>Font Colour: </td><td><input type="text" style="width:15em" label="submit-colour" name="submit-colour" value="' . $style['submit-colour'] . '" /></td></tr>
+		<tr><td>Background: </td><td><input type="text" style="width:15em" label="submit-background" name="submit-background" value="' . $style['submit-background'] . '" /></td></tr>
+		<tr><td>Button Image: </td><td><input type="text" style="width:25em" label="submit-button" name="submit-button" value="' . $style['submit-button'] . '" /><br>Leave blank if you don\'t want to use an image</td></tr>
+</table>	
+<h2>Custom CSS</h2>
 	<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="use_custom"' . $style['use_custom'] . ' value="checked" /> Use Custom CSS</p>
-	<p><textarea style="width:100%; height: 200px" name="styles">' . $style['styles'] . '</textarea></p>
+	<p><textarea style="width:100%; height: 100px" name="styles">' . $style['styles'] . '</textarea></p>
 	<p>To see all the styling use the <a href="'.get_admin_url().'plugin-editor.php?file=quick-contact-form/quick-contact-form-style.css">CSS editor</a>.</p>
-	<p>The main style wrapper is the <code>#qcf-style</code> id.</p>
+	<p>The main style wrapper is the <code>.qcf-style</code> id.</p>
 	<p>The form borders are: #none, #plain, #rounded, #shadow, #roundshadow.</p>
 	<p>Errors and required fields have the classes .error and .required</p>
 	<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the style settings for '.$id.'?\' );"/></p>
