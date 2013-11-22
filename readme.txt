@@ -71,7 +71,14 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
-= 6.2.2 =
+= 6.3 =
+*	Closed an XSS security hole
+*	Fixed some styling issue on the error messages.
+*	Added formating options for textarea
+*	Added more styling options for the submit button
+*	Added clickable lablels for radio and checkbox fields
+
+= 6.2 =
 *	Fixed a complete cock up on the message styling
 
 = 6.1 =

@@ -114,8 +114,6 @@ function qcf_setup ($id) {
 		<p>You can also customise the <a href="?page=quick-contact-form/settings.php&tab=error">error messages</a>.</p>
 		<p>If it all goes wrong you can <a href="?page=quick-contact-form/settings.php&tab=reset">reset</a> everything.</p>
 		<p>To see all your messages click on the <b>Messages</b> tab in the dashboard menu or <a href="?page=quick-contact-form/quick-contact-messages.php">click here</a>.</p>
-		<h2>Version 6.0: What\'s New</h2>
-		<p>All your messages are now saved in seperate files (one for each form). To get to the messages use the <b>Messages</b> link in the dashboard menu. There are some display settings and you can download as a CSV or delete he lot if you wish.</p>
 		<p>Please send bug reports to <a href="mailto:mail@quick-plugins.com">mail@quick-plugins.com</a>.</p>';	
 	$content .= qcfdonate_loop();
 	$content .= '</div>';
@@ -133,7 +131,7 @@ function qcf_form_options($id) {
 		$qcf['dropdownlist'] = str_replace(', ' , ',' , $_POST['dropdown_string']);
 		$qcf['checklist'] = str_replace(', ' , ',' , $_POST['checklist_string']);
 		$qcf['radiolist'] = str_replace(', ' , ',' , $_POST['radio_string']);
-		$options = array( 'sort','lines','title','blurb','border','captcha','mathscaption','send','datepicker');
+		$options = array( 'sort','lines','htmltags','title','blurb','border','captcha','mathscaption','send','datepicker');
 		foreach ( $options as $item) $qcf[$item] = stripslashes($_POST[$item]);
 		update_option( 'qcf_settings'.$id, $qcf);
 		if ($id) qcf_admin_notice("The form settings for ". $id . " have been updated.");
@@ -187,7 +185,7 @@ function qcf_form_options($id) {
 				case 'field1': $type = 'Textbox'; $options = ''; break;
 				case 'field2': $type = 'Email'; $options = ' also validates format'; break;
 				case 'field3': $type = 'Telephone'; $options = 'also checks number format'; 	break;	
-				case 'field4': $type = 'Textarea'; $options = 'Textarea has <input type="text" style="border:1px solid #415063; width:1.5em; padding: 1px; margin:0;" name="lines" . value ="' . $qcf['lines'] . '" /> rows'; break;
+				case 'field4': $type = 'Textarea'; $options = ''; break;
 				case 'field5': $type = 'Dropdown'; $options = ''; break;
 				case 'field6': $type = 'Checkbox'; $options = ''; break;
 				case 'field7': $type = 'Radio'; $options = ''; break;
@@ -212,6 +210,9 @@ function qcf_form_options($id) {
 		<input type="hidden" id="qcf_settings_sort" name="sort" value="'.$qcf['sort'].'" />
 		<h2>Submit button caption</h2>
 		<p><input type="text" style="width:100%; text-align:center" name="send" value="' . $qcf['send'] . '" /></p>
+		<h2>Textarea Options</h2>
+		<p>Number of rows: <input type="text" style="border:1px solid #415063; width:3em;padding: 1px; margin:0;" name="lines" . value ="' . $qcf['lines'] . '" /></p>
+		<p>Allowed Tags: <input type="text" style="border:1px solid #415063; width:15em;padding: 1px; margin:0;" name="htmltags" . value ="' . $qcf['htmltags'] . '" /></p>
 		<h2>Selection field options</h2>
 		<p>Separate each option with a comma. Don\'t use a space between each option!</p>
 		<h3>Dropdown list:</h3>
@@ -281,7 +282,7 @@ function qcf_attach ($id) {
 		</form>
 		</div>
 		<div class="qcf-options">
-		<h2>Form Preview</h2>
+		<h2 style="color:#B52C00">Form Preview</h2>
 		<p>Note: The preview form uses the wordpress admin styles. Your form will use the theme styles so won\'t look exactly like the one below.</p>';
 	$content .=	qcf_loop($id);
 	$content .= '</div>';
@@ -290,7 +291,7 @@ function qcf_attach ($id) {
 function qcf_styles($id) {
 	qcf_change_form_update();
 	if( isset( $_POST['Submit'])) {
-		$options = array( 'font','font-family','font-size','font-colour','text-font-family','text-font-size','text-font-colour','input-border','input-required','border','width','widthtype','background','backgroundhex','corners','use_custom','styles','usetheme','submit-colour','submit-background','submit-button');
+		$options = array( 'font','font-family','font-size','font-colour','text-font-family','text-font-size','text-font-colour','input-border','input-required','border','width','widthtype','submitwidth','submitwidthset','submitposition','background','backgroundhex','corners','use_custom','styles','usetheme','submit-colour','submit-background','submit-button');
 		foreach ( $options as $item) $style[$item] = stripslashes($_POST[$item]);
 		update_option( 'qcf_style'.$id, $style);
 		qcf_options_css();
@@ -307,6 +308,8 @@ function qcf_styles($id) {
 	$style = qcf_get_stored_style($id);
 	$$style['font'] = 'checked';
 	$$style['widthtype'] = 'checked';
+	$$style['submitwidth'] = 'checked';
+	$$style['submitposition'] = 'checked';
 	$$style['border'] = 'checked';
 	$$style['background'] = 'checked';
 	$$style['corners'] = 'checked';
@@ -323,13 +326,13 @@ function qcf_styles($id) {
 	<p>Enter the width of the form in pixels. Just enter the value, no need to add \'px\'. The current width is as you see it here.</p>
 	<p><input type="text" style="width:4em" label="width" name="width" value="' . $style['width'] . '" /> px</p>
 	<h2>Borders</h2>
-<table>
-<tr><td colspan="2"><h3>Input Fields</h3></td></tr>
+	<table>
+	<tr><td colspan="2"><h3>Input Fields</h3></td></tr>
 	<tr><td>Normal Border: </td><td><input type="text" style="width:15em" label="input-border" name="input-border" value="' . $style['input-border'] . '" /></td></tr>
 	<tr><td>Required Fields: </td><td><input type="text" style="width:15em" label="input-required" name="input-required" value="' . $style['input-required'] . '" /></td></tr>
 	<tr><td>Corners: </td><td><input style="margin:0; padding:0; border:none;" type="radio" name="corners" value="corner" ' . $corner . ' /> Use theme settings <input style="margin:0; padding:0; border:none;" type="radio" name="corners" value="square" ' . $square . ' /> Square corners 	<input style="margin:0; padding:0; border:none;" type="radio" name="corners" value="round" ' . $round . ' /> 5px rounded corners</td></tr>
-</table>
-		<h3>Form Border</h3>
+	</table>
+	<h3>Form Border</h3>
 	<p>Note: The rounded corners and shadows only work on CSS3 supported browsers and even then not in IE8. Don\'t blame me, blame Microsoft.</p>
 	<p>
 		<input style="margin:0; padding:0; border:none;" type="radio" name="border" value="none" ' . $none . ' /> No border<br />
@@ -343,27 +346,32 @@ function qcf_styles($id) {
 		<input style="margin:0; padding:0; border:none;" type="radio" name="background" value="theme" ' . $theme . ' /> Use theme colours<br />
 		<input style="margin:0; padding:0; border:none;" type="radio" name="background" value="color" ' . $color . ' /> Set your own (enter HEX code or color name below)</p>
 	<p><input type="text" style="width:7em" label="background" name="backgroundhex" value="' . $style['backgroundhex'] . '" /></p>
-<h2>Font Options</h2>
+	<h2>Submit Button</h2>
+	<p>
+		<input style="margin:0; padding:0; border:none;" type="radio" name="submitwidth" value="submitpercent" ' . $submitpercent . ' /> Same width as the form<br />
+		<input style="margin:0; padding:0; border:none;" type="radio" name="submitwidth" value="submitrandom" ' . $submitrandom . ' /> Same width as the button text<br />
+		<input style="margin:0; padding:0; border:none;" type="radio" name="submitwidth" value="submitpixel" ' . $submitpixel . ' /> Set your own width: <input type="text" style="width:5em" label="submitwidthset" name="submitwidthset" value="' . $style['submitwidthset'] . '" /> (px, % or em)</p>
+	<p>Position: <input style="margin:0; padding:0; border:none;" type="radio" name="submitposition" value="submitleft" ' . $submitleft . ' /> Left <input style="margin:0; padding:0; border:none;" type="radio" name="submitposition" value="submitright" ' . $submitright . ' /> Right</p>
+	<h2>Font Options</h2>
 	<p>
 		<input style="margin:0; padding:0; border:none" type="radio" name="font" value="theme" ' . $theme . ' /> Use your theme font styles<br />
 		<input style="margin:0; padding:0; border:none" type="radio" name="font" value="plugin" ' . $plugin . ' /> Use Plugin font styles (enter font family and size below)
 	</p>
-<table>
-<tr><td colspan="2"><h3>Input Fields</h3></td></tr>
-<tr><td>Font Family: </td><td><input type="text" style="width:15em" label="font-family" name="font-family" value="' . $style['font-family'] . '" /></td></tr>
-<tr><td>Font Size: </td><td><input type="text" style="width:6em" label="font-size" name="font-size" value="' . $style['font-size'] . '" /></td></tr>
-<tr><td>Font Colour: </td><td><input type="text" style="width:15em" label="font-colour" name="font-colour" value="' . $style['font-colour'] . '" /></td></tr>
-<tr><td colspan="2"><h3>Other text content</h3></td></tr>
-
-<tr><td>Font Family: </td><td><input type="text" style="width:15em" label="text-font-family" name="text-font-family" value="' . $style['text-font-family'] . '" /></td></tr>
+	<table>
+	<tr><td colspan="2"><h3>Input Fields</h3></td></tr>
+	<tr><td>Font Family: </td><td><input type="text" style="width:15em" label="font-family" name="font-family" value="' . $style['font-family'] . '" /></td></tr>
+	<tr><td>Font Size: </td><td><input type="text" style="width:6em" label="font-size" name="font-size" value="' . $style['font-size'] . '" /></td></tr>
+	<tr><td>Font Colour: </td><td><input type="text" style="width:15em" label="font-colour" name="font-colour" value="' . $style['font-colour'] . '" /></td></tr>
+	<tr><td colspan="2"><h3>Other text content</h3></td></tr>
+	<tr><td>Font Family: </td><td><input type="text" style="width:15em" label="text-font-family" name="text-font-family" value="' . $style['text-font-family'] . '" /></td></tr>
 	<tr><td>Font Size: </td><td><input type="text" style="width:6em" label="text-font-size" name="text-font-size" value="' . $style['text-font-size'] . '" /></td></tr>
 	<tr><td>Font Colour: </td><td><input type="text" style="width:15em" label="text-font-colour" name="text-font-colour" value="' . $style['text-font-colour'] . '" /></td></tr>
-<tr><td td colspan="2"><h3>Submit Button</h3></td></tr>
+	<tr><td td colspan="2"><h3>Submit Button</h3></td></tr>
 	<tr><td>Font Colour: </td><td><input type="text" style="width:15em" label="submit-colour" name="submit-colour" value="' . $style['submit-colour'] . '" /></td></tr>
 		<tr><td>Background: </td><td><input type="text" style="width:15em" label="submit-background" name="submit-background" value="' . $style['submit-background'] . '" /></td></tr>
 		<tr><td>Button Image: </td><td><input type="text" style="width:25em" label="submit-button" name="submit-button" value="' . $style['submit-button'] . '" /><br>Leave blank if you don\'t want to use an image</td></tr>
-</table>	
-<h2>Custom CSS</h2>
+	</table>	
+	<h2>Custom CSS</h2>
 	<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="use_custom"' . $style['use_custom'] . ' value="checked" /> Use Custom CSS</p>
 	<p><textarea style="width:100%; height: 100px" name="styles">' . $style['styles'] . '</textarea></p>
 	<p>To see all the styling use the <a href="'.get_admin_url().'plugin-editor.php?file=quick-contact-form/quick-contact-form-style.css">CSS editor</a>.</p>
@@ -374,7 +382,7 @@ function qcf_styles($id) {
 	</form>
 	</div>
 	<div class="qcf-options"> 
-	<h2>Test Form</h2>
+	<h2 style="color:#B52C00">Test Form</h2>
 	<p>Not all of your style selections will display here (because of how WordPress works). So check the form on your site.</p>';
 	$content .= qcf_loop($id);
 	$content .= '</div>';
@@ -445,7 +453,7 @@ function qcf_reply_page($id) {
 		</form>
 		</div>
 		<div class="qcf-options"> 
-		<h2>Test Form</h2>
+		<h2 style="color:#B52C00">Test Form</h2>
 		<p>Use the form below to test your thank-you message settings. You will see what your visitors see when they complete and send the form.</p>';
 	$content .= qcf_loop($id);
 	$content .= '</div>';
@@ -513,8 +521,8 @@ function qcf_error_page($id) {
 		</form>
 		</div>
 		<div class="qcf-options"> 
-		<h2>Error Checker</h2>
-		<p>Try sending end a blank form to test your error messages.</p>';
+		<h2 style="color:#B52C00">Error Checker</h2>
+		<p>Send a blank form to test your error messages.</p>';
 	$content .= qcf_loop($id);
 	$content .= '</div>';
 	echo $content;

@@ -1,6 +1,6 @@
 .qcf-options input[type=text], #qcf-options textarea, #qcf-options select, #qcf-options #submit {
-	margin: 5px 0 7px 0;
-	padding: 6px;
+	margin: 2px 0 2px 0;
+	padding: 2px;
 	color: #465069;
 	font-size: 100%;
 	border:1px solid #415063;
@@ -12,7 +12,7 @@
 
 .qcf-style td, #qcf-widget td {
 	border-top: 1px solid #005F6B;
-	padding: 5px 10px 5px 0;
+	padding: 2px;
 	max-width: 400px;
 	vertical-align:top;
 	}

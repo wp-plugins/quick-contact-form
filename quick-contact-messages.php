@@ -64,7 +64,7 @@ function qcf_show_messages($id) {
 			foreach (explode( ',',$qcf['sort']) as $name) {
 				if ($qcf['active_buttons'][$name] == "on") {
 					if ($value[$name]) $report = 'messages';
-					$content .= '<td>'.strip_tags($value[$name]).'</td>';
+					$content .= '<td>'.strip_tags($value[$name],$qcf['htmltags']).'</td>';
 					}
 				}
 			$content .= '<td>'.$value['field0'].'</td></tr>';
@@ -78,7 +78,7 @@ function qcf_show_messages($id) {
 			foreach (explode( ',',$qcf['sort']) as $name) {
 				if ($qcf['active_buttons'][$name] == "on") {
 					if ($value[$name]) $report = 'messages';
-					$content .= '<td>'.strip_tags($value[$name]).'</td>';
+					$content .= '<td>'.strip_tags($value[$name],$qcf['htmltags']).'</td>';
 					}
 				}
 			$content .= '<td>'.$value['field0'].'</td></tr>';
