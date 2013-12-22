@@ -202,7 +202,7 @@ function qcf_form_options($id) {
 		</div>
 		<div style="float:left;">';
 		if ($name <> 'field7') $content .='<input type="checkbox" class="button_activate" style="border: none; padding: 0; margin:0;" name="required_'.$name.'" '.$required.' /> ';
-	$content .= $options . '</div></li>';
+	$content .= $options . '</div><div style="clear:both"></div></li>';
 	}
 	$content .= '
 		</ul>
@@ -391,7 +391,7 @@ function qcf_styles($id) {
 function qcf_reply_page($id) {
 	qcf_change_form_update();
 	if( isset( $_POST['Submit'])) {
-		$options = array( 'replytitle' , 'replyblurb' , 'messages' , 'tracker' , 'url' ,  'page' , 'subject' ,  'subjectoption' , 'qcf_redirect','qcf_reload','qcf_reload_time','qcf_redirect_url','qcfmail','sendcopy','copy_message','bodyhead');
+		$options = array( 'replytitle' , 'replyblurb' , 'replymessage','replycopy','replysubject','messages' , 'tracker' , 'url' ,  'page' , 'subject' ,  'subjectoption' , 'qcf_redirect','qcf_reload','qcf_reload_time','qcf_redirect_url','qcfmail','sendcopy','copy_message','bodyhead');
 		foreach ( $options as $item) $reply[$item] = stripslashes($_POST[$item]);
 		update_option('qcf_reply'.$id, $reply);
 		if ($id) qcf_admin_notice("The send settings for " . $id . " have been updated.");
@@ -435,19 +435,25 @@ function qcf_reply_page($id) {
 			<input style="margin:0; padding:0; border:none" type="checkbox" name="tracker" ' . $reply['tracker'] . ' value="checked"> Show IP address<br />
 			<input style="margin:0; padding:0; border:none" type="checkbox" name="url" ' . $reply['url'] . ' value="checked"> Show URL
 		</p>
+		<h2>Thank you message</h2>
 		<h3>Redirection</h3>
 		<p>Send your visitor to new page instead of displaying the thank-you message.</p>
 		<p><input style="margin:0; padding:0; border:none" type="checkbox" name="qcf_redirect" ' . $reply['qcf_redirect'] . ' value="checked"> Redirect to new page</p>
 		<p>URL: <input style="width:100%" type="text" name="qcf_redirect_url" value="' . $reply['qcf_redirect_url'] . '"/></p>
-		<h2>Thank you message</h2>
+		<h3>On Screen Message</h3>		
 		<p>Thank you header (leave blank if you don\'t want a heading):</p>
 		<p><input style="width:100%" type="text" name="replytitle" value="' . $reply['replytitle'] . '"/></p>
-		<p>This is the blurb that will appear below the thank you heading and above the actual message (leave blank if you don\'t want any blurb):</p>
-		<p><input style="width:100%" type="text" name="replyblurb" value="' . $reply['replyblurb'] . '" /></p>
+		<p>Thank you message (leave blank if you don\'t want a message):</p>
+		<p><textarea style="width:100%; height: 100px" name="replyblurb">' . $reply['replyblurb'] . '</textarea></p>
 		<p><input style="margin:0; padding:0; border:none" type="checkbox" name="messages" ' . $reply['messages'] . ' value="checked"> Show the sender the content of their message.</p>
-		<p><input style="margin:0; padding:0; border:none" type="checkbox" name="sendcopy" ' . $reply['sendcopy'] . ' value="checked"> Send a copy of the message to the sender.</p>
-		<p>These are the words that will appear above the copy of the message (leave blank if you don\'t want any words):</p>
-		<p><input style="width:100%" type="text" name="copy_message" value="' . $reply['copy_message'] . '" /></p>
+		<h3>Email Message</h3>		
+		<p><input style="margin:0; padding:0; border:none" type="checkbox" name="sendcopy" ' . $reply['sendcopy'] . ' value="checked"> Send an email message to the sender.</p>
+		<p>Email Subject:</p>
+		<p><input style="width:100%" type="text" name="replysubject" value="' . $reply['replysubject'] . '"/></p>		
+		<p>Email Message (leave blank if you don\'t want any words):</p>
+		<p><textarea style="width:100%; height: 100px" name="replymessage">' . $reply['replymessage'] . '</textarea></p>
+		<p><input style="margin:0; padding:0; border:none" type="checkbox" name="replycopy" ' . $reply['replycopy'] . ' value="checked"> Add the content of the email they sent to you.</p>		
+		<h2>Reload Page</h2>
 		<p><input style="margin:0; padding:0; border:none" type="checkbox" name="qcf_reload" ' . $reply['qcf_reload'] . ' value="checked"> Refresh the page <input style="width:2em" type="text" name="qcf_reload_time" value="' . $reply['qcf_reload_time'] . '" /> seconds after the thank-you message.</p>
 		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the reply settings for '.$id.'?\' );"/></p>
 		</form>

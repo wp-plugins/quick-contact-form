@@ -3,7 +3,7 @@
 Contributors: 
 Tags: contact form
 Requires at least: 3.0
-Tested up to: 3.5.1
+Tested up to: 3.8
 Stable tag: trunk
 
 Simple plug and play contact form. 
@@ -70,6 +70,10 @@ I did, and so have you.  Maybe there will be more, who knows.
 No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
+
+= 6.4 =
+*	More options for the thank-you messages
+*	Wordpress 3.8 compatible
 
 = 6.3 =
 *	Closed an XSS security hole

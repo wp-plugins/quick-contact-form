@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 6.3
+Version: 6.4
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -288,18 +288,20 @@ function qcf_process_form($values,$id) {
 					break;
 				case 'field10':
 					if ($values['qcfname10'] == $qcf['label'][$item]) $values['qcfname10'] ='';
-					if (!empty($values['qcfname10'])) $content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags(stripslashes($values['qcfname10'])) . '</p>';
+					if (!empty($values['qcfname10'])) $content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags($values['qcfname10']) . '</p>';
 					break;
 				}
 			}
 	$sendcontent = "<html><h2>".$reply['bodyhead']."</h2>".$content;
-	$copycontent = "<html><h2>".$reply['copy_message']."</h2>".$content;
+	$copycontent = "<html>";
+if ($reply['replymessage']) $copycontent .=$reply['replymessage'];
+	if ($reply['replycopy']) $copycontent .= $content;
 	if ($reply['page']) $sendcontent .= "<p>Message was sent from: <b>".$page."</b></p>";
 	if ($reply['tracker']) $sendcontent .= "<p>Senders IP address: <b>".$ip."</b></p>";
 	if ($reply['url']) $sendcontent .= "<p>URL: <b>".$url."</b></p>";
 	$sendcontent .="</html>";
 	$copycontent .="</html>";
-	$subject = "{$reply['subject']} {$addon}";
+		$subject = "{$reply['subject']} {$addon}";
 	$tmp_name = $_FILES['filename']['tmp_name'];
 	$type = $_FILES['filename']['type'];
 	$name = $_FILES['filename']['name'];
@@ -345,7 +347,7 @@ function qcf_process_form($values,$id) {
 	if ($reply['mail'] == 'wp-mail') wp_mail($qcf_email, $subject, $message, $headers);
 	else mail($qcf_email, $subject, $message, $headers);
 	
-	if ($reply['sendcopy']) mail($values['qcfname2'], 'Message Copy', $copycontent, $headers);
+	if ($reply['sendcopy']) mail($values['qcfname2'], $reply['replysubject'], $copycontent, $headers);
 	
 	$qcf_messages = get_option('qcf_messages'.$id);
 	if(!is_array($qcf_messages)) $qcf_messages = array();
@@ -527,10 +529,10 @@ function qcf_get_stored_style($id) {
 function qcf_get_default_style() {
 	$style['font'] = 'plugin';
 	$style['font-family'] = 'arial, sans-serif';
-	$style['font-size'] = '1em';
+	$style['font-size'] = '1.2em';
 	$style['font-colour'] = '#465069';
 	$style['text-font-family'] = 'arial, sans-serif';
-	$style['text-font-size'] = '1em';
+	$style['text-font-size'] = '1.2em';
 	$style['text-font-colour'] = '#465069';
 	$style['width'] = 280;
 	$style['widthtype'] = 'pixel';
@@ -563,6 +565,10 @@ function qcf_get_default_reply () {
 	$reply = array();
 	$reply['replytitle'] = 'Message sent!';
 	$reply['replyblurb'] = 'Thank you for your enquiry, I&#146;ll be in contact soon';
+	$reply['sendcopy'] = '!';
+	$reply['replycopy'] = '!';
+	$reply['replysubject'] = 'Thank you for your enquiry';
+	$reply['replymessage'] = 'I&#146;ll be in contact soon. If you have any questions please reply to this email.';
 	$reply['messages'] = 'checked';
 	$reply['tracker'] = 'checked';
 	$reply['page'] = 'checked';
