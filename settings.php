@@ -6,6 +6,7 @@ add_action('admin_notices', 'qcf_admin_notice' );
 add_action( 'admin_menu', 'add_admin_pages' );
 // add_action( 'admin_enqueue_scripts', 'qcf_admin_pointers_header' ); //
 
+wp_enqueue_script('jquery-ui-sortable');
 wp_enqueue_style('qcf_settings',plugins_url('settings.css', __FILE__));
 
 function add_admin_pages() {
@@ -156,7 +157,7 @@ function qcf_form_options($id) {
 			});
 		});
 		</script>';
-	$content ='<div class="qcf-settings"><div class="qcf-options" style="margin-right:10px;">';
+	$content .='<div class="qcf-settings"><div class="qcf-options" style="margin-right:10px;">';
 	if ($id) $content .='<h2 style="color:#B52C00">Form settings for ' . $id . '</h2>';
 	else $content .='<h2 style="color:#B52C00">Default form settings</h2>';
 	$content .= qcf_change_form($qcf_setup);
@@ -201,7 +202,7 @@ function qcf_form_options($id) {
 		</div>
 		<div style="float:left;">';
 		if ($name <> 'field7') $content .='<input type="checkbox" class="button_activate" style="border: none; padding: 0; margin:0;" name="required_'.$name.'" '.$required.' /> ';
-	$content .= $options . '</div><div style="clear:both"></div></li>';
+	$content .= $options . '</div></li>';
 	}
 	$content .= '
 		</ul>
@@ -465,6 +466,7 @@ function qcf_reply_page($id) {
 	echo $content;
 	}
 function qcf_error_page($id) {
+
 	qcf_change_form_update();
 	if( isset( $_POST['Submit'])) {
 		for ($i=1; $i<=10; $i++) $error['field'.$i] = stripslashes($_POST['error'.$i]);
