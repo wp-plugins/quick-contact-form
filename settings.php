@@ -74,8 +74,7 @@ function qcf_setup ($id) {
 	get_currentuserinfo();
 	$new_email = $current_user->user_email;
 	if ($qcf_setup['alternative'] == '' && $qcf_email[''] == '') $qcf_email[''] = $new_email;
-	$content ='
-		<div class="qcf-options">
+	$content ='<div class="qpp-settings"><div class="qpp-options" style="margin-right:10px;">
 		<form method="post" action="">';
 		$content .= '<h2 style="color:#B52C00">Existing Forms</h2>
 		<table>
@@ -100,7 +99,7 @@ function qcf_setup ($id) {
 		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Create New Form" /></p>
 		</form>
 		</div>
-		<div class="qcf-options"> 
+		<div class="qpp-options" style="float:right"> 
 		<h2>Adding the contact form to your site</h2>
 		<p>To add the basic contact form to your posts or pages use the shortcode: <code>[qcf]</code>.<br />
 		<p>If you have a named form the shortcode is <code>[qcf id="form name"]</code>.<br />
@@ -116,7 +115,7 @@ function qcf_setup ($id) {
 		<p>To see all your messages click on the <b>Messages</b> tab in the dashboard menu or <a href="?page=quick-contact-form/quick-contact-messages.php">click here</a>.</p>
 		<p>Please send bug reports to <a href="mailto:mail@quick-plugins.com">mail@quick-plugins.com</a>.</p>';	
 	$content .= qcfdonate_loop();
-	$content .= '</div>';
+	$content .= '</div></div>';
 	echo $content;
 	}
 function qcf_form_options($id) {
@@ -157,7 +156,7 @@ function qcf_form_options($id) {
 			});
 		});
 		</script>';
-	$content .= '<div class="qcf-options">';
+	$content ='<div class="qpp-settings"><div class="qpp-options" style="margin-right:10px;">';
 	if ($id) $content .='<h2 style="color:#B52C00">Form settings for ' . $id . '</h2>';
 	else $content .='<h2 style="color:#B52C00">Default form settings</h2>';
 	$content .= qcf_change_form($qcf_setup);
@@ -228,13 +227,13 @@ function qcf_form_options($id) {
 		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" />  <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset these settings?\' );"/></p>
 		</form>
 		</div>
-		<div class="qcf-options"> 
+		<div class="qpp-options" style="float:right">  
 		<h2>Form Preview</h2>
 		<p>Note: The preview form uses the wordpress admin styles. Your form will use the theme styles so won\'t look exactly like the one below.</p>';
 	$content .= qcf_loop($id);
 	$content .= '<p>Have you set up the <a href="?page=quick-contact-form/settings.php&tab=reply">reply options</a>?</p>
 		<p>You can also customise the <a href="?page=quick-contact-form/settings.php&tab=error">error messages</a>.</p>
-		</div>';
+		</div></div>';
 	echo $content;
 	}
 function qcf_attach ($id) {
@@ -255,7 +254,7 @@ function qcf_attach ($id) {
 	$id=$qcf_setup['current'];
 	$attach = qcf_get_stored_attach($id);
 	
-	$content .= '<div class="qcf-options">';
+	$content ='<div class="qpp-settings"><div class="qpp-options" style="margin-right:10px;">';
 	if ($id) $content .='<h2 style="color:#B52C00">Attachment options for ' . $id . '</h2>';
 	else $content .='<h2 style="color:#B52C00">Default attachment options</h2>';
 	$content .= qcf_change_form($qcf_setup);
@@ -281,11 +280,11 @@ function qcf_attach ($id) {
 		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the attachment settings for '.$id.'?\' );"/></p>
 		</form>
 		</div>
-		<div class="qcf-options">
+		<div class="qpp-options" style="float:right"> 
 		<h2 style="color:#B52C00">Form Preview</h2>
 		<p>Note: The preview form uses the wordpress admin styles. Your form will use the theme styles so won\'t look exactly like the one below.</p>';
 	$content .=	qcf_loop($id);
-	$content .= '</div>';
+	$content .= '</div></div>';
 	echo $content;
 	}
 function qcf_styles($id) {
@@ -314,7 +313,7 @@ function qcf_styles($id) {
 	$$style['background'] = 'checked';
 	$$style['corners'] = 'checked';
 	
-	$content .='<div class="qcf-options">';
+	$content ='<div class="qpp-settings"><div class="qpp-options" style="margin-right:10px;">';
 	if ($id) $content .='<h2 style="color:#B52C00">Styles for ' . $id . '</h2>';
 	else $content .='<h2 style="color:#B52C00">Default form styles</h2>';
 	$content .= qcf_change_form($qcf_setup);
@@ -381,11 +380,11 @@ function qcf_styles($id) {
 	<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the style settings for '.$id.'?\' );"/></p>
 	</form>
 	</div>
-	<div class="qcf-options"> 
+	<div class="qpp-options" style="float:right"> 
 	<h2 style="color:#B52C00">Test Form</h2>
 	<p>Not all of your style selections will display here (because of how WordPress works). So check the form on your site.</p>';
 	$content .= qcf_loop($id);
-	$content .= '</div>';
+	$content .= '</div></div>';
 	echo $content;
 	}
 function qcf_reply_page($id) {
@@ -407,7 +406,7 @@ function qcf_reply_page($id) {
 	$$reply['subjectoption'] = "checked";
 	$$reply['qcfmail'] = "checked";
 	
-	$content .='<div class="qcf-options">';
+	$content ='<div class="qpp-settings"><div class="qpp-options" style="margin-right:10px;">';
 	if ($id) $content .='<h2 style="color:#B52C00">Send options for ' . $id . '</h2>';
 	else $content .='<h2 style="color:#B52C00">Default form send options</h2>';
 	$content .= qcf_change_form($qcf_setup);
@@ -458,11 +457,11 @@ function qcf_reply_page($id) {
 		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the reply settings for '.$id.'?\' );"/></p>
 		</form>
 		</div>
-		<div class="qcf-options"> 
+		<div class="qpp-options" style="float:right"> 
 		<h2 style="color:#B52C00">Test Form</h2>
 		<p>Use the form below to test your thank-you message settings. You will see what your visitors see when they complete and send the form.</p>';
 	$content .= qcf_loop($id);
-	$content .= '</div>';
+	$content .= '</div></div>';
 	echo $content;
 	}
 function qcf_error_page($id) {
@@ -484,7 +483,7 @@ function qcf_error_page($id) {
 	$qcf = qcf_get_stored_options($id);
 	$error = qcf_get_stored_error($id);
 	
-	$content .='<div class="qcf-options">';
+	$content ='<div class="qpp-settings"><div class="qpp-options" style="margin-right:10px;">';
 	if ($id) $content .='<h2 style="color:#B52C00">Error messages for ' . $id . '</h2>';
 	else $content .='<h2 style="color:#B52C00">Default form error messages</h2>';
 	$content .= qcf_change_form($qcf_setup);
@@ -526,16 +525,15 @@ function qcf_error_page($id) {
 		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the error settings for '.$id.'?\' );"/></p>
 		</form>
 		</div>
-		<div class="qcf-options"> 
+		<div class="qpp-options" style="float:right"> 
 		<h2 style="color:#B52C00">Error Checker</h2>
 		<p>Send a blank form to test your error messages.</p>';
 	$content .= qcf_loop($id);
-	$content .= '</div>';
+	$content .= '</div></div>';
 	echo $content;
 	}
 function qcf_help($id) {
-	$content .='
-		<div class="qcf-options"> 
+	$content ='<div class="qpp-settings"><div class="qpp-options" style="margin-right:10px;"> 
 		<h2>Getting Started</h2>
 		<p>A default form is already installed and ready to use. To add to a page or a post just add the shortcode <code>[qcf]</code>. If you want to add the form to a sidebar use the Quick Contact Form widget.</p>
 		<p>You can now use the tabbed options on this page to change any of settings. If you haven\'t already, check and save your email address for the default form.</p>
@@ -548,7 +546,7 @@ function qcf_help($id) {
 		<p>If it all goes a bit pear shaped you can <a href= "?page=quick-contact-form/settings.php&tab=reset">reset everything</a> to the defaults.</p>
 		<p>There is some development info on <a href="http://quick-plugins.com/quick-contact-form/" target="_blank">my plugin page</a> along with a feedback form. Or you can email me at <a href="mailto:mail@quick-plugins.com">mail@quick-plugins.com</a>.</p>
 		</div>
-		<div class="qcf-options"> 
+		<div class="qpp-options" style="float:right"> 
 		<h2>Validation</h2>
 		<p>On the <a href= "?page=quick-contact-form/settings.php&tab=settings">Form Settings</a> page check the validation box if you want a field checked.</p>
 		<p>Validation removes all the unwanted characters (URLs, HTML, javascript and so on) leaving just the alphabet, numbers and a few punctuation marks).</p>
@@ -557,7 +555,7 @@ function qcf_help($id) {
 		<h2>Messages</h2>
 		<p>Older versions of the plugin displayed sent messages on the dashboard. The problem was if you had multiple forms you couldn\'t tell which message came from what form.</p>
 		<p>All messages are now displayed in full with a download option using the <b>Messages</b> link in the dashboard menu.</p>
-		</div>';
+		</div></div>';
 	echo $content;
 	}
 function qcf_reset_page($id) {
@@ -618,7 +616,7 @@ function qcf_reset_page($id) {
 		}
 	$qcf_setup = qcf_get_stored_setup();
 	$id=$qcf_setup['current'];
-	$content .='<div class="qcf-options">';
+	$content ='<div class="qpp-settings"><div class="qpp-options" style="margin-right:10px;">';
 	if ($id) $content .='<h2 style="color:#B52C00">Reset the options for ' . $id . '</h2>';
 	else $content .='<h2 style="color:#B52C00">Reset the default form</h2>';
 	$content .= qcf_change_form($qcf_setup);
@@ -638,7 +636,7 @@ function qcf_reset_page($id) {
 		<p>
 		<input type="submit" class="button-primary" name="qcf_reset" style="color: #FFF" value="Reset Options" onclick="return window.confirm( \'Are you sure you want to reset these settings?\' );"/>
 		</form>
-	</div>';
+	</div></div>';
 	echo $content;
 	}
 function delete_everything() {
@@ -788,7 +786,7 @@ function qcfdonate_display( $values, $errors ) {
 	<p><input type="text" label="Your name" name="yourname" value="Your name" onfocus="donateclear(this, \'Your name\')" onblur="donaterecall(this, \'Your name\')"/></p>
 	<p><input type="text" label="Amount" name="amount" value="Amount" onfocus="donateclear(this, \'Amount\')" onblur="donaterecall(this, \'Amount\')"/></p>
 	<p><input type="submit" value="Donate" id="submit" name="donate" /></p>
-	</form></div></div>';
+	</form></div></div></div>';
 	echo $content;
 	}
 function qcfdonate_process($values) {

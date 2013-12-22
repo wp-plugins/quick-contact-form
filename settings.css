@@ -34,15 +34,19 @@
 #qcf_sort li.button_inactive { background-color: #E0E0E0;}
 #qcf_sort li div {overflow:hidden;}
 
+
+.qcf-settings {
+	width: 100%;}
+
 .qcf-options {
 	border: 1px solid #B52C00;
 	padding: 0 10px 10px 10px;
-	margin: 10px 10px 0 0 ;
+	margin: 10px 0 0 0 ;
 	float: left;
-	width: 46%;
+	width: calc(50% - 30px);
 	}
-@media screen and (max-width: 960px) {
-	.qcf-options {width: 90%;}
+@media screen and (max-width: 768px) {
+	.qcf-options {width: calc(100% - 20px);}
 	}
 
 .qcf-options p {
