@@ -9,34 +9,28 @@
 	-webkit-box-sizing: border-box; 
 	box-sizing: border-box;
 	}
-
 .qcf-style td, #qcf-widget td {
 	border-top: 1px solid #005F6B;
 	padding: 2px;
 	max-width: 400px;
 	vertical-align:top;
 	}
-
 .qcf-style td b, #qcf-widget td b {
 	color: #005F6B;
 	}
-
 .qcf-style th, #qcf-widget th {
 	padding: 5px 10px 5px 0;
 	max-width: 400px;
 	text-align: left;
 	color: #005F6B;
 	}
-
 #qcf_sort { list-style-type: none; margin: 0; padding: 0; width:100%; }
 #qcf_sort li { margin: 3px 0; padding: 0.3em 0.8em 0.3em 0.5em; min-height:1.6em; cursor:pointer; border:1px solid #888; clear:left}
 #qcf_sort li.button_active { background-color: white;}
 #qcf_sort li.button_inactive { background-color: #E0E0E0;}
 #qcf_sort li div {overflow:hidden;}
 
-
-.qcf-settings {
-	width: 100%;}
+.qcf-settings {width: 100%;}
 
 .qcf-options {
 	border: 1px solid #B52C00;
