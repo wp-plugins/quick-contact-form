@@ -71,6 +71,9 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 6.4.1 =
+*	Coding tweaks
+
 = 6.4 =
 *	More options for the thank-you messages
 *	Wordpress 3.8 compatible
