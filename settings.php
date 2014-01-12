@@ -18,6 +18,7 @@ function qcf_settings_init() {
 	wp_enqueue_script('jquery-ui-sortable');
 	wp_enqueue_style('qcf_settings',plugins_url('settings.css', __FILE__));
 	wp_enqueue_style( 'wp-color-picker' );
+	wp_enqueue_script('colorpicker-script', plugins_url('color.js', __FILE__ ), array( 'wp-color-picker' ), false, true );
 	qcf_generate_csv();
 	return;
 	}
