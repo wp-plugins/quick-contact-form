@@ -5,10 +5,10 @@
 .qcf-style #rounded {border: 1px solid #415063;padding: 10px;-moz-border-radius: 10px;-webkit-box-shadow: 10px;border-radius: 10px;}
 .qcf-style #shadow {border: 1px solid #415063;padding: 10px;margin: 0 10px 20px 0;-webkit-box-shadow: 5px 5px 5px #415063;-moz-box-shadow: 5px 5px 5px #415063;box-shadow: 5px 5px 5px #415063;}
 .qcf-style #roundshadow {border: 1px solid #415063;padding: 10px; margin: 0 10px 20px 0;-webkit-box-shadow: 5px 5px 5px #415063;-moz-box-shadow: 5px 5px 5px #415063;box-shadow: 5px 5px 5px #415063;-moz-border-radius: 10px;-webkit-box-shadow: 10px;border-radius: 10px;}
-.qcf-style input[type=text], .qcf-style textarea, .qcf-style select, .qcf-style #submit {margin: 5px 0 7px 0;padding: 6px;color: #465069;font-size: 100%;border:1px solid #415063;width: 100%;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;}
+.qcf-style input[type=text], .qcf-style textarea, .qcf-style select, .qcf-style #submit {margin: 5px 0 7px 0;padding: 6px;height:auto;color: #465069;font-size: 100%;border:1px solid #415063;width: 100%;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;}
 .qcf-style input:focus, .qcf-style textarea:focus {background:#FFFFCC;}
 .qcf-style p {margin: 4px 0;}
 .qcf-style p span {color: #D31900;margin: 4px 0;}
 .qcf-style input[type=text].required, .qcf-style textarea.required {border: 1px solid #00C618;}
-.qcf-style #submit {color: #FFF;background: #343838;text-align: center;cursor: pointer;}
+.qcf-style #submit, .qcf-style #submit:hover{color: #FFF;background: #343838;text-align: center;cursor: pointer;}
 #ui-datepicker-div {display:none;}

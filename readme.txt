@@ -71,8 +71,11 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
-= 6.4.1 =
-*	Coding tweaks
+= 6.5 =
+*	Added SMTP option
+8	Styles now have color pickers
+*	Fixed the line height problem for some themes.
+*	Improved Wordpress 3.8 styling
 
 = 6.4 =
 *	More options for the thank-you messages

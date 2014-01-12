@@ -3,25 +3,37 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 6.4.1
+Version: 6.5
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
 
 add_shortcode('qcf', 'qcf_start');
 add_filter('plugin_action_links', 'qcf_plugin_action_links', 10, 2 );
+add_action('init', 'qcf_init');
+
+function qcf_init() {
+	qcf_create_css_file ('');
+	wp_enqueue_script( 'qcf_script',plugins_url('quick-contact-form-javascript.js', __FILE__));
+	wp_enqueue_style( 'qcf_style',plugins_url('quick-contact-form-style.css', __FILE__));
+	wp_enqueue_style( 'qcf_custom',plugins_url('quick-contact-form-custom.css', __FILE__));
+	wp_enqueue_script('jquery-ui-datepicker');
+	wp_enqueue_style('jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
+	}
+
+function qcf_create_css_file ($update) {
+	if (function_exists(file_put_contents)) {
+		$css_dir = plugin_dir_path( __FILE__ ) . '/quick-contact-form-custom.css' ;
+		$filename = plugin_dir_path( __FILE__ );
+		if (is_writable($filename) && (!file_exists($css_dir) || !empty($update))) {
+			$data = qcf_generate_css();
+			file_put_contents($css_dir, $data, LOCK_EX);
+			}
+		}
+	else add_action('wp_head', 'qcf_head_css');
+	}
 
 if (is_admin()) require_once( plugin_dir_path( __FILE__ ) . '/settings.php' );
-
-$css_dir = plugin_dir_path( __FILE__ ) . '/quick-contact-form-custom.css' ;
-$filename = plugin_dir_path( __FILE__ );
-if (is_writable($filename) && !file_exists($css_dir)) qcf_options_css();
-
-wp_enqueue_script( 'qcf_script',plugins_url('quick-contact-form-javascript.js', __FILE__));
-wp_enqueue_style( 'qcf_style',plugins_url('quick-contact-form-style.css', __FILE__));
-wp_enqueue_style( 'qcf_custom',plugins_url('quick-contact-form-custom.css', __FILE__));
-wp_enqueue_script('jquery-ui-datepicker');
-wp_enqueue_style('jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 
 function qcf_start($atts) {
 	extract(shortcode_atts(array( 'id' => '' ), $atts));
@@ -294,7 +306,7 @@ function qcf_process_form($values,$id) {
 			}
 	$sendcontent = "<html><h2>".$reply['bodyhead']."</h2>".$content;
 	$copycontent = "<html>";
-if ($reply['replymessage']) $copycontent .=$reply['replymessage'];
+	if ($reply['replymessage']) $copycontent .=$reply['replymessage'];
 	if ($reply['replycopy']) $copycontent .= $content;
 	if ($reply['page']) $sendcontent .= "<p>Message was sent from: <b>".$page."</b></p>";
 	if ($reply['tracker']) $sendcontent .= "<p>Senders IP address: <b>".$ip."</b></p>";
@@ -343,10 +355,30 @@ if ($reply['replymessage']) $copycontent .=$reply['replymessage'];
 		$email = qcf_select_email($id,$values['qcfname5']);
 		if ($email) $qcf_email = $email;
 		}
-	
-	if ($reply['mail'] == 'wp-mail') wp_mail($qcf_email, $subject, $message, $headers);
-	else mail($qcf_email, $subject, $message, $headers);
-	
+	if ($reply['qcfmail'] == 'phpmail') mail($qcf_email, $subject, $message, $headers);
+	if ($reply['qcfmail'] == 'wpemail') wp_mail($qcf_email, $subject, $message, $headers);
+	if ($reply['qcfmail'] == 'smtp') {
+		$qcfsmtp = qcf_get_stored_smtp ();
+		require_once ABSPATH . WPINC . '/class-phpmailer.php';
+		require_once ABSPATH . WPINC . '/class-smtp.php';
+		$phpmailer = new PHPMailer( true );
+		$phpmailer->Mailer = 'smtp';
+		$phpmailer->AddAddress($qcf_email);
+		$phpmailer->SetFrom($values['qcfname2'], $values['qcfname1']);
+		$phpmailer->Subject = $subject;
+		$phpmailer->ContentType = "text/html";
+		$phpmailer->MsgHTML($message);
+		$phpmailer->IsSMTP();
+		$phpmailer->SMTPSecure = $qcfsmtp['smtp_ssl'] == 'none' ? '' : $qcfsmtp['smtp_ssl'];
+		$phpmailer->Host = $qcfsmtp['smtp_host'];
+		$phpmailer->Port = $qcfsmtp['smtp_port'];
+		if ($qcfsmtp['smtp_auth'] == "authtrue") {
+			$phpmailer->SMTPAuth = TRUE;
+			$phpmailer->Username = $qcfsmtp['smtp_user'];
+			$phpmailer->Password = $qcfsmtp['smtp_pass'];}
+		$phpmailer->Send();
+		unset($phpmailer);
+		}
 	if ($reply['sendcopy']) mail($values['qcfname2'], $reply['replysubject'], $copycontent, $headers);
 	
 	$qcf_messages = get_option('qcf_messages'.$id);
@@ -436,7 +468,7 @@ class qcf_widget extends WP_Widget {
 	}
 add_action( 'widgets_init', create_function('', 'return register_widget("qcf_widget");') );
 
-function qcf_options_css() {
+function qcf_generate_css() {
 	$qcf_form = qcf_get_stored_setup();
 	$arr = explode(",",$qcf_form['alternative']);
 	foreach ($arr as $item) {
@@ -448,14 +480,14 @@ function qcf_options_css() {
 			$inputfont = "font-family: ".$style['font-family']."; font-size: ".$style['font-size']."; color: ".$style['font-colour'].";";
 			$submitfont = "font-family: ".$style['font-family'];
 			}
-		$input = ".qcf-style".$id." input[type=text], .qcf-style".$id." textarea, .qcf-style".$id." select {border: ".$style['input-border'].";".$inputfont.";}\r\n";
+		$input = ".qcf-style".$id." input[type=text], .qcf-style".$id." textarea, .qcf-style".$id." select {border: ".$style['input-border'].";".$inputfont.";height:auto;}\r\n";
 		$paragraph = ".qcf-style".$id." p, .qcf-style".$id." select{".$font.";}\r\n";
 		$required = ".qcf-style".$id." input[type=text].required, .qcf-style".$id." select.required, .qcf-style".$id." textarea.required {border: ".$style['input-required'].";}\r\n";
 		if ($style['submitwidth'] == 'submitpercent') $submitwidth = 'width:100%;';
 		if ($style['submitwidth'] == 'submitrandom') $submitwidth = 'width:auto;';
 		if ($style['submitwidth'] == 'submitpixel') $submitwidth = 'width:'.$style['submitwidthset'].';';
 		if ($style['submitposition'] == 'submitleft') $submitposition = 'float:left;'; else $submitposition = 'float:right;';
-		$submitbutton = ".qcf-style".$id." #submit{".$submitposition.$submitwidth."color:".$style['submit-colour'].";background:".$style['submit-background'].";".$submitfont.";font-size: inherit;}\r\n";
+		$submitbutton = ".qcf-style".$id." #submit, .qcf-style".$id." #submit:hover{".$submitposition.$submitwidth."color:".$style['submit-colour'].";background:".$style['submit-background'].";".$submitfont.";font-size: inherit;}\r\n";
 		if ($style['background'] == 'white') $background = ".qcf-style".$id." div {background:#FFF;}\r\n";
 		if ($style['background'] == 'color') $background = ".qcf-style".$id." div {background:".$style['backgroundhex'].";}\r\n";
 		if ($style['widthtype'] == 'pixel') $width = preg_replace("/[^0-9]/", "", $style['width']) . 'px';
@@ -466,9 +498,11 @@ function qcf_options_css() {
 		$code .= ".qcf-style".$id." {width:".$width.";}\r\n".$corners.$paragraph.$input.$required.$background.$submitbutton;
 		if ($style['use_custom'] == 'checked') $code .= $style['styles'] . "\r\n";
 		}
-	$data = $code;	
-	$css_dir = plugin_dir_path( __FILE__ ) . '/quick-contact-form-custom.css' ;	
-	file_put_contents($css_dir, $data, LOCK_EX); // Save it
+	return $code;	
+	}
+function qcf_head_css () {
+	$data = '<style type="text/css" media="screen">'.qcf_generate_css().'</style>';
+	echo $data;
 	}
 function qcf_get_stored_options ($id) {
 	$qcf = get_option('qcf_settings'.$id);
@@ -652,4 +686,21 @@ function qcf_get_default_msg () {
 	$messageoptions['messageqty'] = 'fifty';
 	$messageoptions['messageorder'] = 'newest';
 	return $messageoptions;
+	}
+function qcf_get_stored_smtp () {
+	$smtp = get_option('qcf_smtp');
+	if(!is_array($smtp)) $smtp = array();
+	$default = qcf_get_default_smtp();
+	$smtp = array_merge($default, $smtp);
+	return $smtp;
+	}
+function qcf_get_default_smtp () {
+	$smtp = array();
+	$smtp['smtp_host'] = 'localhost';
+	$smtp['smtp_port'] = '25';
+	$smtp['smtp_ssl'] = 'none';
+	$smtp['smtp_auth'] = 'authfalse';
+	$smtp['smtp_user'] = '';
+	$smtp['smtp_pass'] = '';
+	return $smtp;
 	}
