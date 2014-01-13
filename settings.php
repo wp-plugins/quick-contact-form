@@ -15,13 +15,17 @@ function qcf_page_init() {
 	add_options_page('Quick Contact', 'Quick Contact', 'manage_options', __FILE__, 'qcf_tabbed_page');
 	}
 function qcf_settings_init() {
+	qcf_generate_csv();
+	return;
+	}
+function qcf_settings_scripts() {
 	wp_enqueue_script('jquery-ui-sortable');
 	wp_enqueue_style('qcf_settings',plugins_url('settings.css', __FILE__));
 	wp_enqueue_style( 'wp-color-picker' );
 	wp_enqueue_script('colorpicker-script', plugins_url('color.js', __FILE__ ), array( 'wp-color-picker' ), false, true );
-	qcf_generate_csv();
-	return;
 	}
+add_action('admin_enqueue_scripts', 'qcf_settings_scripts');
+
 function qcf_tabbed_page() {
 	$qcf_setup = qcf_get_stored_setup();
 	$id=$qcf_setup['current'];
