@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 6.5
+Version: 6.5.1
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -14,13 +14,12 @@ add_action('init', 'qcf_init');
 
 function qcf_init() {
 	qcf_create_css_file ('');
-	wp_enqueue_script( 'qcf_script',plugins_url('quick-contact-form-javascript.js', __FILE__));
 	wp_enqueue_style( 'qcf_style',plugins_url('quick-contact-form-style.css', __FILE__));
 	wp_enqueue_style( 'qcf_custom',plugins_url('quick-contact-form-custom.css', __FILE__));
+	wp_enqueue_script( 'qcf_script',plugins_url('quick-contact-form-javascript.js', __FILE__));
 	wp_enqueue_script('jquery-ui-datepicker');
 	wp_enqueue_style('jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 	}
-
 function qcf_create_css_file ($update) {
 	if (function_exists(file_put_contents)) {
 		$css_dir = plugin_dir_path( __FILE__ ) . '/quick-contact-form-custom.css' ;
@@ -211,8 +210,8 @@ function qcf_display_form( $values, $errors, $id ) {
 					break;
 				case 'field10':
 					$content .= $errors['qcfname10'];
-					$content .= '<input type="text" id="qcfdate" ' . $required . ' label="Date" name="qcfname10"  value="' . $values['qcfname10'] . '" onfocus="qcfclear(this, \'' . $values['qcfname10'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname10'] . '\')">
-					<script type="text/javascript">jQuery(document).ready(function() {jQuery(\'#qcfdate\').datepicker({dateFormat : \'dd M yy\'});});</script>'."\r\t";
+					$content .= '<input type="text" class="qcfdate" ' . $required . ' label="Date" name="qcfname10"  value="' . $values['qcfname10'] . '" onfocus="qcfclear(this, \'' . $values['qcfname10'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname10'] . '\')">
+					<script type="text/javascript">jQuery(document).ready(function() {jQuery(\'\.qcfdate\').datepicker({dateFormat : \'dd M yy\'});});</script>'."\r\t";
 					break;		
 				}
 			}
