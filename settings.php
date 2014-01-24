@@ -336,8 +336,9 @@ function qcf_styles($id) {
 		<input style="margin:0; padding:0; border:none;" type="radio" name="background" value="theme" ' . $theme . ' /> Use theme colours<br />
 		<input style="margin:0; padding:0; border:none;" type="radio" name="background" value="color" ' . $color . ' />	Set your own: 
 		<input type="text" class="qcf-color" label="background" name="backgroundhex" value="' . $style['backgroundhex'] . '" /></td></tr>
-		<tr><td>Background<br>Image:</td><td><input id="qcf_background" type="text" name="backgroundimage" value="' . $style['backgroundimage'] . '" />
-   		<input id="qcf_upload_background" class="button" type="button" value="Upload Image" /></td></tr>
+		<tr><td>Background<br>Image:</td><td>
+		<input id="qcf_background" type="text" name="backgroundimage" value="' . $style['backgroundimage'] . '" />
+   		<input id="qcf_upload_background" class="button" name="bg" type="button" value="Upload Image" /></td></tr>
 		<tr><td colspan="2"><h2>Font Styles</h2></td</tr>
 		<tr><td></td><td><input style="margin:0; padding:0; border:none" type="radio" name="font" value="theme" ' . $theme . ' /> Use theme font styles<br />
 		<input style="margin:0; padding:0; border:none" type="radio" name="font" value="plugin" ' . $plugin . ' /> Use Plugin font styles (enter font family and size below)
@@ -366,7 +367,8 @@ function qcf_styles($id) {
 		<input style="margin:0; padding:0; border:none;" type="radio" name="submitwidth" value="submitpixel" ' . $submitpixel . ' /> Set your own width: <input type="text" style="width:5em" label="submitwidthset" name="submitwidthset" value="' . $style['submitwidthset'] . '" /> (px, % or em)</td></tr>
 		<tr><td>Position: </td><td><input style="margin:0; padding:0; border:none;" type="radio" name="submitposition" value="submitleft" ' . $submitleft . ' /> Left <input style="margin:0; padding:0; border:none;" type="radio" name="submitposition" value="submitright" ' . $submitright . ' /> Right</td></tr>
 		<tr><td>Button Image: </td><td>
-		<input id="qcf_submit_button" type="text" name="submit-button" value="' . $style['submit-button'] . '" /><input id="qcf_upload_submit_button" class="button-secondary" type="button" value="Upload Image" /></td></tr>
+		<input id="qcf_submit_button" type="text" name="submit-button" value="' . $style['submit-button'] . '" />
+		<input id="qcf_upload_submit_button" class="button-secondary" name="sb" type="button" value="Upload Image" /></td></tr>
 		</table>
 		<h2>Custom CSS</h2>
 		<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="use_custom"' . $style['use_custom'] . ' value="checked" /> Use Custom CSS</p>

@@ -230,7 +230,7 @@ function qcf_display_form( $values, $errors, $id ) {
 		<input type="hidden" name="thesum" value="' . strip_tags($values['thesum']) . '" />';
 		}
 	$caption = $qcf['send'];
-	if ($style['submit-button']) $content .= '<p><input type="image" value="' . $caption . '" style="border:none;" src="'.$style['submit-button'].'" name="PaymentSubmit" /></p>';
+	if ($style['submit-button']) $content .= '<p><input type="image" value="' . $caption . '" style="border:none;width:100%;height:auto;overflow:hidden;" src="'.$style['submit-button'].'" name="PaymentSubmit" /></p>';
 	else $content .= '<p><input type="submit" value="' . $caption . '" id="submit" name="qcfsubmit'.$id.'" /></p>';
 	$content .= '</form>'."\r\t".
 		'<div style="clear:both;"></div></div>'."\r\t".
