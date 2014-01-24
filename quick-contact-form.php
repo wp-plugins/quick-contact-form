@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 6.5.1
+Version: 6.6
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -475,9 +475,10 @@ function qcf_generate_css() {
 		$style = qcf_get_stored_style($item);
 		if ($item !='') $id = '.'.$item; else $id = '.default';
 		if ($style['font'] == 'plugin') {
-			$font = "font-family: ".$style['text-font-family']."; font-size: ".$style['text-font-size'].";color: ".$style['text-font-colour'].";line-height:100%;";
+			$font = "font-family: ".$style['text-font-family']."; font-size: ".$style['text-font-size'].";color: ".$style['text-font-colour'].";height:auto;";
 			$inputfont = "font-family: ".$style['font-family']."; font-size: ".$style['font-size']."; color: ".$style['font-colour'].";";
 			$submitfont = "font-family: ".$style['font-family'];
+			if ($style['header']) $header = ".qcf-style".$id." h2 {font-size: ".$style['header-size']."; color: ".$style['header-colour'].";height:auto;}";
 			}
 		$input = ".qcf-style".$id." input[type=text], .qcf-style".$id." textarea, .qcf-style".$id." select {border: ".$style['input-border'].";".$inputfont.";height:auto;}\r\n";
 		$paragraph = ".qcf-style".$id." p, .qcf-style".$id." select{".$font.";}\r\n";
@@ -486,15 +487,17 @@ function qcf_generate_css() {
 		if ($style['submitwidth'] == 'submitrandom') $submitwidth = 'width:auto;';
 		if ($style['submitwidth'] == 'submitpixel') $submitwidth = 'width:'.$style['submitwidthset'].';';
 		if ($style['submitposition'] == 'submitleft') $submitposition = 'float:left;'; else $submitposition = 'float:right;';
-		$submitbutton = ".qcf-style".$id." #submit, .qcf-style".$id." #submit:hover{".$submitposition.$submitwidth."color:".$style['submit-colour'].";background:".$style['submit-background'].";".$submitfont.";font-size: inherit;}\r\n";
+		$submitbutton = ".qcf-style".$id." #submit, .qcf-style".$id." #submit:hover{".$submitposition.$submitwidth."color:".$style['submit-colour'].";background:".$style['submit-background'].";border:".$style['submit-border'].";".$submitfont.";font-size: inherit;}\r\n";
+		$border =".qcf-style".$id." #".$style['border']." {border:".$style['form-border'].";}\r\n";
 		if ($style['background'] == 'white') $background = ".qcf-style".$id." div {background:#FFF;}\r\n";
 		if ($style['background'] == 'color') $background = ".qcf-style".$id." div {background:".$style['backgroundhex'].";}\r\n";
+		if ($style['backgroundimage']) $background = ".qcf-style".$id." div {background: url('".$style['backgroundimage']."');}\r\n";
 		if ($style['widthtype'] == 'pixel') $width = preg_replace("/[^0-9]/", "", $style['width']) . 'px';
 		else $width = '100%';
 		if ($style['corners'] == 'round') $corner = '5px'; else $corner = '0';
 		$corners = ".qcf-style".$id." input[type=text], .qcf-style".$id." textarea, .qcf-style".$id." select, .qcf-style".$id." #submit {border-radius:".$corner.";}\r\n";
 		if ($style['corners'] == 'theme') $corners = '';
-		$code .= ".qcf-style".$id." {width:".$width.";}\r\n".$corners.$paragraph.$input.$required.$background.$submitbutton;
+		$code .= ".qcf-style".$id." {width:".$width.";}\r\n".$border.$corners.$header.$paragraph.$input.$required.$background.$submitbutton;
 		if ($style['use_custom'] == 'checked') $code .= $style['styles'] . "\r\n";
 		}
 	return $code;	
@@ -564,6 +567,9 @@ function qcf_get_default_style() {
 	$style['font-family'] = 'arial, sans-serif';
 	$style['font-size'] = '1.2em';
 	$style['font-colour'] = '#465069';
+	$style['header'] = '';
+	$style['header-size'] = '1.6em';
+	$style['header-colour'] = '#465069';
 	$style['text-font-family'] = 'arial, sans-serif';
 	$style['text-font-size'] = '1.2em';
 	$style['text-font-colour'] = '#465069';
@@ -582,6 +588,9 @@ function qcf_get_default_style() {
 	$style['submit-colour'] = '#FFF';
 	$style['submit-background'] = '#343838';
 	$style['submit-button'] = '';
+	$style['submit-border'] = '1px solid #415063';
+	$style['submitwidth'] = 'submitpercent';
+	$style['submitposition'] = 'submitleft';
 	$style['corners'] = 'corner';
 	$style['use_custom'] = '';
 	$style['styles'] = ".qcf-style {\r\n\r\n}";

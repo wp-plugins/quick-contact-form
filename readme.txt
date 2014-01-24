@@ -52,7 +52,7 @@ Go to your plugin list and scroll down until you see 'Quick Contact Form' and cl
 [qcf]
 
 = How do I change the colours? =
-Edit the 'quick-contact-form-styles.css' or use the styling options.
+Go to the plugin settings page and click on styling 
 
 = Can I add more fields? =
 No.
@@ -71,7 +71,16 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
-= 6.5,1 =
+= 6.6 =
+*	Submit button border styling
+*	Allow background images
+*	Moved selector options to the form field settings
+*	Added delete buttons to the setup page
+*	Fixed a bug in the submit button image styles
+*	Fixed a formatting bug on the messages page
+*	Made the settings pages a lot more pretty (and easier to use)
+
+= 6.5.1 =
 *	Jquery bug fix
 
 = 6.5 =

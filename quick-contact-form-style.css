@@ -8,6 +8,7 @@
 .qcf-style input[type=text], .qcf-style textarea, .qcf-style select, .qcf-style #submit {margin: 5px 0 7px 0;padding: 6px;height:auto;color: #465069;font-size: 100%;border:1px solid #415063;width: 100%;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;}
 .qcf-style input:focus, .qcf-style textarea:focus {background:#FFFFCC;}
 .qcf-style p {margin: 4px 0;}
+.qcf-style img {width:100%;height:auto;overflow:hidden;}
 .qcf-style p span {color: #D31900;margin: 4px 0;}
 .qcf-style input[type=text].required, .qcf-style textarea.required {border: 1px solid #00C618;}
 .qcf-style #submit, .qcf-style #submit:hover{color: #FFF;background: #343838;text-align: center;cursor: pointer;}
