@@ -71,6 +71,9 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 6.6.1 =
+*	Bug fix
+
 = 6.6 =
 *	Submit button border styling
 *	Allow background images

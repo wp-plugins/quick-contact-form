@@ -188,9 +188,9 @@ function qcf_form_options($id) {
 		<p><input type="text" name="blurb" value="' . $qcf['blurb'] . '" /></p>
 		<h2>Form Fields</h2>
 		<p>Drag and drop to change order of the fields</p>
-		<p style="margin-left:7px;">
-		<span style=";width:20%;">Field Selection</span>
-		<span style="width:30%;">Label</span>
+		<p>
+		<span style="margin-left:7px;width:100px;">Field Selection</span>
+		<span style="width:160px;">Label</span>
 		<span>Required field</span></p>
 		<div style="clear:left"></div>
 		<ul id="qcf_sort">';
@@ -224,6 +224,7 @@ function qcf_form_options($id) {
 	$content .= '</div><div style="float:left;width:45%">'.$options . '</div><div style="clear:left"></div></li>';
 	}
 	$content .= '</ul>
+		<input type="hidden" id="qcf_settings_sort" name="sort" value="'.$qcf['sort'].'" />
 		<h2>Submit button caption</h2>
 		<p><input type="text" text-align:center" name="send" value="' . $qcf['send'] . '" /></p>
 		<h2>Spambot Checker</h2>
@@ -231,7 +232,8 @@ function qcf_form_options($id) {
 		<p>Caption (leave blank if you just want the sum):</p>
 		<p><input type="text" name="mathscaption" value="' . $qcf['mathscaption'] . '" /></p>
 		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" />  <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset these settings?\' );"/></p>
-		</form></div>
+		</form>
+		</div>
 		<div class="qcf-options" style="float:right">  
 		<h2 style="color:#B52C00">Form Preview</h2>
 		<p>Note: The preview form uses the wordpress admin styles. Your form will use the theme styles so won\'t look exactly like the one below.</p>';
