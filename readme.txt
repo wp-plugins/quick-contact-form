@@ -71,6 +71,9 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 6.6.2 =
+*	Fix so submit buttons now work properly
+
 = 6.6.1 =
 *	Bug fix
 

@@ -14,9 +14,9 @@ add_action('init', 'qcf_init');
 
 function qcf_init() {
 	qcf_create_css_file ('');
-	wp_enqueue_style( 'qcf_style',plugins_url('quick-contact-form-style.css', __FILE__));
+	wp_enqueue_style( 'qcf_style',plugins_url('quick-contact-form.css', __FILE__));
 	wp_enqueue_style( 'qcf_custom',plugins_url('quick-contact-form-custom.css', __FILE__));
-	wp_enqueue_script( 'qcf_script',plugins_url('quick-contact-form-javascript.js', __FILE__));
+	wp_enqueue_script( 'qcf_script',plugins_url('quick-contact-form.js', __FILE__));
 	wp_enqueue_script('jquery-ui-datepicker');
 	wp_enqueue_style('jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
 	}
@@ -230,7 +230,7 @@ function qcf_display_form( $values, $errors, $id ) {
 		<input type="hidden" name="thesum" value="' . strip_tags($values['thesum']) . '" />';
 		}
 	$caption = $qcf['send'];
-	if ($style['submit-button']) $content .= '<p><input type="image" value="' . $caption . '" style="border:none;width:100%;height:auto;overflow:hidden;" src="'.$style['submit-button'].'" name="PaymentSubmit" /></p>';
+	if ($style['submit-button']) $content .= '<p><input type="image" value="' . $caption . '" style="border:none;width:100%;height:auto;overflow:hidden;" src="'.$style['submit-button'].'" id="submit" name="qcfsubmit'.$id.'" /></p>';
 	else $content .= '<p><input type="submit" value="' . $caption . '" id="submit" name="qcfsubmit'.$id.'" /></p>';
 	$content .= '</form>'."\r\t".
 		'<div style="clear:both;"></div></div>'."\r\t".
@@ -406,7 +406,7 @@ function qcf_process_form($values,$id) {
 	}
 function qcf_loop($id) {
 	ob_start();
-	if (isset($_POST['qcfsubmit'.$id])) {
+	if (isset($_POST['qcfsubmit'.$id]) || isset($_POST['qcfsubmit'.$id.'_x'])) {
 		$formvalues = $_POST;
 		$formerrors = array();
 		if (!qcf_verify_form($formvalues, $formerrors,$id)) qcf_display_form($formvalues, $formerrors,$id);
@@ -488,7 +488,7 @@ function qcf_generate_css() {
 		if ($style['submitwidth'] == 'submitpixel') $submitwidth = 'width:'.$style['submitwidthset'].';';
 		if ($style['submitposition'] == 'submitleft') $submitposition = 'float:left;'; else $submitposition = 'float:right;';
 		$submitbutton = ".qcf-style".$id." #submit, .qcf-style".$id." #submit:hover{".$submitposition.$submitwidth."color:".$style['submit-colour'].";background:".$style['submit-background'].";border:".$style['submit-border'].";".$submitfont.";font-size: inherit;}\r\n";
-		$border =".qcf-style".$id." #".$style['border']." {border:".$style['form-border'].";}\r\n";
+		if ($style['border']<>'none') $border =".qcf-style".$id." #".$style['border']." {border:".$style['form-border'].";}\r\n";
 		if ($style['background'] == 'white') $background = ".qcf-style".$id." div {background:#FFF;}\r\n";
 		if ($style['background'] == 'color') $background = ".qcf-style".$id." div {background:".$style['backgroundhex'].";}\r\n";
 		if ($style['backgroundimage']) $background = ".qcf-style".$id." div {background: url('".$style['backgroundimage']."');}\r\n";
@@ -578,6 +578,7 @@ function qcf_get_default_style() {
 	$style['submitwidth'] = 'submitpercent';
 	$style['submitposition'] = 'submitleft';
 	$style['border'] = 'plain';
+	$style['form-border'] = '1px solid #415063';
 	$style['input-border'] = '1px solid #415063';
 	$style['input-required'] = '1px solid #00C618';
 	$style['bordercolour'] = '#415063';
