@@ -1,0 +1,164 @@
+#qcf-style {
+	font-family: arial, sans-serif;
+	text-align: left;
+	margin: 0 0 10px 0;
+	padding: 0;
+	}
+
+#qcf-style form {
+	margin: 0;
+	padding: 0;
+	}
+
+#qcf-style #none {
+	border: 0px solid #FFF;
+	padding: 0;
+	}
+
+#qcf-style #plain {
+	border: 1px solid #888; 
+	padding: 10px;
+	margin: 0;
+	}
+
+#qcf-style #rounded {
+	border: 1px solid #888;
+	padding: 10px;
+	-moz-border-radius: 10px;
+	-webkit-box-shadow: 10px;
+	border-radius: 10px;
+	}
+
+#qcf-style #shadow {
+	border: 1px solid #888;
+	padding: 10px;
+	margin: 0 10px 20px 0;
+	-webkit-box-shadow: 5px 5px 5px #888;
+	-moz-box-shadow: 5px 5px 5px #888;
+	box-shadow: 5px 5px 5px #888;
+	}
+
+#qcf-style #roundshadow {
+	border: 1px solid #888; 
+	padding: 10px; 
+	margin: 0 10px 20px 0; 
+	-webkit-box-shadow: 5px 5px 5px #888; 
+	-moz-box-shadow: 5px 5px 5px #888; 
+	box-shadow: 5px 5px 5px #888;
+	-moz-border-radius: 10px; 
+	-webkit-box-shadow: 10px; 
+	border-radius: 10px;
+	}
+
+#qcf-style form p {
+	margin: 0 0 2px 0;
+	padding: 0;
+	}
+
+#qcf-style input, #qcf-style textarea{
+	font-family: arial, sans-serif;
+	margin: 5px 0 5px 0;
+	padding: 6px;
+	color: #465069;
+	font-size: 120%;
+	border:1px solid #415063;
+	}
+
+#qcf-style select {
+	color: #465069;
+	border:1px solid #415063;
+	color: #465069;
+	font-size: 120%;
+	padding: 2px;
+	}
+
+#qcf-style #sums , #qcf-style .input {
+	color: #465069;
+	font-size: 120%;
+	}
+
+#qcf-style input:focus {
+	background:#FFFFCC;
+	}
+
+#qcf-style textarea:focus {
+	background:#FFFFCC;
+	}
+
+#qcf-style .error {
+	color: #D31900;
+	}
+
+#qcf-style .required {
+	border: 1px solid #00C618;
+	}
+
+#qcf-style #submit {
+	color: #FFF;
+	background: #343838;
+	text-align: center;
+	cursor: pointer;
+	}
+
+#qcf-style td, #qcf-widget td {
+	border-top: 1px solid #005F6B;
+	padding: 5px 10px 5px 0;
+	max-width: 400px;
+	vertical-align:top;
+	}
+
+#qcf-style td b, #qcf-widget td b {
+	color: #005F6B;
+	}
+
+#qcf-style th, #qcf-widget th {
+	padding: 5px 10px 5px 0;
+	max-width: 400px;
+	text-align: left;
+	color: #005F6B;
+	}
+
+#qcf_sort { list-style-type: none; margin: 0; padding: 0; width:100%; }
+#qcf_sort li { margin: 3px 0; padding: 0.3em 0.8em 0.3em 0.5em; min-height: 1.6em; cursor:pointer; border:1px solid #888; clear:left}
+#qcf_sort li.button_active { background-color: white; background: url(updown.gif) no-repeat right center;}
+#qcf_sort li.button_inactive { background-color: #E0E0E0;}
+#qcf_sort li div {overflow:hidden;}
+
+.qcf-hack {
+	margin: 0;
+	padding: 0;
+	border: 1px solid red;
+	}
+
+#qcf-options {
+	border: 1px solid #C3CFF5;
+	padding: 0 10px 10px 10px;
+	margin: 10px 10px 0 0 ;
+	float: left;
+	width: 45%;
+	}
+
+#qcf-options h2 {
+	color: #005F6B;
+	}
+
+#qcf-options h3 {
+	color: #717DD7;
+	margin: 4px 0 0 0;
+	padding: 0;
+	}
+
+#qcf-options submit input:focus {
+	color: #FFF;
+	}
+	
+#qcf-options ul {
+	margin: 0;
+	padding: 0;
+	}
+	
+#qcf-options .instructions li {
+	list-style-type: disc;
+	list-style-position: inside;
+	margin: 1px 0;
+	}
