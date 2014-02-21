@@ -9,7 +9,7 @@
 .qcf-style input:focus, .qcf-style textarea:focus {background:#FFFFCC;}
 .qcf-style p {margin: 4px 0;}
 .qcf-style img {width:100%;height:auto;overflow:hidden;}
-.qcf-style p span {color: #D31900;margin: 4px 0;}
+.qcf-style p span {color: #D31900;clear:both;}
 .qcf-style input[type=text].required, .qcf-style textarea.required {border: 1px solid #00C618;}
 .qcf-style #submit, .qcf-style #submit:hover{color: #FFF;background: #343838;text-align: center;cursor: pointer;}
 #ui-datepicker-div {display:none;}

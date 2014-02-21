@@ -1,3 +1,4 @@
+
 === Quick Contact Form ===
 
 Contributors: 
@@ -14,8 +15,8 @@ A really, really simple drag and drop contact form. There is nothing to configur
 
 = Features =
 
-*	Drag and drop fields with easy to edit labels and captions.
-*	Range of built in styles with custom CSS support.
+*	Drag and drop fields with easy to edit labels and captions
+*	Massive range of built in styles with custom CSS support
 *	Display and download messages
 *	Custom error and thank-you messages
 *	Multiple form support
@@ -70,6 +71,12 @@ I did, and so have you.  Maybe there will be more, who knows.
 No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
+
+= 6.7 =
+*   Added new multi use field
+*   Made Captcha a selectable field
+*   Added new styles for input fields
+*   fixed minor bugs (including the wrong shortcode)
 
 = 6.6.2 =
 *	Fix so submit buttons now work properly

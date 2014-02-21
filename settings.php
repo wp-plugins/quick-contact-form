@@ -19,9 +19,10 @@ function qcf_settings_init() {
 	return;
 	}
 function qcf_settings_scripts() {
+    qcf_admin_scripts();
 	wp_enqueue_script('jquery-ui-sortable');
 	wp_enqueue_style('qcf_settings',plugins_url('settings.css', __FILE__));
-	wp_enqueue_style( 'wp-color-picker' );
+	wp_enqueue_style('wp-color-picker' );
 	wp_enqueue_script('colorpicker-script', plugins_url('color.js', __FILE__ ), array( 'wp-color-picker' ), false, true );
 	wp_enqueue_media();
 	wp_enqueue_script('qcf-media',plugins_url('media.js', __FILE__ ), array( 'jquery' ), false, true );
@@ -107,7 +108,7 @@ function qcf_setup ($id) {
 			$content .='<tr><td><input style="margin:0; padding:0; border:none" type="radio" name="current" value="' .$item . '" ' .$checked . ' /> '.$formname.'</td>';
 			$content .='<td><input type="text" style="padding:1px;" label="qcf_email" name="qcf_email'.$item.'" value="' . $qcf_email[$item].'" /></td>';
 			if ($item) $shortcode = ' id="'.$item.'"'; else $shortcode='';
-			$content .= '<td><code>[qpp'.$shortcode.']</code></td><td>';
+			$content .= '<td><code>[qcf'.$shortcode.']</code></td><td>';
 			if ($item) $content .= '<input type="hidden" name="deleteform'.$item.'" value="'.$item.'"><input type="submit" name="delete'.$item.'" class="button-secondary" value="delete" onclick="return window.confirm( \'Are you sure you want to delete '.$item.'?\' );" />';
 			$content .= '</td></tr>';
 			}
@@ -141,18 +142,18 @@ function qcf_setup ($id) {
 	echo $content;
 	}
 function qcf_form_options($id) {
-	$active_buttons = array( 'field1' , 'field2' , 'field3' , 'field4' , 'field5' , 'field6' ,  'field7' , 'field8' ,  'field9' , 'field10');
+	$active_buttons = array( 'field1' , 'field2' , 'field3' , 'field4' , 'field5' , 'field6' ,  'field7' , 'field8' ,  'field9' , 'field10','field11','field12');
 	qcf_change_form_update();
 	if( isset( $_POST['Submit'])) {
-		foreach ( $active_buttons as $item) {
+ 		foreach ( $active_buttons as $item) {
 			$qcf['active_buttons'][$item] = (isset( $_POST['qcf_settings_active_'.$item]) and $_POST['qcf_settings_active_'.$item] == 'on' ) ? true : false;
 			$qcf['required'][$item] = (isset( $_POST['required_'.$item]) );
-			if (!empty ( $_POST['label_'.$item])) $qcf['label'][$item] = stripslashes($_POST['label_'.$item]);
+			if (!empty ( $_POST['label_'.$item])) {$qcf['label'][$item] = stripslashes($_POST['label_'.$item]);$qcf['label'][$item] = str_replace("'","&#8217;",$qcf['label'][$item]);}
 			}
 		$qcf['dropdownlist'] = str_replace(', ' , ',' , $_POST['dropdown_string']);
 		$qcf['checklist'] = str_replace(', ' , ',' , $_POST['checklist_string']);
 		$qcf['radiolist'] = str_replace(', ' , ',' , $_POST['radio_string']);
-		$options = array( 'sort','lines','htmltags','title','blurb','border','captcha','mathscaption','send','datepicker');
+		$options = array( 'sort','lines','htmltags','title','blurb','border','send','datepicker','fieldtype');
 		foreach ( $options as $item) $qcf[$item] = stripslashes($_POST[$item]);
 		update_option( 'qcf_settings'.$id, $qcf);
 		if ($id) qcf_admin_notice("The form settings for ". $id . " have been updated.");
@@ -166,6 +167,7 @@ function qcf_form_options($id) {
 	$qcf_setup = qcf_get_stored_setup();
 	$id = $qcf_setup['current'];
 	$qcf = qcf_get_stored_options($id);
+    $$qcf['fieldtype'] = 'checked';
 	$content = '<script>
 		jQuery(function() {
 			var qcf_sort = jQuery( "#qcf_sort" ).sortable({ axis: "y" ,
@@ -188,10 +190,7 @@ function qcf_form_options($id) {
 		<p><input type="text" name="blurb" value="' . $qcf['blurb'] . '" /></p>
 		<h2>Form Fields</h2>
 		<p>Drag and drop to change order of the fields</p>
-		<p>
-		<span style="margin-left:7px;width:100px;">Field Selection</span>
-		<span style="width:160px;">Label</span>
-		<span>Required field</span></p>
+		<div style="margin-left:7px;font-weight:bold;"><div style="float:left; width:20%;">Field Selection</div><div style="float:left; width:30%;">Label</div><div style="float:left;">Required field</div></div>
 		<div style="clear:left"></div>
 		<ul id="qcf_sort">';
 		foreach (explode( ',',$qcf['sort']) as $name) {
@@ -213,25 +212,27 @@ function qcf_form_options($id) {
 				case 'field8': $type = 'Textbox'; $options = ''; break;
 				case 'field9': $type = 'Textbox'; $options = ''; break;
 				case 'field10': $type = 'Date'; $options = ''; break;
+				case 'field11': $type = 'Multibox'; $options = '<input style="margin:0; padding:0; border:none" type="radio" name="fieldtype" value="ttext" ' .$ttext . ' /> Text
+<input style="margin:0; padding:0; border:none" type="radio" name="fieldtype" value="tmail" ' .$tmail . ' /> Email
+<input style="margin:0; padding:0; border:none" type="radio" name="fieldtype" value="ttele" ' .$ttele . ' /> Telephone
+<input style="margin:0; padding:0; border:none" type="radio" name="fieldtype" value="tdate" ' .$tdate . ' /> Date';break;
+		          case 'field12': $type = 'Maths Captcha'; $options = '<span class="description">Add a maths checker to the form to (hopefully) block most of the spambots.</span>'; break;
 				}
-		$li_class = ( $checked) ? 'button_active' : 'button_inactive';
+	$li_class = ( $checked) ? 'button_active' : 'button_inactive';
 	$content .= '<li class="'.$li_class.'" id="' . $name . '">
 		<div style="float:left; width:20%;"><input type="checkbox" class="button_activate" style="border: none;" name="qcf_settings_active_' . $name . '" ' . $checked . ' />' . $type . '</div>
 		<div style="float:left; width:30%;"><input type="text" style="border: border:1px solid #415063; padding: 1px; margin:0;" name="label_' . $name . '" value="' . $qcf['label'][$name] . '"/></div>
 		<div style="float:left;width:5%">';
-		if ($name <> 'field7') $content .='<input type="checkbox" class="button_activate" style="border: none; padding: 0; margin:0 0 0 5px;" name="required_'.$name.'" '.$required.' /> ';
+$exclude = array("field7","field12");
+if(!in_array($name, $exclude)) $content .='<input type="checkbox" class="button_activate" style="border: none; padding: 0; margin:0 0 0 5px;" name="required_'.$name.'" '.$required.' /> ';
 		else $content .='&nbsp;';
 	$content .= '</div><div style="float:left;width:45%">'.$options . '</div><div style="clear:left"></div></li>';
 	}
 	$content .= '</ul>
 		<input type="hidden" id="qcf_settings_sort" name="sort" value="'.$qcf['sort'].'" />
 		<h2>Submit button caption</h2>
-		<p><input type="text" text-align:center" name="send" value="' . $qcf['send'] . '" /></p>
-		<h2>Spambot Checker</h2>
-		<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="captcha"' . $qcf['captcha'] . ' value="checked" /> Add a maths checker to the form to (hopefully) block most of the spambots.</p>
-		<p>Caption (leave blank if you just want the sum):</p>
-		<p><input type="text" name="mathscaption" value="' . $qcf['mathscaption'] . '" /></p>
-		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" />  <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset these settings?\' );"/></p>
+		<p><input type="text" text-align:center" name="send" value="' . $qcf['send'] . '" /></p>';
+	$content .='<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" />  <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset these settings?\' );"/></p>
 		</form>
 		</div>
 		<div class="qcf-options" style="float:right">  
@@ -291,7 +292,7 @@ function qcf_attach ($id) {
 function qcf_styles($id) {
 	qcf_change_form_update();
 	if( isset( $_POST['Submit'])) {
-		$options = array( 'font','font-family','font-size','font-colour','text-font-family','text-font-size','text-font-colour','input-border','input-required' ,'border','width','widthtype','submitwidth','submitwidthset','submitposition','background','backgroundhex','backgroundimage','corners','use_custom','styles','usetheme','submit-colour','submit-background','submit-border','submit-button','form-border','header','header-size','header-colour');
+		$options = array( 'font','font-family','font-size','font-colour','text-font-family','text-font-size','text-font-colour','input-border','input-required','inputbackground','inputfocus','border','width','widthtype','submitwidth','submitwidthset','submitposition','background','backgroundhex','backgroundimage','corners','use_custom','styles','usetheme','submit-colour','submit-background','submit-border','submit-button','form-border','header','header-size','header-colour');
 		foreach ( $options as $item) $style[$item] = stripslashes($_POST[$item]);
 		update_option( 'qcf_style'.$id, $style);
 		qcf_create_css_file ('update');
@@ -355,6 +356,8 @@ function qcf_styles($id) {
 		<tr><td>Font Colour: </td><td><input type="text" class="qcf-color" label="font-colour" name="font-colour" value="' . $style['font-colour'] . '" /></td></tr>
 		<tr><td>Normal Border: </td><td><input type="text" label="input-border" name="input-border" value="' . $style['input-border'] . '" /></td></tr>
 		<tr><td>Required Fields: </td><td><input type="text" label="input-required" name="input-required" value="' . $style['input-required'] . '" /></td></tr>
+		<tr><td>Background: </td><td><input type="text" class="qcf-color" label="inputbackground" name="inputbackground" value="' . $style['inputbackground'] . '" /></td></tr>
+		<tr><td>Focus: </td><td><input type="text" class="qcf-color" label="inputfocus" name="inputfocus" value="' . $style['inputfocus'] . '" /></td></tr>
 		<tr><td>Corners: </td><td><input style="margin:0; padding:0; border:none;" type="radio" name="corners" value="corner" ' . $corner . ' /> Use theme settings <input style="margin:0; padding:0; border:none;" type="radio" name="corners" value="square" ' . $square . ' /> Square corners 	<input style="margin:0; padding:0; border:none;" type="radio" name="corners" value="round" ' . $round . ' /> 5px rounded corners</td></tr>
 		<tr><td colspan="2"><h2>Other text content</h2></td></tr>
 		<tr><td>Font Family: </td><td><input type="text" label="text-font-family" name="text-font-family" value="' . $style['text-font-family'] . '" /></td></tr>
@@ -774,7 +777,7 @@ function qcfdonate_display( $values, $errors ) {
 	function donateclear(thisfield, defaulttext) {if (thisfield.value == defaulttext) {thisfield.value = '';}}\r\t
 	function donaterecall(thisfield, defaulttext) {if (thisfield.value == '') {thisfield.value = defaulttext;}}\r\t
 	</script>\r\t
-	<div class='qcf-style'>\r\t<div id='round'>\r\t";
+	<div class='qcf-style' style='width:50%'>\r\t<div id='round'>\r\t";
 	if ($errors) $content .= "<h2 class='error'>Feed me...</h2>\r\t<p class='error'>...your donation details</p>\r\t";
 	else $content .= "<h2>Make a donation</h2>\r\t<p>Whilst I enjoy creating these plugins they don't pay the bills. So a paypal donation will always be gratefully received</p>\r\t";
 	$content .= '
