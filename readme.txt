@@ -72,6 +72,10 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 6.8 =
+*   Added second multi use field
+*   Changed selector fields to mulit use fields 
+
 = 6.7 =
 *   Added new multi use field
 *   Made Captcha a selectable field
