@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 6.8
+Version: 6.8.1
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -244,15 +244,39 @@ function qcf_verify_form(&$values, &$errors,$id) {
 						$errors['qcfname4'] = '<p><span>' . $error['field4'] . '</span></p>';
 					break;
 				case 'field5':
-					$values['qcfname5'] = filter_var($values['qcfname5'], FILTER_SANITIZE_STRING);
-					if ($values['qcfname5'] == $qcf['label'][$name])
-						$errors['qcfname5'] = '<p><span>' . $error['field5'] . '</span></p>';
+                    if ($qcf['selectora'] == 'checkboxa') {
+					   $check = '';
+					   $arr = explode(",",$qcf['dropdownlist']);
+					   foreach ($arr as $item) $check = $check . $values['qcfname5_'.str_replace(' ','',$item)];
+					   if (empty($check)) $errors['qcfname5'] = '<p><span>' . $error['field5'] . '</span></p>';
+                    } else {
+                        $values['qcfname5'] = filter_var($values['qcfname5'], FILTER_SANITIZE_STRING);
+                        if (empty($values['qcfname5']) || $values['qcfname5'] == $qcf['label'][$name])
+                            $errors['qcfname5'] = '<p><span>' . $error['field5'] . '</span></p>';
+                    }
 					break;
 				case 'field6':
-					$check = '';
-					$arr = explode(",",$qcf['checklist']);
-					foreach ($arr as $item) $check = $check . $values['qcfname6_'.str_replace(' ','',$item)];
-					if (empty($check)) $errors['qcfname6'] = '<p><span>' . $error['field6'] . '</span></p>';
+                    if ($qcf['selectorb'] == 'checkboxb') {
+					   $check = '';
+					   $arr = explode(",",$qcf['checklist']);
+					   foreach ($arr as $item) $check = $check . $values['qcfname6_'.str_replace(' ','',$item)];
+					   if (empty($check)) $errors['qcfname6'] = '<p><span>' . $error['field6'] . '</span></p>';
+                    } else {
+                        $values['qcfname6'] = filter_var($values['qcfname6'], FILTER_SANITIZE_STRING);
+                        if (empty($values['qcfname6']) || $values['qcfname6'] == $qcf['label'][$name])
+                            $errors['qcfname6'] = '<p><span>' . $error['field6'] . '</span></p>';
+                    }
+                case 'field7':
+                    if ($qcf['selectorc'] == 'checkboxc') {
+					   $check = '';
+					   $arr = explode(",",$qcf['radiolist']);
+					   foreach ($arr as $item) $check = $check . $values['qcfname7_'.str_replace(' ','',$item)];
+					   if (empty($check)) $errors['qcfname7'] = '<p><span>' . $error['field7'] . '</span></p>';
+                    } else {
+                        $values['qcfname7'] = filter_var($values['qcfname7'], FILTER_SANITIZE_STRING);
+                        if (empty($values['qcfname7']) || $values['qcfname7'] == $qcf['label'][$name])
+                            $errors['qcfname67'] = '<p><span>' . $error['field7'] . '</span></p>';
+                    }
 					break;
 				case 'field8':
 					$values['qcfname8'] = filter_var($values['qcfname8'], FILTER_SANITIZE_STRING);
@@ -337,18 +361,40 @@ function qcf_process_form($values,$id) {
 					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . strip_tags(stripslashes($values['qcfname4']),$qcf['htmltags']) . '</p>';
 					break;
 				case 'field5':
-					if ($values['qcfname5'] == $qcf['label'][$item]) $values['qcfname5'] ='';
-					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . $values['qcfname5'] . '</p>';
+                    if ($qcf['selectora'] == 'checkboxa') {
+                        $checks ='';
+                        $arr = explode(",",$qcf['dropdownlist']);
+                        $content .= '<p><b>' . $qcf['label'][$item] . ': </b>';
+                        foreach ($arr as $key) if ($values['qcfname5_' . str_replace(' ','',$key)]) $checks .= $key . ', ';
+                            $content .= rtrim( $checks , ', ' ) . '</p>';
+                    } else {
+                        if ($values['qcfname5'] == $qcf['label'][$item]) $values['qcfname5'] ='';
+                        $content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . $values['qcfname5'] . '</p>';
+                    }
 					break;
 				case 'field6':
-					$arr = explode(",",$qcf['checklist']);
-					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>';
-					foreach ($arr as $key) if ($values['qcfname6_' . str_replace(' ','',$key)]) $checks .= $key . ', ';
-					$content .= rtrim( $checks , ', ' ) . '</p>';
+                    if ($qcf['selectorb'] == 'checkboxb') {
+                        $checks ='';
+                        $arr = explode(",",$qcf['checklist']);
+                        $content .= '<p><b>' . $qcf['label'][$item] . ': </b>';
+                        foreach ($arr as $key) if ($values['qcfname6_' . str_replace(' ','',$key)]) $checks .= $key . ', ';
+                        $content .= rtrim( $checks , ', ' ) . '</p>';
+                    } else {
+                        if ($values['qcfname6'] == $qcf['label'][$item]) $values['qcfname6'] ='';
+                        $content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . $values['qcfname6'] . '</p>';
+                    }
 					break;
 				case 'field7':
-					if ($values['qcfname7'] == $qcf['label'][$item]) $values['qcfname7'] ='';
-					$content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . $values['qcfname7'] . '</p>';
+                    if ($qcf['selectorc'] == 'checkboxc') {
+                        $checks ='';
+                        $arr = explode(",",$qcf['radiolist']);
+                        $content .= '<p><b>' . $qcf['label'][$item] . ': </b>';
+                        foreach ($arr as $key) if ($values['qcfname7_' . str_replace(' ','',$key)]) $checks .= $key . ', ';
+                        $content .= rtrim( $checks , ', ' ) . '</p>';
+                    } else {
+					   if ($values['qcfname7'] == $qcf['label'][$item]) $values['qcfname7'] ='';
+					   $content .= '<p><b>' . $qcf['label'][$item] . ': </b>' . $values['qcfname7'] . '</p>';
+                    }
 					break;
 				case 'field8':
 					if ($values['qcfname8'] == $qcf['label'][$item]) $values['qcfname8'] ='';
@@ -414,7 +460,8 @@ function qcf_process_form($values,$id) {
 			}
 		else {
 			$headers = "From: {$values['qcfname1']} <{$values['qcfname2']}>\r\n";
-            if ($reply['qcf_bcc']) { $headers .= "BCC: ".$qcf_email."\r\n";$qcf_email = 'null';} 
+                if ($reply['qcf_bcc']) { $headers .= "BCC: ".$qcf_email."\r\n";$qcf_email = 'null';}
+                
 			$headers .= "MIME-Version: 1.0\r\n"
 			. "Content-Type: text/html; charset=\"utf-8\"\r\n"; 
 			$message = $sendcontent;

@@ -72,6 +72,10 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 6.8.1 =
+*   Bug fix to the multiuse selector fields
+*   fixed broken link to CSS editor
+
 = 6.8 =
 *   Added second multi use field
 *   Changed selector fields to mulit use fields 

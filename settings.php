@@ -400,7 +400,7 @@ if ($style['widthtype'] == 'pixel') {
 		<h2>Custom CSS</h2>
 		<p><input type="checkbox" style="margin:0; padding: 0; border: none" name="use_custom"' . $style['use_custom'] . ' value="checked" /> Use Custom CSS</p>
 		<p><textarea style="height: 100px" name="styles">' . $style['styles'] . '</textarea></p>
-		<p>To see all the styling use the <a href="'.get_admin_url().'plugin-editor.php?file=quick-contact-form/quick-contact-form-style.css">CSS editor</a>.</p>
+		<p>To see all the styling use the <a href="'.get_admin_url().'plugin-editor.php?file=quick-contact-form/quick-contact-form.css">CSS editor</a>.</p>
 		<p>The main style wrapper is the <code>.qcf-style</code> id.</p>
 		<p>The form borders are: #none, #plain, #rounded, #shadow, #roundshadow.</p>
 		<p>Errors and required fields have the classes .error and .required</p>
