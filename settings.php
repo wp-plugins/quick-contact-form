@@ -310,7 +310,7 @@ function qcf_attach ($id) {
 function qcf_styles($id) {
 	qcf_change_form_update();
 	if( isset( $_POST['Submit'])) {
-		$options = array( 'font','font-family','font-size','font-colour','text-font-family','text-font-size','text-font-colour','input-border','input-required','inputbackground','inputfocus','border','width','widthtype','submitwidth','submitwidthset','submitposition','background','backgroundhex','backgroundimage','corners','use_custom','styles','usetheme','submit-colour','submit-background','submit-border','submit-button','form-border','header','header-size','header-colour');
+		$options = array( 'font','font-family','font-size','font-colour','text-font-family','text-font-size','text-font-colour','input-border','input-required','inputbackground','inputfocus','border','width','widthtype','submitwidth','submitwidthset','submitposition','background','backgroundhex','backgroundimage','corners','use_custom','styles','usetheme','submit-colour','submit-background','submit-border','submit-button','form-border','header','header-size','header-colour','error-font-colour','error-border');
 		foreach ( $options as $item) $style[$item] = stripslashes($_POST[$item]);
 if ($style['widthtype'] == 'pixel') {
 	$formwidth = preg_split('#(?<=\d)(?=[a-z%])#i', $style['width']);
@@ -385,7 +385,11 @@ if ($style['widthtype'] == 'pixel') {
 		<tr><td>Font Family: </td><td><input type="text" label="text-font-family" name="text-font-family" value="' . $style['text-font-family'] . '" /></td></tr>
 		<tr><td>Font Size: </td><td><input type="text" style="width:6em" label="text-font-size" name="text-font-size" value="' . $style['text-font-size'] . '" /></td></tr>
 		<tr><td>Font Colour: </td><td><input type="text" class="qcf-color" label="text-font-colour" name="text-font-colour" value="' . $style['text-font-colour'] . '" /></td></tr>
-		<tr><td td colspan="2"><h2>Submit Button</h2></td></tr>
+<tr><td colspan="2"><h2>Error Messages</h2></td></tr>
+		<tr><td>Font Colour: </td><td><input type="text" class="qcf-color" label="error-font-colour" name="error-font-colour" value="' . $style['error-font-colour'] . '" /></td></tr>
+		<tr><td>Error Border: </td><td><input type="text" label="error-border" name="error-border" value="' . $style['error-border'] . '" /></td></tr>
+		
+<tr><td td colspan="2"><h2>Submit Button</h2></td></tr>
 		<tr><td>Font Colour: </td><td><input type="text" class="qcf-color" label="submit-colour" name="submit-colour" value="' . $style['submit-colour'] . '" /></td></tr>
 		<tr><td>Background: </td><td><input type="text" class="qcf-color" label="submit-background" name="submit-background" value="' . $style['submit-background'] . '" /></td></tr>
 		<tr><td>Border: </td><td><input type="text" label="submit-border" name="submit-border" value="' . $style['submit-border'] . '" /></td></tr>

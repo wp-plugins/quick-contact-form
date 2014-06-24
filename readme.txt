@@ -72,6 +72,15 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 6.8.3 =
+*   Added styling options for the Error messages
+*   Fixed line height bug (that has been buggin me for ages)
+*   Fixed validation error on selector fields
+
+= 6.8.2 =
+*   Added error message styles
+*   fixed broken link to CSS editor
+
 = 6.8.1 =
 *   Bug fix to the multiuse selector fields
 *   fixed broken link to CSS editor

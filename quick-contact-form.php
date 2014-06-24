@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 6.8.1
+Version: 6.8.3
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -48,6 +48,7 @@ function qcf_plugin_action_links($links, $file ) {
 		}
 	return $links;
 	}
+
 function qcf_display_form( $values, $errors, $id ) {
 	$qcf_form = qcf_get_stored_setup();
 	$qcf = qcf_get_stored_options($id);
@@ -55,6 +56,7 @@ function qcf_display_form( $values, $errors, $id ) {
 	$reply = qcf_get_stored_reply($id);
 	$attach = qcf_get_stored_attach($id);
 	$style = qcf_get_stored_style($id);
+    global $_GET;
 	if ($id) $formstyle=$id; else $formstyle='default';
 	if (!empty($qcf['title'])) $qcf['title'] = '<h2>' . $qcf['title'] . '</h2>';
 	if (!empty($qcf['blurb'])) $qcf['blurb'] = '<p>' . $qcf['blurb'] . '</p>';
@@ -64,78 +66,92 @@ function qcf_display_form( $values, $errors, $id ) {
 	if (count($errors) > 0)
 		$content .= "<h2>" . $error['errortitle'] . "</h2>\r\t<p>" . $error['errorblurb'] . "</p>\r\t";
 	else
-		$content .= $qcf['title'] . "\r\t" . $qcf['blurb'] . "\r\t";	
-	$content .= "<form action=\"\" method=\"POST\" enctype=\"multipart/form-data\">\r\t";
-		foreach (explode( ',',$qcf['sort']) as $name) {
+		$content .= $qcf['title'] . "\r\t" . $qcf['blurb'] . "\r\t";
+    $content .= "<form action=\"\" method=\"POST\" enctype=\"multipart/form-data\">\r\t";
+    foreach (explode( ',',$qcf['sort']) as $name) {
 		$required = ( $qcf['required'][$name]) ? 'required' : '';
 		if ($qcf['active_buttons'][$name] == "on") {
 			switch ( $name ) {
 				case 'field1':
-					$content .= $errors['qcfname1'];
-					$content .= '<input type="text" class="' . $required . '" label="Name" name="qcfname1" value="' . $values['qcfname1'] . '" onfocus="qcfclear(this, \'' . $values['qcfname1'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname1'] . '\')">'."\r\t";
-					break;
+                if ($errors['qcfname1']) $required = 'error';
+                $content .= $errors['qcfname1'];
+                $content .= '<input type="text" class="' . $required . '" label="Name" name="qcfname1" value="' . $values['qcfname1'] . '" onfocus="qcfclear(this, \'' . $values['qcfname1'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname1'] . '\')">'."\r\t";
+                break;
 				case 'field2':
-					$content .= $errors['qcfname2'];
-					$content .= '<input type="text" class="' . $required . '" label="Email" name="qcfname2"  value="' . $values['qcfname2'] . '" onfocus="qcfclear(this, \'' . $values['qcfname2'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname2'] . '\')">'."\r\t";
-					break;
+                if ($errors['qcfname2']) $required = 'error';
+                $content .= $errors['qcfname2'];
+                $content .= '<input type="text" class="' . $required . '" label="Email" name="qcfname2"  value="' . $values['qcfname2'] . '" onfocus="qcfclear(this, \'' . $values['qcfname2'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname2'] . '\')">'."\r\t";
+                break;
 				case 'field3':
-					$content .= $errors['qcfname3'];
-					$content .= '<input type="text" class="' . $required . '" label="Telephone" name="qcfname3"  value="' . $values['qcfname3'] . '" onfocus="qcfclear(this, \'' . $values['qcfname3'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname3'] . '\')">'."\r\t";
-					break;
+                if ($errors['qcfname3']) $required = 'error';
+                $content .= $errors['qcfname3'];
+                $content .= '<input type="text" class="' . $required . '" label="Telephone" name="qcfname3"  value="' . $values['qcfname3'] . '" onfocus="qcfclear(this, \'' . $values['qcfname3'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname3'] . '\')">'."\r\t";
+                break;
 				case 'field4':
-					$content .= $errors['qcfname4'];
-					$content .= '<textarea class="' . $required . '"  rows="' . $qcf['lines'] . '" label="Name" name="qcfname4" onfocus="qcfclear(this, \'' . $values['qcfname4'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname4'] . '\')">' . stripslashes($values['qcfname4']) . '</textarea></p>'."\r\t";
-					break;
+                if ($errors['qcfname4']) $required = 'error';
+                $content .= $errors['qcfname4'];
+                $content .= '<textarea class="' . $required . '"  rows="' . $qcf['lines'] . '" label="Name" name="qcfname4" onfocus="qcfclear(this, \'' . $values['qcfname4'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname4'] . '\')">' . stripslashes($values['qcfname4']) . '</textarea></p>'."\r\t";
+                break;
 				case 'field5':
-					if ($qcf['selectora'] == 'dropdowna') $content .= qcf_dropdown('qcfname5','dropdownlist',$values,$errors,$required,$qcf,$name);
-                    if ($qcf['selectora'] == 'checkboxa') $content .= qcf_checklist('qcfname5','dropdownlist',$values,$errors,$required,$qcf,$name);
-					if ($qcf['selectora'] == 'radioa') $content .= qcf_radio('qcfname5','dropdownlist',$values,$errors,$required,$qcf,$name);
-                    break;
+                if ($errors['qcfname5']) $required = 'error';
+                if ($qcf['selectora'] == 'dropdowna') $content .= qcf_dropdown('qcfname5','dropdownlist',$values,$errors,$required,$qcf,$name);
+                if ($qcf['selectora'] == 'checkboxa') $content .= qcf_checklist('qcfname5','dropdownlist',$values,$errors,$required,$qcf,$name);
+                if ($qcf['selectora'] == 'radioa') $content .= qcf_radio('qcfname5','dropdownlist',$values,$errors,$required,$qcf,$name);
+                break;
 				case 'field6':
-					if ($qcf['selectorb'] == 'dropdownb') $content .= qcf_dropdown('qcfname6','checklist',$values,$errors,$required,$qcf,$name);
-                    if ($qcf['selectorb'] == 'checkboxb') $content .= qcf_checklist('qcfname6','checklist',$values,$errors,$required,$qcf,$name);
-					if ($qcf['selectorb'] == 'radiob') $content .= qcf_radio('qcfname6','checklist',$values,$errors,$required,$qcf,$name);
-                    break;
+                if ($errors['qcfname6']) $required = 'error';
+                if ($qcf['selectorb'] == 'dropdownb') $content .= qcf_dropdown('qcfname6','checklist',$values,$errors,$required,$qcf,$name);
+                if ($qcf['selectorb'] == 'checkboxb') $content .= qcf_checklist('qcfname6','checklist',$values,$errors,$required,$qcf,$name);
+                if ($qcf['selectorb'] == 'radiob') $content .= qcf_radio('qcfname6','checklist',$values,$errors,$required,$qcf,$name);
+                break;
 				case 'field7':
-					if ($qcf['selectorc'] == 'dropdownc') $content .= qcf_dropdown('qcfname7','radiolist',$values,$errors,$required,$qcf,$name);
-                    if ($qcf['selectorc'] == 'checkboxc') $content .= qcf_checklist('qcfname7','radiolist',$values,$errors,$required,$qcf,$name);
-					if ($qcf['selectorc'] == 'radioc') $content .= qcf_radio('qcfname7','radiolist',$values,$errors,$required,$qcf,$name);
-                    break;
+                if ($errors['qcfname7']) $required = 'error';
+                if ($qcf['selectorc'] == 'dropdownc') $content .= qcf_dropdown('qcfname7','radiolist',$values,$errors,$required,$qcf,$name);
+                if ($qcf['selectorc'] == 'checkboxc') $content .= qcf_checklist('qcfname7','radiolist',$values,$errors,$required,$qcf,$name);
+                if ($qcf['selectorc'] == 'radioc') $content .= qcf_radio('qcfname7','radiolist',$values,$errors,$required,$qcf,$name);
+                break;
 				case 'field8':
-					$content .= $errors['qcfname8'];
-					$content .= '<input type="text" class="' . $required . '" label="Text 1" name="qcfname8"  value="' . $values['qcfname8'] . '" onfocus="qcfclear(this, \'' . $values['qcfname8'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname8'] . '\')">'."\r\t";
-					break;
+                if ($errors['qcfname8']) $required = 'error';
+                $content .= $errors['qcfname8'];
+                $content .= '<input type="text" class="' . $required . '" label="Text 1" name="qcfname8"  value="' . $values['qcfname8'] . '" onfocus="qcfclear(this, \'' . $values['qcfname8'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname8'] . '\')">'."\r\t";
+                break;
 				case 'field9':
-					$content .= $errors['qcfname9'];
-					$content .= '<input type="text" class="' . $required . '" label="Text 2" name="qcfname9"  value="' . $values['qcfname9'] . '" onfocus="qcfclear(this, \'' . $values['qcfname9'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname9'] . '\')">'."\r\t";
-					break;
+                if ($errors['qcfname9']) $required = 'error';
+                $content .= $errors['qcfname9'];
+                $content .= '<input type="text" class="' . $required . '" label="Text 2" name="qcfname9"  value="' . $values['qcfname9'] . '" onfocus="qcfclear(this, \'' . $values['qcfname9'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname9'] . '\')">'."\r\t";
+                break;
 				case 'field10':
+if ($errors['qcfname10']) $required = 'error';
+
 					$content .= $errors['qcfname10'];
 					$content .= '<input type="text" class="qcfdate ' . $required . '" label="Date" name="qcfname10"  value="' . $values['qcfname10'] . '" onfocus="qcfclear(this, \'' . $values['qcfname10'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname10'] . '\')">
 					<script type="text/javascript">jQuery(document).ready(function() {jQuery(\'\.qcfdate\').datepicker({dateFormat : \'dd M yy\'});});</script>'."\r\t";
 					break;
 				case 'field11':
-					$content .= $errors['qcfname11'];
-					if ($qcf['fieldtype'] == 'tdate') $content .= '<input type="text" class="qcfdate ' . $required . '" label="Date 2" name="qcfname11"  value="' . $values['qcfname11'] . '" onfocus="qcfclear(this, \'' . $values['qcfname11'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname11'] . '\')">
+                if ($errors['qcfname11']) $required = 'error';
+                $content .= $errors['qcfname11'];
+                if ($qcf['fieldtype'] == 'tdate') $content .= '<input type="text" class="qcfdate ' . $required . '" label="Date 2" name="qcfname11"  value="' . $values['qcfname11'] . '" onfocus="qcfclear(this, \'' . $values['qcfname11'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname11'] . '\')">
 					<script type="text/javascript">jQuery(document).ready(function() {jQuery(\'\.qcfdate\').datepicker({dateFormat : \'dd M yy\'});});</script>'."\r\t";
-					else $content .= '<input type="text" class="' . $required . '" label="Multibox 1" name="qcfname11" value="' . $values['qcfname11'] . '" onfocus="qcfclear(this, \'' . $values['qcfname11'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname11'] . '\')">'."\r\t";
-					break;
+                else $content .= '<input type="text" class="' . $required . '" label="Multibox 1" name="qcfname11" value="' . $values['qcfname11'] . '" onfocus="qcfclear(this, \'' . $values['qcfname11'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname11'] . '\')">'."\r\t";
+                break;
                 case 'field13':
-					$content .= $errors['qcfname13'];
-					if ($qcf['fieldtypeb'] == 'bdate') $content .= '<input type="text" class="qcfdate ' . $required . '" label="Date 2" name="qcfname13"  value="' . $values['qcfname13'] . '" onfocus="qcfclear(this, \'' . $values['qcfname13'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname13'] . '\')">
+                if ($errors['qcfname13']) $required = 'error';
+                $content .= $errors['qcfname13'];
+                if ($qcf['fieldtypeb'] == 'bdate') $content .= '<input type="text" class="qcfdate ' . $required . '" label="Date 2" name="qcfname13"  value="' . $values['qcfname13'] . '" onfocus="qcfclear(this, \'' . $values['qcfname13'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname13'] . '\')">
 					<script type="text/javascript">jQuery(document).ready(function() {jQuery(\'\.qcfdate\').datepicker({dateFormat : \'dd M yy\'});});</script>'."\r\t";
-					else $content .= '<input type="text" class="' . $required . '" label="Multibox 2" name="qcfname13" value="' . $values['qcfname13'] . '" onfocus="qcfclear(this, \'' . $values['qcfname13'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname13'] . '\')">'."\r\t";
-					break;
+                else $content .= '<input type="text" class="' . $required . '" label="Multibox 2" name="qcfname13" value="' . $values['qcfname13'] . '" onfocus="qcfclear(this, \'' . $values['qcfname13'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname13'] . '\')">'."\r\t";
+                break;
 				case 'field12':
-					if ($errors['qcfname12']) $content .= $errors['qcfname12'];
-					else $content .= '<p>'.$qcf['label']['field12'].'</p>'; 
-					$content .= '<p>' . strip_tags($values['thesum']) . ' = <input type="text" class="required" style="width:3em;font-size:inherit;" label="Sum" name="qcfname12"  value="' . strip_tags($values['qcfname12']) . '"></p> 
+                if ($errors['qcfname12']) $required = 'error';
+                if ($errors['qcfname12']) $content .= $errors['qcfname12'];
+                else $content .= '<p>'.$qcf['label']['field12'].'</p>';
+                $content .= '<p>' . strip_tags($values['thesum']) . ' = <input type="text" class="'.$required.'" style="width:3em;font-size:inherit;" label="Sum" name="qcfname12"  value="' . strip_tags($values['qcfname12']) . '"></p> 
 					<input type="hidden" name="answer" value="' . strip_tags($values['answer']) . '" />
 					<input type="hidden" name="thesum" value="' . strip_tags($values['thesum']) . '" />';
-					break;
-				}
-			}
-		}
+                break;
+            }
+        }
+    }
 	if ($attach['qcf_attach'] == "checked") {
 		if ($errors['attach']) $content .= $errors['attach'];
 		else $content .= '<p class="input">' . $attach['qcf_attach_label'] . '</p>'."\r\t";
@@ -150,6 +166,7 @@ function qcf_display_form( $values, $errors, $id ) {
 		'</div>'."\r\t";
 	echo $content;
 	}
+
 function qcf_dropdown($var,$list,$values,$errors,$required,$qcf,$name) {
     $content .= $errors[$var];
     $content .= '<select name="'.$var.'" class="' . $required . '" ><option value="' . $qcf['label'][$name] . '">' . $qcf['label'][$name] . '</option>'."\r\t";
@@ -163,7 +180,7 @@ function qcf_dropdown($var,$list,$values,$errors,$required,$qcf,$name) {
     return $content;
     }
 function qcf_checklist($var,$list,$values,$errors,$required,$qcf,$name) {
-    if ($errors[$var]) $content .= $errors[$var].'<br>';
+    if ($errors[$var]) $content .= $errors[$var];
     else $content .= '<p class="input">' . $qcf['label'][$name] . '</p>';
     $content .= '<p class="input">';
     $arr = explode(",",$qcf[$list]);
@@ -251,7 +268,7 @@ function qcf_verify_form(&$values, &$errors,$id) {
 					   if (empty($check)) $errors['qcfname5'] = '<p><span>' . $error['field5'] . '</span></p>';
                     } else {
                         $values['qcfname5'] = filter_var($values['qcfname5'], FILTER_SANITIZE_STRING);
-                        if (empty($values['qcfname5']) || $values['qcfname5'] == $qcf['label'][$name])
+                        if (empty($values['qcfname5']) || $values['qcfname5'] == $qcf['label'][$name] && $qcf['selectora'] != 'radioa')
                             $errors['qcfname5'] = '<p><span>' . $error['field5'] . '</span></p>';
                     }
 					break;
@@ -263,7 +280,7 @@ function qcf_verify_form(&$values, &$errors,$id) {
 					   if (empty($check)) $errors['qcfname6'] = '<p><span>' . $error['field6'] . '</span></p>';
                     } else {
                         $values['qcfname6'] = filter_var($values['qcfname6'], FILTER_SANITIZE_STRING);
-                        if (empty($values['qcfname6']) || $values['qcfname6'] == $qcf['label'][$name])
+                        if (empty($values['qcfname6']) || $values['qcfname6'] == $qcf['label'][$name] && $qcf['selectorb'] != 'radiob')
                             $errors['qcfname6'] = '<p><span>' . $error['field6'] . '</span></p>';
                     }
                 case 'field7':
@@ -274,8 +291,8 @@ function qcf_verify_form(&$values, &$errors,$id) {
 					   if (empty($check)) $errors['qcfname7'] = '<p><span>' . $error['field7'] . '</span></p>';
                     } else {
                         $values['qcfname7'] = filter_var($values['qcfname7'], FILTER_SANITIZE_STRING);
-                        if (empty($values['qcfname7']) || $values['qcfname7'] == $qcf['label'][$name])
-                            $errors['qcfname67'] = '<p><span>' . $error['field7'] . '</span></p>';
+                        if (empty($values['qcfname7']) || $values['qcfname7'] == $qcf['label'][$name] && $qcf['selectorc'] != 'radioc')
+                            $errors['qcfname7'] = '<p><span>' . $error['field7'] . '</span></p>';
                     }
 					break;
 				case 'field8':
@@ -328,9 +345,11 @@ function qcf_process_form($values,$id) {
 	$style = qcf_get_stored_style($id);
 	$qcfemail = qcf_get_stored_email();
 	$qcf_email = $qcfemail[$id];
-	if (empty($qcf_email)) {global $current_user;
-	get_currentuserinfo();
-	$qcf_email = $current_user->user_email;}
+    global $_GET;
+    if(isset($_GET["email"])) $qcf_email = $_GET["email"];
+    if (empty($qcf_email)) {global $current_user;
+	   get_currentuserinfo();
+	   $qcf_email = $current_user->user_email;}
 	if (!empty($reply['replytitle'])) $reply['replytitle'] = '<h2>' . $reply['replytitle'] . '</h2>';
 	if (!empty($reply['replyblurb'])) $reply['replyblurb'] = '<p>' . $reply['replyblurb'] . '</p>';
 	if ( $reply['subjectoption'] == "sendername") $addon = $values['qcfname1'];
@@ -503,7 +522,9 @@ function qcf_process_form($values,$id) {
 	$qcf_messages[] = array('field0'=>$sentdate,'field1' => $values['qcfname1'] , 'field2' => $values['qcfname2'] , 'field3' => $values['qcfname3'], 'field4' => $values['qcfname4'], 'field5' => $values['qcfname5'], 'field6' => $values['qcfname6'], 'field7' => $values['qcfname7'], 'field8' => $values['qcfname8'], 'field9' => $values['qcfname9'], 'field10' => $values['qcfname10'], 'field11' => $values['qcfname11'], 'field13' => $values['qcfname13'],date => $sentdate,);
 	update_option('qcf_messages'.$id,$qcf_messages);
 	if ( $reply['qcf_redirect'] == 'checked') {
-		$location = $reply['qcf_redirect_url'];	
+        if (function_exists('qcf_select_redirect')) $redirect = qcf_select_redirect($id,$values);
+		if ($redirect) $location = $redirect;
+        else $location = $reply['qcf_redirect_url'];	
 		echo "<meta http-equiv='refresh' content='0;url=$location' />";
 		}
 	else {
@@ -597,9 +618,12 @@ function qcf_generate_css() {
 			if ($style['header']) $header = ".qcf-style".$id." h2 {font-size: ".$style['header-size']."; color: ".$style['header-colour'].";height:auto;}";
 			}
 		$input = ".qcf-style".$id." input[type=text], .qcf-style".$id." textarea, .qcf-style".$id." select {border: ".$style['input-border'].";background:".$style['inputbackground'].";".$inputfont.";height:auto;}\r\n";
+        
 		$focus = ".qcf-style".$id." input:focus, .qcf-style".$id." textarea:focus {background:".$style['inputfocus'].";}\r\n";
 		$paragraph = ".qcf-style".$id." p, .qcf-style".$id." select{".$font.";}\r\n";
 		$required = ".qcf-style".$id." input[type=text].required, .qcf-style".$id." select.required, .qcf-style".$id." textarea.required {border: ".$style['input-required'].";}\r\n";
+        $error = ".qcf-style".$id." p span {color:".$style['error-font-colour'].";clear:both;}\r\n
+.qcf-style".$id." input[type=text].error, .qcf-style".$id." select.error, .qcf-style".$id." textarea.error {border:".$style['error-border'].";}\r\n";
 		if ($style['submitwidth'] == 'submitpercent') $submitwidth = 'width:100%;';
 		if ($style['submitwidth'] == 'submitrandom') $submitwidth = 'width:auto;';
 		if ($style['submitwidth'] == 'submitpixel') $submitwidth = 'width:'.$style['submitwidthset'].';';
@@ -616,7 +640,7 @@ if (!$formwidth[1]) $formwidth[1] = 'px';
 		if ($style['corners'] == 'round') $corner = '5px'; else $corner = '0';
 		$corners = ".qcf-style".$id." input[type=text], .qcf-style".$id." textarea, .qcf-style".$id." select, .qcf-style".$id." #submit {border-radius:".$corner.";}\r\n";
 		if ($style['corners'] == 'theme') $corners = '';
-		$code .= ".qcf-style".$id." {width:".$width.";}\r\n".$border.$corners.$header.$paragraph.$input.$focus.$required.$background.$submitbutton;
+		$code .= ".qcf-style".$id." {width:".$width.";}\r\n".$border.$corners.$header.$paragraph.$input.$focus.$required.$error.$background.$submitbutton;
 		if ($style['use_custom'] == 'checked') $code .= $style['styles'] . "\r\n";
 		}
 	return $code;	
@@ -698,6 +722,8 @@ function qcf_get_default_style() {
 	$style['text-font-family'] = 'arial, sans-serif';
 	$style['text-font-size'] = '1.2em';
 	$style['text-font-colour'] = '#465069';
+    $style['error-font-colour'] = '#D31900';
+    $style['error-border'] = '1px solid #D31900';
 	$style['width'] = 280;
 	$style['widthtype'] = 'pixel';
 	$style['submitwidth'] = 'submitpercent';
