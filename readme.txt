@@ -20,6 +20,7 @@ A really, really simple drag and drop contact form. There is nothing to configur
 *	Display and download messages
 *	Custom error and thank-you messages
 *	Multiple form support
+*   Akismet spam filtering
 
 = Developers plugin page =
 
@@ -72,9 +73,15 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 6.9 =
+*   Now with Aksimet validation
+*   Locale scripts for dates
+*   Fixed captcha styling bug
+*   Better styling support for submit images
+
 = 6.8.3 =
 *   Added styling options for the Error messages
-*   Fixed line height bug (that has been buggin me for ages)
+*   Fixed line height bug (that has been bugging me for ages)
 *   Fixed validation error on selector fields
 
 = 6.8.2 =

@@ -23,4 +23,5 @@ jQuery(document).ready(function($){
 			});
 		button_uploader.open();
 		});
-	});
+    jQuery('.qcf-color').wpColorPicker();
+});

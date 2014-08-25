@@ -12,5 +12,5 @@
 .qcf-style p span {color: #D31900;clear:both;}
 .qcf-style input[type=text].required, .qcf-style textarea.required {border: 1px solid #00C618;}
 .qcf-style input[type=text].error, .qcf-style textarea.error {border: 1px solid #D31900;}
-.qcf-style #submit, .qcf-style #submit:hover{color: #FFF;background: #343838;text-align: center;cursor: pointer;}
+.qcf-style #submit, .qcf-style #submit:hover{text-align: center;cursor: pointer;}
 #ui-datepicker-div {display:none;}

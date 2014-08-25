@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 6.8.3
+Version: 6.9
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -19,10 +19,30 @@ function qcf_admin_scripts() {
 	wp_enqueue_script( 'qcf_script',plugins_url('quick-contact-form.js', __FILE__));
 	wp_enqueue_script('jquery-ui-datepicker');
 	wp_enqueue_style('jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
-	}
+    wp_enqueue_script('qcf_locale', plugins_url('quick-contact-locale.js', __FILE__ ), array( 'jquery-ui-datepicker' ), false, true );
+    global $wp_locale;   
+    $aryArgs = array(
+        'monthNames' => strip_array_indices( $wp_locale->month ),
+        'monthNamesShort' => strip_array_indices( $wp_locale->month_abbrev ),
+        'dayNames' => strip_array_indices( $wp_locale->weekday ),
+        'dayNamesShort' => strip_array_indices( $wp_locale->weekday_abbrev ),
+        'dayNamesMin' => strip_array_indices( $wp_locale->weekday_initial ),
+        'dateFormat' => 'dd M yy',
+    );
+    wp_localize_script( 'qcf_locale', 'objectL10n', $aryArgs );
+}
+
+function strip_array_indices( $ArrayToStrip ) {
+    foreach( $ArrayToStrip as $objArrayItem) {
+        $NewArray[] = $objArrayItem;
+    }
+    return( $NewArray );
+}
+
 function qcf_init() {
 	qcf_create_css_file ('');
 	}
+
 function qcf_create_css_file ($update) {
 	if (function_exists(file_put_contents)) {
 		$css_dir = plugin_dir_path( __FILE__ ) . '/quick-contact-form-custom.css' ;
@@ -56,15 +76,17 @@ function qcf_display_form( $values, $errors, $id ) {
 	$reply = qcf_get_stored_reply($id);
 	$attach = qcf_get_stored_attach($id);
 	$style = qcf_get_stored_style($id);
+    $qcf['required']['field12'] = 'checked';
     global $_GET;
 	if ($id) $formstyle=$id; else $formstyle='default';
 	if (!empty($qcf['title'])) $qcf['title'] = '<h2>' . $qcf['title'] . '</h2>';
 	if (!empty($qcf['blurb'])) $qcf['blurb'] = '<p>' . $qcf['blurb'] . '</p>';
 	if (!empty($qcf['mathscaption'])) $qcf['mathscaption'] = '<p class="input">' . $qcf['mathscaption'] . '</p>';
+    if ($errors['spam']) $error['errorblurb'] = $errors['spam'];
 	$content = "<div class='qcf-style ".$formstyle."'>\r\t";
 	$content .= "<div id='" . $style['border'] . "'>\r\t";
 	if (count($errors) > 0)
-		$content .= "<h2>" . $error['errortitle'] . "</h2>\r\t<p>" . $error['errorblurb'] . "</p>\r\t";
+		$content .= "<h2>" . $error['errortitle'] . "</h2>\r\t<p class='error'>" . $error['errorblurb'] . "</p>\r\t";
 	else
 		$content .= $qcf['title'] . "\r\t" . $qcf['blurb'] . "\r\t";
     $content .= "<form action=\"\" method=\"POST\" enctype=\"multipart/form-data\">\r\t";
@@ -75,22 +97,22 @@ function qcf_display_form( $values, $errors, $id ) {
 				case 'field1':
                 if ($errors['qcfname1']) $required = 'error';
                 $content .= $errors['qcfname1'];
-                $content .= '<input type="text" class="' . $required . '" label="Name" name="qcfname1" value="' . $values['qcfname1'] . '" onfocus="qcfclear(this, \'' . $values['qcfname1'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname1'] . '\')">'."\r\t";
+                $content .= '<input type="text" class="' . $required . '" name="qcfname1" value="' . $values['qcfname1'] . '" onfocus="qcfclear(this, \'' . $values['qcfname1'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname1'] . '\')"><br>'."\r\t";
                 break;
 				case 'field2':
                 if ($errors['qcfname2']) $required = 'error';
                 $content .= $errors['qcfname2'];
-                $content .= '<input type="text" class="' . $required . '" label="Email" name="qcfname2"  value="' . $values['qcfname2'] . '" onfocus="qcfclear(this, \'' . $values['qcfname2'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname2'] . '\')">'."\r\t";
+                $content .= '<input type="text" class="' . $required . '" name="qcfname2"  value="' . $values['qcfname2'] . '" onfocus="qcfclear(this, \'' . $values['qcfname2'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname2'] . '\')"><br>'."\r\t";
                 break;
 				case 'field3':
                 if ($errors['qcfname3']) $required = 'error';
                 $content .= $errors['qcfname3'];
-                $content .= '<input type="text" class="' . $required . '" label="Telephone" name="qcfname3"  value="' . $values['qcfname3'] . '" onfocus="qcfclear(this, \'' . $values['qcfname3'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname3'] . '\')">'."\r\t";
+                $content .= '<input type="text" class="' . $required . '" name="qcfname3"  value="' . $values['qcfname3'] . '" onfocus="qcfclear(this, \'' . $values['qcfname3'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname3'] . '\')"><br>'."\r\t";
                 break;
 				case 'field4':
                 if ($errors['qcfname4']) $required = 'error';
                 $content .= $errors['qcfname4'];
-                $content .= '<textarea class="' . $required . '"  rows="' . $qcf['lines'] . '" label="Name" name="qcfname4" onfocus="qcfclear(this, \'' . $values['qcfname4'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname4'] . '\')">' . stripslashes($values['qcfname4']) . '</textarea></p>'."\r\t";
+                $content .= '<textarea class="' . $required . '"  rows="' . $qcf['lines'] . '" name="qcfname4" onfocus="qcfclear(this, \'' . $values['qcfname4'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname4'] . '\')">' . stripslashes($values['qcfname4']) . '</textarea><br>'."\r\t";
                 break;
 				case 'field5':
                 if ($errors['qcfname5']) $required = 'error';
@@ -113,39 +135,39 @@ function qcf_display_form( $values, $errors, $id ) {
 				case 'field8':
                 if ($errors['qcfname8']) $required = 'error';
                 $content .= $errors['qcfname8'];
-                $content .= '<input type="text" class="' . $required . '" label="Text 1" name="qcfname8"  value="' . $values['qcfname8'] . '" onfocus="qcfclear(this, \'' . $values['qcfname8'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname8'] . '\')">'."\r\t";
+                $content .= '<input type="text" class="' . $required . '" name="qcfname8"  value="' . $values['qcfname8'] . '" onfocus="qcfclear(this, \'' . $values['qcfname8'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname8'] . '\')"><br>'."\r\t";
                 break;
 				case 'field9':
                 if ($errors['qcfname9']) $required = 'error';
                 $content .= $errors['qcfname9'];
-                $content .= '<input type="text" class="' . $required . '" label="Text 2" name="qcfname9"  value="' . $values['qcfname9'] . '" onfocus="qcfclear(this, \'' . $values['qcfname9'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname9'] . '\')">'."\r\t";
+                $content .= '<input type="text" class="' . $required . '" name="qcfname9"  value="' . $values['qcfname9'] . '" onfocus="qcfclear(this, \'' . $values['qcfname9'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname9'] . '\')"><br>'."\r\t";
                 break;
 				case 'field10':
 if ($errors['qcfname10']) $required = 'error';
 
 					$content .= $errors['qcfname10'];
-					$content .= '<input type="text" class="qcfdate ' . $required . '" label="Date" name="qcfname10"  value="' . $values['qcfname10'] . '" onfocus="qcfclear(this, \'' . $values['qcfname10'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname10'] . '\')">
-					<script type="text/javascript">jQuery(document).ready(function() {jQuery(\'\.qcfdate\').datepicker({dateFormat : \'dd M yy\'});});</script>'."\r\t";
+					$content .= '<input type="text" class="qcfdate ' . $required . '" name="qcfname10"  value="' . $values['qcfname10'] . '" onfocus="qcfclear(this, \'' . $values['qcfname10'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname10'] . '\')" /><br>
+					<script type="text/javascript">jQuery(document).ready(function() {jQuery(\'\.qcfdate\').datepicker();});</script>'."\r\t";
 					break;
 				case 'field11':
                 if ($errors['qcfname11']) $required = 'error';
                 $content .= $errors['qcfname11'];
-                if ($qcf['fieldtype'] == 'tdate') $content .= '<input type="text" class="qcfdate ' . $required . '" label="Date 2" name="qcfname11"  value="' . $values['qcfname11'] . '" onfocus="qcfclear(this, \'' . $values['qcfname11'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname11'] . '\')">
-					<script type="text/javascript">jQuery(document).ready(function() {jQuery(\'\.qcfdate\').datepicker({dateFormat : \'dd M yy\'});});</script>'."\r\t";
-                else $content .= '<input type="text" class="' . $required . '" label="Multibox 1" name="qcfname11" value="' . $values['qcfname11'] . '" onfocus="qcfclear(this, \'' . $values['qcfname11'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname11'] . '\')">'."\r\t";
+                if ($qcf['fieldtype'] == 'tdate') $content .= '<input type="text" class="qcfdate ' . $required . '" name="qcfname11"  value="' . $values['qcfname11'] . '" onfocus="qcfclear(this, \'' . $values['qcfname11'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname11'] . '\')" /><br>
+					<script type="text/javascript">jQuery(document).ready(function() {jQuery(\'\.qcfdate\').datepicker();});</script>'."\r\t";
+                else $content .= '<input type="text" class="' . $required . '" label="Multibox 1" name="qcfname11" value="' . $values['qcfname11'] . '" onfocus="qcfclear(this, \'' . $values['qcfname11'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname11'] . '\')"><br>'."\r\t";
                 break;
                 case 'field13':
                 if ($errors['qcfname13']) $required = 'error';
                 $content .= $errors['qcfname13'];
-                if ($qcf['fieldtypeb'] == 'bdate') $content .= '<input type="text" class="qcfdate ' . $required . '" label="Date 2" name="qcfname13"  value="' . $values['qcfname13'] . '" onfocus="qcfclear(this, \'' . $values['qcfname13'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname13'] . '\')">
+                if ($qcf['fieldtypeb'] == 'bdate') $content .= '<input type="text" class="qcfdate ' . $required . '" name="qcfname13"  value="' . $values['qcfname13'] . '" onfocus="qcfclear(this, \'' . $values['qcfname13'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname13'] . '\')"><br><br>
 					<script type="text/javascript">jQuery(document).ready(function() {jQuery(\'\.qcfdate\').datepicker({dateFormat : \'dd M yy\'});});</script>'."\r\t";
-                else $content .= '<input type="text" class="' . $required . '" label="Multibox 2" name="qcfname13" value="' . $values['qcfname13'] . '" onfocus="qcfclear(this, \'' . $values['qcfname13'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname13'] . '\')">'."\r\t";
+                else $content .= '<input type="text" class="' . $required . '" name="qcfname13" value="' . $values['qcfname13'] . '" onfocus="qcfclear(this, \'' . $values['qcfname13'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname13'] . '\')"><br>'."\r\t";
                 break;
 				case 'field12':
                 if ($errors['qcfname12']) $required = 'error';
                 if ($errors['qcfname12']) $content .= $errors['qcfname12'];
                 else $content .= '<p>'.$qcf['label']['field12'].'</p>';
-                $content .= '<p>' . strip_tags($values['thesum']) . ' = <input type="text" class="'.$required.'" style="width:3em;font-size:inherit;" label="Sum" name="qcfname12"  value="' . strip_tags($values['qcfname12']) . '"></p> 
+                $content .= '<p>' . strip_tags($values['thesum']) . ' = <input type="text" class="'.$required.'" style="width:3em;font-size:inherit;" name="qcfname12"  value="' . strip_tags($values['qcfname12']) . '"></p> 
 					<input type="hidden" name="answer" value="' . strip_tags($values['answer']) . '" />
 					<input type="hidden" name="thesum" value="' . strip_tags($values['thesum']) . '" />';
                 break;
@@ -159,7 +181,7 @@ if ($errors['qcfname10']) $required = 'error';
 		$content .= '<p><input type="file" size="' . $size . '" name="filename"></p>'."\r\t";
 		}
 	$caption = $qcf['send'];
-	if ($style['submit-button']) $content .= '<p><input type="image" value="' . $caption . '" style="border:none;width:100%;height:auto;overflow:hidden;" src="'.$style['submit-button'].'" id="submit" name="qcfsubmit'.$id.'" /></p>';
+	if ($style['submit-button']) $content .= '<p><input type="image" value="' . $caption . '" src="'.$style['submit-button'].'" id="submit" name="qcfsubmit'.$id.'" /></p>';
 	else $content .= '<p><input type="submit" value="' . $caption . '" id="submit" name="qcfsubmit'.$id.'" /></p>';
 	$content .= '</form>'."\r\t".
 		'<div style="clear:both;"></div></div>'."\r\t".
@@ -204,16 +226,27 @@ function qcf_radio($var,$list,$values,$errors,$required,$qcf,$name) {
     $content .= '</p>';
     return $content;
     }
+
 function qcf_verify_form(&$values, &$errors,$id) {
 	$qcf = qcf_get_stored_options($id);
 	$error = qcf_get_stored_error($id);
 	$attach = qcf_get_stored_attach($id);
-	$emailcheck = $error['emailcheck'];
+    $apikey = get_option('qcf_akismet');
+    if ($apikey) {
+        $blogurl = get_site_url();
+        $akismet = new qem_akismet($blogurl ,$apikey);
+        $akismet->setCommentAuthor($values['qcfname1']);
+        $akismet->setCommentAuthorEmail($values['qcfname2']);
+        $akismet->setCommentContent($values['qcfname4']);
+        if($akismet->isCommentSpam()) $errors['spam'] = $error['spam'];
+    }
+    
+    $emailcheck = $error['emailcheck'];
 	if ($qcf['required']['field2'] == 'checked') $emailcheck = 'checked';
 	$qcf['required']['field12'] = 'checked';
 	$phonecheck = $error['phonecheck'];
 	if ($qcf['required']['field3'] == 'checked') $phonecheck = 'checked';
-	if ($qcf['active_buttons']['field2'] && $emailcheck == 'checked' && $values['qcfname2'] !== $qcf['label']['field2']) {
+	if ($qcf['active_buttons']['field2'] && $emailcheck && $values['qcfname2'] !== $qcf['label']['field2']) {
 		if (!filter_var($values['qcfname2'], FILTER_VALIDATE_EMAIL))
 			$errors['qcfname2'] = '<p><span>' . $error['email'] . '</span></p>';
 		}
@@ -247,7 +280,7 @@ function qcf_verify_form(&$values, &$errors,$id) {
 					break;
 				case 'field2':
 					$values['qcfname2'] = filter_var($values['qcfname2'], FILTER_SANITIZE_STRING);
-					if (empty($values['qcfname2']) || $values['qcfname2'] == $qcf['label'][$name])
+					if (empty($values['qcfname2']) || $values['qcfname2'] == $qcf['label'][$name] || !strpos($values['qcfname2'],'.'))
 						$errors['qcfname2'] = '<p><span>' . $error['field2'] . '</span></p>';
 					break;
 				case 'field3':
@@ -608,7 +641,7 @@ function qcf_generate_css() {
 	$qcf_form = qcf_get_stored_setup();
 	$arr = explode(",",$qcf_form['alternative']);
 	foreach ($arr as $item) {
-		$corners='';$input='';$background='';$submitwidth='';$paragraph ='';$submitbutton='';
+		$corners='';$input='';$background='';$submitwidth='';$paragraph ='';$submitbutton='';$submit='';
 		$style = qcf_get_stored_style($item);
 		if ($item !='') $id = '.'.$item; else $id = '.default';
 		if ($style['font'] == 'plugin') {
@@ -617,10 +650,10 @@ function qcf_generate_css() {
 			$submitfont = "font-family: ".$style['font-family'];
 			if ($style['header']) $header = ".qcf-style".$id." h2 {font-size: ".$style['header-size']."; color: ".$style['header-colour'].";height:auto;}";
 			}
-		$input = ".qcf-style".$id." input[type=text], .qcf-style".$id." textarea, .qcf-style".$id." select {border: ".$style['input-border'].";background:".$style['inputbackground'].";".$inputfont.";height:auto;}\r\n";
+		$input = ".qcf-style".$id." input[type=text], .qcf-style".$id." textarea, .qcf-style".$id." select {border: ".$style['input-border'].";background:".$style['inputbackground'].";".$inputfont.";line-height:normal;height:auto;}\r\n";
         
 		$focus = ".qcf-style".$id." input:focus, .qcf-style".$id." textarea:focus {background:".$style['inputfocus'].";}\r\n";
-		$paragraph = ".qcf-style".$id." p, .qcf-style".$id." select{".$font.";}\r\n";
+		$paragraph = ".qcf-style".$id." p, .qcf-style".$id." select{".$font.";line-height:normal;height:auto;}\r\n";
 		$required = ".qcf-style".$id." input[type=text].required, .qcf-style".$id." select.required, .qcf-style".$id." textarea.required {border: ".$style['input-required'].";}\r\n";
         $error = ".qcf-style".$id." p span {color:".$style['error-font-colour'].";clear:both;}\r\n
 .qcf-style".$id." input[type=text].error, .qcf-style".$id." select.error, .qcf-style".$id." textarea.error {border:".$style['error-border'].";}\r\n";
@@ -628,7 +661,9 @@ function qcf_generate_css() {
 		if ($style['submitwidth'] == 'submitrandom') $submitwidth = 'width:auto;';
 		if ($style['submitwidth'] == 'submitpixel') $submitwidth = 'width:'.$style['submitwidthset'].';';
 		if ($style['submitposition'] == 'submitleft') $submitposition = 'float:left;'; else $submitposition = 'float:right;';
-		$submitbutton = ".qcf-style".$id." #submit, .qcf-style".$id." #submit:hover{".$submitposition.$submitwidth."color:".$style['submit-colour'].";background:".$style['submit-background'].";border:".$style['submit-border'].";".$submitfont.";font-size: inherit;}\r\n";
+        if (!$style['submit-button']) $submit = "color:".$style['submit-colour'].";background:".$style['submit-background'].";border:".$style['submit-border'].";".$submitfont.";font-size: inherit;";
+        else $submit = 'border:none;padding:none;height:auto;overflow:hidden;';
+		$submitbutton = ".qcf-style".$id." #submit, .qcf-style".$id." #submit:hover{".$submitposition.$submitwidth.$submit."}\r\n";
 		if ($style['border']<>'none') $border =".qcf-style".$id." #".$style['border']." {border:".$style['form-border'].";}\r\n";
 		if ($style['background'] == 'white') $background = ".qcf-style".$id." div {background:#FFF;}\r\n";
 		if ($style['background'] == 'color') $background = ".qcf-style".$id." div {background:".$style['backgroundhex'].";}\r\n";
@@ -810,6 +845,7 @@ function qcf_get_default_error ($id) {
 	$error['errorblurb'] = 'Can you sort out the details highlighted below.';
 	$error['emailcheck'] = '';
 	$error['phonecheck'] = '';
+	$error['spam'] = 'Your Details have been flagged as spam';
 	return $error;
 	}
 function qcf_get_stored_setup () {
@@ -868,3 +904,176 @@ function qcf_get_default_smtp () {
 	$smtp['smtp_pass'] = '';
 	return $smtp;
 	}
+
+class qem_akismet
+	{
+	private $version = '0.4';
+	private $wordPressAPIKey;
+	private $blogURL;
+	private $comment;
+	private $apiPort;
+	private $akismetServer;
+	private $akismetVersion;
+	private $ignore = array('HTTP_COOKIE', 
+							'HTTP_X_FORWARDED_FOR', 
+							'HTTP_X_FORWARDED_HOST', 
+							'HTTP_MAX_FORWARDS', 
+							'HTTP_X_FORWARDED_SERVER', 
+							'REDIRECT_STATUS', 
+							'SERVER_PORT', 
+							'PATH',
+							'DOCUMENT_ROOT',
+							'SERVER_ADMIN',
+							'QUERY_STRING',
+							'PHP_SELF' );
+	
+	public function __construct($blogURL, $wordPressAPIKey) {
+		$this->blogURL = $blogURL;
+		$this->wordPressAPIKey = $wordPressAPIKey;
+		
+		$this->apiPort = 80;
+		$this->akismetServer = 'rest.akismet.com';
+		$this->akismetVersion = '1.1';
+		
+		$this->comment['blog'] = $blogURL;
+		$this->comment['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+		
+		if(isset($_SERVER['HTTP_REFERER'])) {
+			$this->comment['referrer'] = $_SERVER['HTTP_REFERER'];
+		}
+		
+		$this->comment['user_ip'] = $_SERVER['REMOTE_ADDR'] != getenv('SERVER_ADDR') ? $_SERVER['REMOTE_ADDR'] : getenv('HTTP_X_FORWARDED_FOR');
+	}
+	
+	public function isKeyValid() {
+		$response = $this->sendRequest('key=' . $this->wordPressAPIKey . '&blog=' . $this->blogURL, $this->akismetServer, '/' . $this->akismetVersion . '/verify-key');
+		return $response[1] == 'valid';
+	}
+	
+	private function sendRequest($request, $host, $path) {
+		$http_request  = "POST " . $path . " HTTP/1.0\r\n";
+		$http_request .= "Host: " . $host . "\r\n";
+		$http_request .= "Content-Type: application/x-www-form-urlencoded; charset=utf-8\r\n";
+		$http_request .= "Content-Length: " . strlen($request) . "\r\n";
+		$http_request .= "User-Agent: Akismet PHP5 Class " . $this->version . " | Akismet/1.11\r\n";
+		$http_request .= "\r\n";
+		$http_request .= $request;
+		$socketWriteRead = new SocketWriteRead($host, $this->apiPort, $http_request);
+		$socketWriteRead->send();
+		return explode("\r\n\r\n", $socketWriteRead->getResponse(), 2);
+	}
+	
+	private function getQueryString() {
+		foreach($_SERVER as $key => $value) {
+			if(!in_array($key, $this->ignore)) {
+				if($key == 'REMOTE_ADDR') {
+					$this->comment[$key] = $this->comment['user_ip'];
+				} else {
+					$this->comment[$key] = $value;
+				}
+			}
+		}
+
+		$query_string = '';
+		
+		foreach($this->comment as $key => $data) {
+			if(!is_array($data)) {
+				$query_string .= $key . '=' . urlencode(stripslashes($data)) . '&';
+			}
+		}
+		
+		return $query_string;
+	}
+	
+	public function isCommentSpam() {
+		$response = $this->sendRequest($this->getQueryString(), $this->wordPressAPIKey . '.rest.akismet.com', '/' . $this->akismetVersion . '/comment-check');
+		if($response[1] == 'invalid' && !$this->isKeyValid()) {
+			throw new exception('The Wordpress API key passed to the Akismet constructor is invalid.  Please obtain a valid one from http://wordpress.com/api-keys/');
+		}
+		return ($response[1] == 'true');
+	}
+	public function submitSpam() {
+		$this->sendRequest($this->getQueryString(), $this->wordPressAPIKey . '.' . $this->akismetServer, '/' . $this->akismetVersion . '/submit-spam');
+	}
+	public function submitHam() {
+		$this->sendRequest($this->getQueryString(), $this->wordPressAPIKey . '.' . $this->akismetServer, '/' . $this->akismetVersion . '/submit-ham');
+	}
+	public function setUserIP($userip) {
+		$this->comment['user_ip'] = $userip;
+	}
+	public function setReferrer($referrer) {
+		$this->comment['referrer'] = $referrer;
+	}
+	public function setCommentType($commentType) {
+		$this->comment['comment_type'] = $commentType;
+	}
+	public function setCommentAuthor($commentAuthor) {
+		$this->comment['comment_author'] = $commentAuthor;
+	}
+	public function setCommentAuthorEmail($authorEmail) {
+		$this->comment['comment_author_email'] = $authorEmail;
+	}
+	public function setCommentContent($commentBody) {
+		$this->comment['comment_content'] = $commentBody;
+	}
+	public function setAPIPort($apiPort) {
+		$this->apiPort = $apiPort;
+	}
+	public function setAkismetServer($akismetServer) {
+		$this->akismetServer = $akismetServer;
+	}
+	public function setAkismetVersion($akismetVersion) {
+		$this->akismetVersion = $akismetVersion;
+	}
+}
+
+class SocketWriteRead {
+	private $host;
+	private $port;
+	private $request;
+	private $response;
+	private $responseLength;
+	private $errorNumber;
+	private $errorString;
+	
+	public function __construct($host, $port, $request, $responseLength = 1160) {
+		$this->host = $host;
+		$this->port = $port;
+		$this->request = $request;
+		$this->responseLength = $responseLength;
+		$this->errorNumber = 0;
+		$this->errorString = '';
+	}
+	
+	public function send() {
+		$this->response = '';
+		
+		$fs = fsockopen($this->host, $this->port, $this->errorNumber, $this->errorString, 3);
+		
+		if($this->errorNumber != 0) {
+			throw new Exception('Error connecting to host: ' . $this->host . ' Error number: ' . $this->errorNumber . ' Error message: ' . $this->errorString);
+		}
+		
+		if($fs !== false) {
+			@fwrite($fs, $this->request);
+			
+			while(!feof($fs)) {
+				$this->response .= fgets($fs, $this->responseLength);
+			}
+			
+			fclose($fs);
+		}
+	}
+	
+	public function getResponse() {
+		return $this->response;
+	}
+	
+	public function getErrorNumner() {
+		return $this->errorNumber;
+	}
+	
+	public function getErrorString() {
+		return $this->errorString;
+	}
+}
