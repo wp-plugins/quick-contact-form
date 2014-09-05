@@ -4,7 +4,7 @@
 Contributors: 
 Tags: contact form
 Requires at least: 3.0
-Tested up to: 3.8
+Tested up to: 4.0
 Stable tag: trunk
 
 Simple plug and play contact form. 
