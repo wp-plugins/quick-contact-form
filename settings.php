@@ -57,43 +57,52 @@ function qcf_setup ($id) {
 	$qcf_setup = qcf_get_stored_setup();
 	$qcf_email = qcf_get_stored_email();
     $qcf_apikey = get_option('qcf_akismet');
-	if( isset( $_POST['Submit'])) {
+	
+    if( isset( $_POST['Submit'])) {
 		$qcf_setup['alternative'] = $_POST['alternative'];
-		if (!empty($_POST['new_form'])) {
-			$qcf_setup['current'] = stripslashes($_POST['new_form']);
-			$qcf_setup['current'] = preg_replace("/[^A-Za-z]/",'',$qcf_setup['current']);
-			$qcf_setup['alternative'] = $qcf_setup['current'].','.$qcf_setup['alternative'];
-			}
-		else $qcf_setup['current'] = $_POST['current'];
+		$qcf_setup['current'] = $_POST['current'];
 		if (empty($qcf_setup['current'])) $qcf_setup['current'] = '';
 		$arr = explode(",",$qcf_setup['alternative']);
 		foreach ($arr as $item) $qcf_email[$item] = stripslashes($_POST['qcf_email'.$item]);
-		if (!empty($_POST['new_form'])) {
-			$email = $qcf_setup['current'];
-			$qcf_email[$email] = stripslashes($_POST['new_email']);}
-		$qcf_setup['dashboard'] = $_POST['dashboard'];
 		update_option( 'qcf_email', $qcf_email);
 		update_option( 'qcf_setup', $qcf_setup);
-		qcf_admin_notice("The forms have been updated.");	
-		}
-	$arr = explode(",",$qcf_setup['alternative']);
+		qcf_admin_notice("The forms have been updated.");
+			}
+	
+    if( isset( $_POST['newform'])) {
+        $qcf_setup['alternative'] = $_POST['alternative'];
+        if (!empty($_POST['new_form'])) {
+            $qcf_setup['current'] = stripslashes($_POST['new_form']);
+            $qcf_setup['current'] = preg_replace("/[^A-Za-z]/",'',$qcf_setup['current']);
+            $qcf_setup['alternative'] = $qcf_setup['current'].','.$qcf_setup['alternative'];
+            $qcf_email[$qcf_setup['current']] = stripslashes($_POST['new_email']);
+        }
+        $qcf_email[] = $qcf_email[$qcf_setup['current']];
+        update_option( 'qcf_email', $qcf_email);
+        update_option( 'qcf_setup', $qcf_setup);
+        qcf_admin_notice("The new form has been added.");
+        if ($_POST['qcf_clone'] && !empty($_POST['new_form'])) qcf_clone($qcf_setup['current'],$_POST['qcf_clone']);
+    }
+    $arr = explode(",",$qcf_setup['alternative']);
 	foreach ($arr as $item) if ($_POST['deleteform'.$item] == $item && $_POST['delete'.$item] && $item != '') {
 		$forms = $qcf_setup['alternative'];
-		$qcf_setup['alternative'] = str_replace($id.',','',$forms); 
+		$qcf_setup['alternative'] = str_replace($item.',','',$forms);
 		$qcf_setup['current'] = '';
 		$qcf_setup['email'] = $_POST['email'];
 		update_option('qcf_setup', $qcf_setup);
-		qcf_delete_things($id);
-		qcf_admin_notice("The form named ".$id." has been deleted.");
+		qcf_delete_things($item);
+		qcf_admin_notice("The form named ".$item." has been deleted.");
 		$id = '';
 		break;
-		}
+    }
+
 	if( isset( $_POST['Reset'])) {
 		qcf_delete_everything();
 		qcf_create_css_file ('');
 		qcf_admin_notice("Everything has been reset.");
 		$qcf_setup = qcf_get_stored_setup();
 		}
+    
     if( isset( $_POST['Validate'])) {
         $apikey = $_POST['qcf_apikey'];
         $blogurl = get_site_url();
@@ -101,6 +110,7 @@ function qcf_setup ($id) {
 		if($akismet->isKeyValid()) {qcf_admin_notice("Valid Akismet API Key. All messages will now be checked against the Akismet database.");update_option('qcf_akismet', $apikey);}
         else qcf_admin_notice("Your Akismet API Key is not Valid");
 		}
+
     if( isset( $_POST['Delete'])) {
         delete_option('qcf_akismet');
         qcf_admin_notice("Akismet validation is no longer active on the Quick Contact Form");
@@ -134,34 +144,51 @@ function qcf_setup ($id) {
 		<p>Enter your email address. To send to multiple addresses, put a comma betweeen each address.</p>
 		<p><input type="text" label="new_email" name="new_email" value="'.$new_email.'" /></p>
 		<input type="hidden" name="alternative" value="' . $qcf_setup['alternative'] . '" />
-		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Create New Form" /></p>
-        <h2>Use Akismet Validation</h2>
-        <p>Enter your API Key to check all messages against the Akismet database. <a href="?page=quick-contact-form/settings.php&tab=error">Change the error message</a>.</p> 
-        <p><input type="text" label="akismet" name="akismet" value="'.$qcf_apikey.'" /></p>
-		<p><input type="submit" name="Validate" class="button-primary" style="color: #FFF;" value="Activate Akismet Validation" /> <input type="submit" name="Delete" class="button-secondary" value="Deactivate Aksimet Validation" onclick="return window.confirm( \'This will delete the Akismet Key.\nAre you sure you want to do this?\' );"/></p>
-		</form>
-		</div>
-		<div class="qcf-options" style="float:right"> 
-		<h2>Adding the contact form to your site</h2>
-		<p>To add the basic contact form to your posts or pages use the shortcode: <code>[qcf]</code>.<br />
-		<p>If you have a named form the shortcode is <code>[qcf id="form name"]</code>.<br />
-		<p>To add the form to your theme files use <code>&lt;?php echo do_shortcode("[qcf]"); ?&gt;</code></p>
-		<p>There is also a widget called "Quick Contact Form" you can drag and drop into a sidebar.</p>
-		<p>That\'s it. The form is ready to use.</p>
-		<h2>Options and Settings</h2>
-		<p>To change the layout of the form, add or remove fields and the order they appear and edit the labels and captions use the <a href="?page=quick-contact-form/settings.php&tab=settings">Form Settings</a> tab.</p>
-		<p>Use the <a href="?page=quick-contact-form/settings.php&tab=send">Send Options</a> tab to change the thank you message and how the form is sent.</p>
-		<p>To change the way the form looks use the <a href="?page=quick-contact-form/settings.php&tab=styles">styling</a> tab.</p>
-		<p>You can also customise the <a href="?page=quick-contact-form/settings.php&tab=error">error messages</a>.</p>
-		<p>To see all your messages click on the <b>Messages</b> tab in the dashboard menu or <a href="?page=quick-contact-form/quick-contact-messages.php">click here</a>.</p>
-		<p>Please send bug reports to <a href="mailto:mail@quick-plugins.com">mail@quick-plugins.com</a>.</p>';	
-	$content .= qcfdonate_loop();
+        <p>Copy settings from an exisiting form.</p>
+        <select name="qcf_clone"><option>Do not copy settings</option>';
+    foreach ($arr as $item) {
+        if ($item == '') $item = 'default';
+        $content .= '<option value="'.$item.'">'.$item.'</option>';
+    }
+    $content .= '</select>
+    <p><input type="submit" name="newform" class="button-primary" style="color: #FFF;" value="Create New Form" /></p>
+    <h2>Use Akismet Validation</h2>
+    <p>Enter your API Key to check all messages against the Akismet database. <a href="?page=quick-contact-form/settings.php&tab=error">Change the error message</a>.</p> 
+    <p><input type="text" label="akismet" name="akismet" value="'.$qcf_apikey.'" /></p>
+    <p><input type="submit" name="Validate" class="button-primary" style="color: #FFF;" value="Activate Akismet Validation" /> <input type="submit" name="Delete" class="button-secondary" value="Deactivate Aksimet Validation" onclick="return window.confirm( \'This will delete the Akismet Key.\nAre you sure you want to do this?\' );"/></p>
+    </form>
+    </div>
+    <div class="qcf-options" style="float:right"> 
+    <h2>Adding the contact form to your site</h2>
+    <p>To add the basic contact form to your posts or pages use the shortcode: <code>[qcf]</code>.<br />
+    <p>If you have a named form the shortcode is <code>[qcf id="form name"]</code>.<br />
+    <p>To add the form to your theme files use <code>&lt;?php echo do_shortcode("[qcf]"); ?&gt;</code></p>
+    <p>There is also a widget called "Quick Contact Form" you can drag and drop into a sidebar.</p>
+    <p>That\'s it. The form is ready to use.</p>
+    <h2>Options and Settings</h2>
+    <p>To change the layout of the form, add or remove fields and the order they appear and edit the labels and captions use the <a href="?page=quick-contact-form/settings.php&tab=settings">Form Settings</a> tab.</p>
+    <p>Use the <a href="?page=quick-contact-form/settings.php&tab=send">Send Options</a> tab to change the thank you message and how the form is sent.</p>
+    <p>To change the way the form looks use the <a href="?page=quick-contact-form/settings.php&tab=styles">styling</a> tab.</p>
+    <p>You can also customise the <a href="?page=quick-contact-form/settings.php&tab=error">error messages</a>.</p>
+    <p>To see all your messages click on the <b>Messages</b> tab in the dashboard menu or <a href="?page=quick-contact-form/quick-contact-messages.php">click here</a>.</p>
+    <p>Please send bug reports to <a href="mailto:mail@quick-plugins.com">mail@quick-plugins.com</a>.</p>';
+    $content .= qcfdonate_loop();
 	$content .= '</div></div>';
 	echo $content;
-	}
+}
+
+function qcf_clone ($id,$clone) {
+    if ($clone == 'default') $clone = '';
+    $update = qcf_get_stored_options ($clone);update_option( 'qcf_settings'.$id, $update );
+    $update = qcf_get_stored_attach ($clone);update_option( 'qcf_attach'.$id, $update );
+    $update = qcf_get_stored_style($clone);update_option( 'qcf_style'.$id, $update );
+    $update = qcf_get_stored_reply ($clone);update_option( 'qcf_reply'.$id, $update );
+    $update = qcf_get_stored_error ($clone);update_option( 'qcf_error'.$id, $update );
+    qcf_create_css_file ('update');
+}
 
 function qcf_form_options($id) {
-	$active_buttons = array( 'field1' , 'field2' , 'field3' , 'field4' , 'field5' , 'field6' ,  'field7' , 'field8' ,  'field9' , 'field10','field11','field12','field13');
+	$active_buttons = array('field1','field2','field3','field4','field5','field6','field7','field8','field9','field10','field11','field12','field13');
 	qcf_change_form_update();
 	if( isset( $_POST['Submit'])) {
  		foreach ( $active_buttons as $item) {
@@ -207,92 +234,140 @@ function qcf_form_options($id) {
 	else $content .='<h2 style="color:#B52C00">Default form settings</h2>';
 	$content .= qcf_change_form($qcf_setup);
 	$content .='<form id="qcf_settings_form" method="post" action="">
-		<h2>Form Title and Introductory Blurb</h2>
-		<p>Form title (leave blank if you don\'t want a heading):</p>
-		<p><input type="text" name="title" value="' . $qcf['title'] . '" /></p>
-		<p>This is the blurb that will appear below the heading and above the form (leave blank if you don\'t want any blurb):</p>
-		<p><input type="text" name="blurb" value="' . $qcf['blurb'] . '" /></p>
-		<h2>Form Fields</h2>
-		<p>Drag and drop to change order of the fields</p>
-		<div style="margin-left:7px;font-weight:bold;"><div style="float:left; width:20%;">Field Selection</div><div style="float:left; width:30%;">Label</div><div style="float:left;">Required field</div></div>
-		<div style="clear:left"></div>
-		<ul id="qcf_sort">';
-		foreach (explode( ',',$qcf['sort']) as $name) {
-			$checked = ( $qcf['active_buttons'][$name]) ? 'checked' : '';
-			$required = ( $qcf['required'][$name]) ? 'checked' : '';
-			$datepicker = ($qcf['datepicker']) ? 'checked' : '';
-			$lines = $qcf['lines'];
-			$options = '';
-			switch ( $name ) {
-				case 'field1': $type = 'Textbox'; $options = ''; break;
-				case 'field2': $type = 'Email'; $options = ' also validates format'; break;
-				case 'field3': $type = 'Telephone'; $options = 'also checks number format'; 	break;	
-				case 'field4': $type = 'Textarea'; $options = 'Number of rows: <input type="text" style="border:1px solid #415063; width:3em;" name="lines" . value ="' . $qcf['lines'] . '" /><br>
-                Allowed Tags:<br> <input type="text" style="border:1px solid #415063; name="htmltags" . value ="' . $qcf['htmltags'] . '" />'; break;
-				case 'field5': $type = 'Selector'; $options = '<input style="margin:0; padding:0; border:none" type="radio" name="selectora" value="dropdowna" ' .$dropdowna . ' /> Dropdown
+    <h2>Form Title and Introductory Blurb</h2>
+    <p>Form title (leave blank if you don\'t want a heading):</p>
+    <p><input type="text" name="title" value="' . $qcf['title'] . '" /></p>
+    <p>This is the blurb that will appear below the heading and above the form (leave blank if you don\'t want any blurb):</p>
+    <p><input type="text" name="blurb" value="' . $qcf['blurb'] . '" /></p>
+    <h2>Form Fields</h2>
+    <p>Drag and drop to change order of the fields</p>
+    <div style="margin-left:7px;font-weight:bold;">
+    <div style="float:left; width:20%;">Field Selection</div>
+    <div style="float:left; width:30%;">Label</div>
+    <div style="float:left;">Required field</div>
+    </div>
+    <div style="clear:left"></div>
+    <ul id="qcf_sort">';
+    foreach (explode( ',',$qcf['sort']) as $name) {
+        $checked = ( $qcf['active_buttons'][$name]) ? 'checked' : '';
+        $required = ( $qcf['required'][$name]) ? 'checked' : '';
+        $datepicker = ($qcf['datepicker']) ? 'checked' : '';
+        $lines = $qcf['lines'];
+        $options = '';
+        switch ( $name ) {
+            case 'field1': 
+            $type = 'Textbox'; 
+            $options = ''; 
+            break;
+            case 'field2': 
+            $type = 'Email'; 
+            $options = ' also validates format'; 
+            break;
+            case 'field3': 
+            $type = 'Telephone'; 
+            $options = 'also checks number format';
+            break;	
+            case 'field4':
+            $type = 'Textarea';
+            $options = 'Number of rows: <input type="text" style="border:1px solid #415063; width:3em;" name="lines" . value ="' . $qcf['lines'] . '" /><br>
+            Allowed Tags:<br> <input type="text" style="border:1px solid #415063; name="htmltags" . value ="' . $qcf['htmltags'] . '" />';
+            break;
+            case 'field5':
+            $type = 'Selector';
+            $options = '<input style="margin:0; padding:0; border:none" type="radio" name="selectora" value="dropdowna" ' .$dropdowna . ' /> Dropdown
 <input style="margin:0; padding:0; border:none" type="radio" name="selectora" value="checkboxa" ' .$checkboxa . ' /> Checkbox
 <input style="margin:0; padding:0; border:none" type="radio" name="selectora" value="radioa" ' .$radioa . ' /> Radio<br>
-                <span class="description">Options (separate with a comma):</span><br><textarea name="dropdown_string" label="Dropdown" rows="2">' . $qcf['dropdownlist'] . '</textarea>'; break;
-				case 'field6': $type = 'Selector'; $options = '<input style="margin:0; padding:0; border:none" type="radio" name="selectorb" value="dropdownb" ' .$dropdownb . ' /> Dropdown
+            <span class="description">Options (separate with a comma):</span><br><textarea name="dropdown_string" label="Dropdown" rows="2">' . $qcf['dropdownlist'] . '</textarea>'; 
+            break;
+            case 'field6': 
+            $type = 'Selector'; 
+            $options = '<input style="margin:0; padding:0; border:none" type="radio" name="selectorb" value="dropdownb" ' .$dropdownb . ' /> Dropdown
 <input style="margin:0; padding:0; border:none" type="radio" name="selectorb" value="checkboxb" ' .$checkboxb . ' /> Checkbox
-<input style="margin:0; padding:0; border:none" type="radio" name="selectorb" value="radiob" ' .$radiob . ' /> Radio<br><span class="description">Options (separate with a comma):</span><br><textarea  name="checklist_string" label="Checklist" rows="2">' . $qcf['checklist'] . '</textarea>'; break;
-				case 'field7': $type = 'Selector'; $options = '<input style="margin:0; padding:0; border:none" type="radio" name="selectorc" value="dropdownc" ' .$dropdownc . ' /> Dropdown
+<input style="margin:0; padding:0; border:none" type="radio" name="selectorb" value="radiob" ' .$radiob . ' /> Radio<br><span class="description">Options (separate with a comma):</span><br><textarea  name="checklist_string" label="Checklist" rows="2">' . $qcf['checklist'] . '</textarea>'; 
+            break;
+            case 'field7':
+            $type = 'Selector'; 
+            $options = '<input style="margin:0; padding:0; border:none" type="radio" name="selectorc" value="dropdownc" ' .$dropdownc . ' /> Dropdown
 <input style="margin:0; padding:0; border:none" type="radio" name="selectorc" value="checkboxc" ' .$checkboxc . ' /> Checkbox
-<input style="margin:0; padding:0; border:none" type="radio" name="selectorc" value="radioc" ' .$radioc . ' /> Radio<br><span class="description">Options (separate with a comma):</span><br><textarea  name="radio_string" label="Radio" rows="2">' . $qcf['radiolist'] . '</textarea>'; break;
-				case 'field8': $type = 'Textbox'; $options = ''; break;
-				case 'field9': $type = 'Textbox'; $options = ''; break;
-				case 'field10': $type = 'Date'; $options = ''; break;
-				case 'field11': $type = 'Multibox'; $options = '<input style="margin:0; padding:0; border:none" type="radio" name="fieldtype" value="ttext" ' .$ttext . ' /> Text
+<input style="margin:0; padding:0; border:none" type="radio" name="selectorc" value="radioc" ' .$radioc . ' /> Radio<br><span class="description">Options (separate with a comma):</span><br><textarea  name="radio_string" label="Radio" rows="2">' . $qcf['radiolist'] . '</textarea>'; 
+            break;
+            case 'field8': $type = 'Textbox'; $options = ''; break;
+            case 'field9': $type = 'Textbox'; $options = ''; break;
+            case 'field10': $type = 'Date'; $options = ''; break;
+            case 'field11': 
+            $type = 'Multibox'; 
+            $options = '<input style="margin:0; padding:0; border:none" type="radio" name="fieldtype" value="ttext" ' .$ttext . ' /> Text
 <input style="margin:0; padding:0; border:none" type="radio" name="fieldtype" value="tmail" ' .$tmail . ' /> Email
 <input style="margin:0; padding:0; border:none" type="radio" name="fieldtype" value="ttele" ' .$ttele . ' /> Telephone
-<input style="margin:0; padding:0; border:none" type="radio" name="fieldtype" value="tdate" ' .$tdate . ' /> Date';break;
-		          case 'field12': $type = 'Maths Captcha'; $options = '<span class="description">Add a maths checker to the form to (hopefully) block most of the spambots.</span>'; break;
-                case 'field13': $type = 'Multibox'; $options = '<input style="margin:0; padding:0; border:none" type="radio" name="fieldtypeb" value="btext" ' .$btext . ' /> Text
+<input style="margin:0; padding:0; border:none" type="radio" name="fieldtype" value="tdate" ' .$tdate . ' /> Date';
+            break;
+            case 'field12': 
+            $type = 'Maths Captcha'; 
+            $options = '<span class="description">Add a maths checker to the form to (hopefully) block most of the spambots.</span>'; 
+            break;
+            case 'field13': 
+            $type = 'Multibox'; 
+            $options = '<input style="margin:0; padding:0; border:none" type="radio" name="fieldtypeb" value="btext" ' .$btext . ' /> Text
 <input style="margin:0; padding:0; border:none" type="radio" name="fieldtypeb" value="bmail" ' .$bmail . ' /> Email
 <input style="margin:0; padding:0; border:none" type="radio" name="fieldtypeb" value="btele" ' .$btele . ' /> Telephone
-<input style="margin:0; padding:0; border:none" type="radio" name="fieldtypeb" value="bdate" ' .$bdate . ' /> Date';break;
-				}
-	$li_class = ( $checked) ? 'button_active' : 'button_inactive';
-	$content .= '<li class="'.$li_class.'" id="' . $name . '">
-		<div style="float:left; width:20%;"><input type="checkbox" class="button_activate" style="border: none;" name="qcf_settings_active_' . $name . '" ' . $checked . ' />' . $type . '</div>
-		<div style="float:left; width:30%;"><input type="text" style="border: border:1px solid #415063; padding: 1px; margin:0;" name="label_' . $name . '" value="' . $qcf['label'][$name] . '"/></div>
+<input style="margin:0; padding:0; border:none" type="radio" name="fieldtypeb" value="bdate" ' .$bdate . ' /> Date';
+            break;
+        }
+        $li_class = ( $checked) ? 'button_active' : 'button_inactive';
+        $content .= '<li class="'.$li_class.'" id="' . $name . '">
+		<div style="float:left; width:20%;">
+        <input type="checkbox" class="button_activate" style="border: none;" name="qcf_settings_active_' . $name . '" ' . $checked . ' />' . $type . '</div>
+		<div style="float:left; width:30%;">
+        <input type="text" style="border: border:1px solid #415063; padding: 1px; margin:0;" name="label_' . $name . '" value="' . $qcf['label'][$name] . '"/></div>
 		<div style="float:left;width:5%">';
-$exclude = array("field12");
-if(!in_array($name, $exclude)) $content .='<input type="checkbox" class="button_activate" style="border: none; padding: 0; margin:0 0 0 5px;" name="required_'.$name.'" '.$required.' /> ';
+        $exclude = array("field12");
+        if(!in_array($name, $exclude)) $content .='<input type="checkbox" class="button_activate" style="border: none; padding: 0; margin:0 0 0 5px;" name="required_'.$name.'" '.$required.' /> ';
 		else $content .='&nbsp;';
-	$content .= '</div><div style="float:left;width:45%">'.$options . '</div><div style="clear:left"></div></li>';
-	}
+        $content .= '</div><div style="float:left;width:45%">'.$options . '</div><div style="clear:left"></div></li>';
+    }
 	$content .= '</ul>
-		<input type="hidden" id="qcf_settings_sort" name="sort" value="'.$qcf['sort'].'" />
-		<h2>Submit button caption</h2>
-		<p><input type="text" text-align:center" name="send" value="' . $qcf['send'] . '" /></p>';
-	$content .='<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" />  <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset these settings?\' );"/></p>
-		</form>
-		</div>
-		<div class="qcf-options" style="float:right">  
-		<h2 style="color:#B52C00">Form Preview</h2>
-		<p>Note: The preview form uses the wordpress admin styles. Your form will use the theme styles so won\'t look exactly like the one below.</p>';
+    <input type="hidden" id="qcf_settings_sort" name="sort" value="'.$qcf['sort'].'" />
+    <h2>Submit button caption</h2>
+    <p><input type="text" text-align:center" name="send" value="' . $qcf['send'] . '" /></p>
+	<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" />  <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset these settings?\' );"/></p>
+    </form>
+    </div>
+    <div class="qcf-options" style="float:right">
+    <h2 style="color:#B52C00">Form Preview</h2>
+    <p>Note: The preview form uses the wordpress admin styles. Your form will use the theme styles so won\'t look exactly like the one below.</p>';
 	$content .= qcf_loop($id);
 	$content .= '<p>Have you set up the <a href="?page=quick-contact-form/settings.php&tab=reply">reply options</a>?</p>
-		<p>You can also customise the <a href="?page=quick-contact-form/settings.php&tab=error">error messages</a>.</p>
-		</div></div>';
+    <p>You can also customise the <a href="?page=quick-contact-form/settings.php&tab=error">error messages</a>.</p>
+    </div></div>';
 	echo $content;
-	}
+}
+
 function qcf_attach ($id) {
 	qcf_change_form_update();
-	if( isset( $_POST['Submit'])) {
-		$options = array( 'qcf_attach','qcf_attach_label','qcf_attach_size','qcf_attach_type','qcf_attach_width','qcf_attach_error_size','qcf_attach_error_type');
+	
+    if( isset( $_POST['Submit'])) {
+		$options = array(
+            'qcf_attach',
+            'qcf_attach_label',
+            'qcf_attach_size',
+            'qcf_attach_type',
+            'qcf_attach_width',
+            'qcf_attach_error_size',
+            'qcf_attach_error_type'
+        );
 		foreach ( $options as $item) $attach[$item] = stripslashes($_POST[$item]);
 		update_option( 'qcf_attach'.$id, $attach);
 		if ($id) qcf_admin_notice("The attachment settings for ".$id. " have been updated.");
 		else qcf_admin_notice("The default form settings have been reset.");
 		}
-	if( isset( $_POST['Reset'])) {
+	
+    if( isset( $_POST['Reset'])) {
 		delete_option('qcf_attach'.$id);
 		if ($id) qcf_admin_notice("The attachment settings for ".$id. " have been reset.");
 		else qcf_admin_notice("The default form settings have been reset.");
 		}
-	$qcf_setup = qcf_get_stored_setup();
+	
+    $qcf_setup = qcf_get_stored_setup();
 	$id=$qcf_setup['current'];
 	$attach = qcf_get_stored_attach($id);
 	$content ='<div class="qcf-settings"><div class="qcf-options">';
@@ -300,29 +375,33 @@ function qcf_attach ($id) {
 	else $content .='<h2 style="color:#B52C00">Default attachment options</h2>';
 	$content .= qcf_change_form($qcf_setup);
 	$content .='<p>If you want your visitors to attach files then use these settings. Take care not to let them attach system files, executables, trojans, worms and a other nasties!</p>
-		<form id="qcf_settings_form" method="post" action="">
-<table>
-<tr><td colspan="2"><h2>Attachment Settings</h2></td></tr>
-		<tr><td></td><td><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_attach"' . $attach['qcf_attach'] . ' value="checked" /> User can attach files</td></tr>		<tr><td>Field Label</td><td><input type="text" name="qcf_attach_label" value="' . $attach['qcf_attach_label'] . '" /></td></tr>
-		<tr><td>Maximum File size</td><td><input type="text" name="qcf_attach_size" value="' . $attach['qcf_attach_size'] . '" /></td></tr>
-		<tr><td>Allowable file types</td><td><input type="text" name="qcf_attach_type" value="' . $attach['qcf_attach_type'] . '" /></td></tr>
-		<tr><td>Field size</td><td><p>This is a trial and error number. You can\'t use a \'width\' style as the size is a number of characters. Test using the live form not the preview.</p>
-		<p><em>Example: A form width of 280px with a plain border has field width of about 15. With no border it\'s about 18.</em></p>
-		<p><input type="text" style="width:5em;" name="qcf_attach_width" value="' . $attach['qcf_attach_width'] . '" /></td></tr>
-		<tr><td colspan="2"><h2>Error messages</h2></td></tr>
-<tr><td>If the file is too big:</td><td><input type="text" name="qcf_attach_error_size" value="' . $attach['qcf_attach_error_size'] . '" /></td></tr>
-	<tr><td>If the filetype is incorrect:</td><td><input type="text" name="qcf_attach_error_type" value="' . $attach['qcf_attach_error_type'] . '" /></td></tr>
-</table>
-		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the attachment settings for '.$id.'?\' );"/></p>
-		</form>
-		</div>
-		<div class="qcf-options" style="float:right"> 
-		<h2 style="color:#B52C00">Form Preview</h2>
-		<p>Note: The preview form uses the wordpress admin styles. Your form will use the theme styles so won\'t look exactly like the one below.</p>';
+    <form id="qcf_settings_form" method="post" action="">
+    <table>
+    <tr><td colspan="2"><h2>Attachment Settings</h2></td></tr>
+    <tr><td></td><td><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="qcf_attach"' . $attach['qcf_attach'] . ' value="checked" /> User can attach files</td></tr>		
+    <tr><td>Field Label</td><td><input type="text" name="qcf_attach_label" value="' . $attach['qcf_attach_label'] . '" /></td></tr>
+    <tr><td>Maximum File size</td><td><input type="text" name="qcf_attach_size" value="' . $attach['qcf_attach_size'] . '" /></td></tr>
+    <tr><td>Allowable file types</td><td><input type="text" name="qcf_attach_type" value="' . $attach['qcf_attach_type'] . '" /></td></tr>
+    <tr><td>Field size</td><td><p>This is a trial and error number. You can\'t use a \'width\' style as the size is a number of characters. Test using the live form not the preview.</p>
+    <p><em>Example: A form width of 280px with a plain border has field width of about 15. With no border it\'s about 18.</em></p>
+    <p><input type="text" style="width:5em;" name="qcf_attach_width" value="' . $attach['qcf_attach_width'] . '" /></td></tr>
+    <tr><td colspan="2"><h2>Error messages</h2></td></tr>
+    <tr><td>If the file is too big:</td><td><input type="text" name="qcf_attach_error_size" value="' . $attach['qcf_attach_error_size'] . '" /></td></tr>
+    <tr>
+    <td>If the filetype is incorrect:</td><td><input type="text" name="qcf_attach_error_type" value="' . $attach['qcf_attach_error_type'] . '" /></td>
+    </tr>
+    </table>
+    <p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the attachment settings for '.$id.'?\' );"/></p>
+    </form>
+    </div>
+    <div class="qcf-options" style="float:right"> 
+    <h2 style="color:#B52C00">Form Preview</h2>
+    <p>Note: The preview form uses the wordpress admin styles. Your form will use the theme styles so won\'t look exactly like the one below.</p>';
 	$content .= qcf_loop($id);
 	$content .= '</div></div>';
 	echo $content;
-	}
+}
+
 function qcf_styles($id) {
 	qcf_change_form_update();
 	if( isset( $_POST['Submit'])) {
@@ -372,13 +451,15 @@ function qcf_styles($id) {
 		qcf_create_css_file ('update');
 		qcf_admin_notice("The form styles have been updated.");
 		}
+    
     if( isset( $_POST['Reset'])) {
 		delete_option('qcf_style'.$id);
 		qcf_create_css_file ('update');
 		if ($id) qcf_admin_notice("The style settings for ".$id. " have been reset.");
 		else qcf_admin_notice("The default form settings have been updated.");
 		}
-	$qcf_setup = qcf_get_stored_setup();
+	
+    $qcf_setup = qcf_get_stored_setup();
 	$id=$qcf_setup['current'];
 	$style = qcf_get_stored_style($id);
 	$$style['font'] = 'checked';
@@ -393,74 +474,75 @@ function qcf_styles($id) {
 	if ($id) $content .='<h2 style="color:#B52C00">Styles for ' . $id . '</h2>';
 	else $content .='<h2 style="color:#B52C00">Default form styles</h2>';
 	$content .= qcf_change_form($qcf_setup);
-	$content .='<form method="post" action=""> 
-		<span class="description"><b>NOTE:</b>Leave fields blank if you don\'t want to use them</span>
-		<table>
-		<tr><td colspan="2"><h2>Form Width</h2></td></tr>
-		<tr>
-        <td></td>
-        <td><input style="margin:0; padding:0; border:none;" type="radio" name="widthtype" value="percent" ' . $percent . ' /> 100% (fill the available space)<br />
-		<input style="margin:0; padding:0; border:none;" type="radio" name="widthtype" value="pixel" ' . $pixel . ' /> Fixed : <input type="text" style="width:4em" label="width" name="width" value="' . $style['width'] . '" /> use px, em or %. Default is px.</td>
-        </tr>
-		<tr>
-        <td colspan="2"><h2>Form Border</h2>
-		<p>Note: The rounded corners and shadows only work on CSS3 supported browsers and even then not in IE8. Don\'t blame me, blame Microsoft.</p></td>
-        </tr>
-		<tr>
-        <td>Type:</td>
-        <td><input style="margin:0; padding:0; border:none;" type="radio" name="border" value="none" ' . $none . ' /> No border<br />
+	$content .='<form method="post" action="">
+    <span class="description"><b>NOTE:</b>Leave fields blank if you don\'t want to use them</span>
+    <table>
+    <tr><td colspan="2"><h2>Form Width</h2></td></tr>
+    <tr>
+    <td></td>
+    <td><input style="margin:0; padding:0; border:none;" type="radio" name="widthtype" value="percent" ' . $percent . ' /> 100% (fill the available space)<br />
+    <input style="margin:0; padding:0; border:none;" type="radio" name="widthtype" value="pixel" ' . $pixel . ' /> Fixed : <input type="text" style="width:4em" label="width" name="width" value="' . $style['width'] . '" /> use px, em or %. Default is px.</td>
+    </tr>
+    <tr>
+    <td colspan="2"><h2>Form Border</h2>
+    <p>Note: The rounded corners and shadows only work on CSS3 supported browsers and even then not in IE8. Don\'t blame me, blame Microsoft.</p></td>
+    </tr>
+    <tr>
+    <td>Type:</td>
+    <td><input style="margin:0; padding:0; border:none;" type="radio" name="border" value="none" ' . $none . ' /> No border<br />
 		<input style="margin:0; padding:0; border:none;" type="radio" name="border" value="plain" ' . $plain . ' /> Plain Border<br />
 		<input style="margin:0; padding:0; border:none;" type="radio" name="border" value="rounded" ' . $rounded . ' /> Round Corners (Not IE8)<br />
 		<input style="margin:0; padding:0; border:none;" type="radio" name="border" value="shadow" ' . $shadow . ' /> Shadowed Border(Not IE8)<br />
 		<input style="margin:0; padding:0; border:none;" type="radio" name="border" value="roundshadow" ' . $roundshadow . ' /> Rounded Shadowed Border (Not IE8)</td>
-        </tr>
-		<tr>
-        <td>Style:</td>
-        <td><input type="text" label="form-border" name="form-border" value="' . $style['form-border'] . '" /></td>
-        </tr>
-		<tr>
-        <td colspan="2"><h2>Background</h2></td>
-        </tr>
-		<tr>
-        <td>Colour:</td>
-        <td><input style="margin:0; padding:0; border:none;" type="radio" name="background" value="white" ' . $white . ' /> White<br />
+    </tr>
+    <tr>
+    <td>Style:</td>
+    <td><input type="text" label="form-border" name="form-border" value="' . $style['form-border'] . '" /></td>
+    </tr>
+    <tr>
+    <td colspan="2"><h2>Background</h2></td>
+    </tr>
+    <tr>
+    <td>Colour:</td>
+    <td><input style="margin:0; padding:0; border:none;" type="radio" name="background" value="white" ' . $white . ' /> White<br />
 		<input style="margin:0; padding:0; border:none;" type="radio" name="background" value="theme" ' . $theme . ' /> Use theme colours<br />
 		<input style="margin:0; padding:0; border:none;" type="radio" name="background" value="color" ' . $color . ' />	Set your own: 
 		<input type="text" class="qcf-color" label="background" name="backgroundhex" value="' . $style['backgroundhex'] . '" /></td>
-        </tr>
-		<tr>
-        <td>Background<br>Image:</td>
-        <td>
+    </tr>
+    <tr>
+    <td>Background<br>Image:</td>
+    <td>
 		<input id="qcf_background" type="text" name="backgroundimage" value="' . $style['backgroundimage'] . '" />
    		<input id="qcf_upload_background" class="button" name="bg" type="button" value="Upload Image" /></td>
-        </tr>
-		<tr>
-        <td colspan="2"><h2>Font Styles</h2></td>
-        </tr>
-		<tr>
-        <td></td>
-        <td><input style="margin:0; padding:0; border:none" type="radio" name="font" value="theme" ' . $theme . ' /> Use theme font styles<br />
-		<input style="margin:0; padding:0; border:none" type="radio" name="font" value="plugin" ' . $plugin . ' /> Use Plugin font styles (enter font family and size below)
-		</td>
-        </tr>
-		<tr>
-        <td colspan="2"><h2>Form Header</h2></td>
-        </tr>
-		<tr>
-        <td></td>
-        <td><input type="checkbox" style="margin:0; padding: 0; border: none" name="header"' . $style['header'] . ' value="checked" />Use header styles</td>
-        </tr>
-		<tr><td>Header Size: </td><td><input type="text" style="width:6em" label="header-size" name="header-size" value="' . $style['header-size'] . '" /></td>
-        </tr>
-		<tr>
-        <td>Header Colour: </td><td><input type="text" class="qcf-color" label="header-colour" name="header-colour" value="' . $style['header-colour'] . '" /></td>
-        </tr>
-		<tr>
-        <td colspan="2"><h2>Input Fields</h2></td>
-        </tr>
-		<tr>
-        <td>Font Family: </td><td><input type="text" label="font-family" name="font-family" value="' . $style['font-family'] . '" /></td></tr>
-		<tr><td>Font Size: </td><td><input type="text" style="width:6em" label="font-size" name="font-size" value="' . $style['font-size'] . '" /></td></tr>
+    </tr>
+    <tr>
+    <td colspan="2"><h2>Font Styles</h2></td>
+    </tr>
+    <tr>
+    <td></td>
+    <td><input style="margin:0; padding:0; border:none" type="radio" name="font" value="theme" ' . $theme . ' /> Use theme font styles<br />
+    <input style="margin:0; padding:0; border:none" type="radio" name="font" value="plugin" ' . $plugin . ' /> Use Plugin font styles (enter font family and size below)
+    </td>
+    </tr>
+    <tr>
+    <td colspan="2"><h2>Form Header</h2></td>
+    </tr>
+    <tr>
+    <td></td>
+    <td><input type="checkbox" style="margin:0; padding: 0; border: none" name="header"' . $style['header'] . ' value="checked" />Use header styles</td>
+    </tr>
+    <tr><td>Header Size: </td><td><input type="text" style="width:6em" label="header-size" name="header-size" value="' . $style['header-size'] . '" /></td>
+    </tr>
+    <tr>
+    <td>Header Colour: </td><td><input type="text" class="qcf-color" label="header-colour" name="header-colour" value="' . $style['header-colour'] . '" /></td>
+    </tr>
+    <tr>
+    <td colspan="2"><h2>Input Fields</h2></td>
+    </tr>
+    <tr>
+    <td>Font Family: </td><td><input type="text" label="font-family" name="font-family" value="' . $style['font-family'] . '" /></td></tr>
+    <tr>
+    <td>Font Size: </td><td><input type="text" style="width:6em" label="font-size" name="font-size" value="' . $style['font-size'] . '" /></td></tr>
 		<tr><td>Font Colour: </td><td><input type="text" class="qcf-color" label="font-colour" name="font-colour" value="' . $style['font-colour'] . '" /></td></tr>
 		<tr><td>Normal Border: </td><td><input type="text" label="input-border" name="input-border" value="' . $style['input-border'] . '" /></td></tr>
 		<tr><td>Required Fields: </td><td><input type="text" label="input-required" name="input-required" value="' . $style['input-required'] . '" /></td></tr>
@@ -508,17 +590,41 @@ function qcf_styles($id) {
 function qcf_reply_page($id) {
 	qcf_change_form_update();
 	if( isset( $_POST['Submit'])) {
-		$options = array( 'replytitle','replyblurb','replymessage','replycopy','replysubject','messages' , 'tracker' , 'url' ,  'page' , 'subject' ,  'subjectoption' , 'qcf_redirect','qcf_reload','qcf_reload_time','qcf_redirect_url','qcfmail','qcf_bcc','sendcopy','copy_message','bodyhead');
+		$options = array(
+            'replytitle',
+            'replyblurb',
+            'replymessage',
+            'replycopy',
+            'replysubject',
+            'fromemail',
+            'messages',
+            'tracker' , 
+            'url',
+            'page',
+            'subject',
+            'subjectoption',
+            'qcf_redirect',
+            'qcf_reload',
+            'qcf_reload_time',
+            'qcf_redirect_url',
+            'qcfmail',
+            'qcf_bcc',
+            'sendcopy',
+            'copy_message',
+            'bodyhead'
+        );
 		foreach ( $options as $item) $reply[$item] = stripslashes($_POST[$item]);
 		update_option('qcf_reply'.$id, $reply);
 		if ($id) qcf_admin_notice("The send settings for " . $id . " have been updated.");
 		else qcf_admin_notice("The default form send settings have been updated.");
-		}
-	if( isset( $_POST['Reset'])) {
+    }
+	
+    if( isset( $_POST['Reset'])) {
 		delete_option('qcf_reply'.$id);
 		qcf_admin_notice("The reply settings for the form called ".$id. " have been reset.");
-		}
-	$qcf_setup = qcf_get_stored_setup();
+    }
+	
+    $qcf_setup = qcf_get_stored_setup();
 	$id=$qcf_setup['current'];
 	$reply = qcf_get_stored_reply($id);
 	$$reply['subjectoption'] = "checked";
@@ -530,21 +636,27 @@ function qcf_reply_page($id) {
 	$content .= qcf_change_form($qcf_setup);
 	$content .='<form method="post" action="">
 	<span class="description"><b>NOTE:</b>Leave fields blank if you don\'t want to use them</span>
-		<table>
-		<tr><td colspan="2"><h2>Send Options</h2></td></tr>
-		<tr><td>Send Function</td><td>
+    <table>
+    <tr><td colspan="2"><h2>Send Options</h2></td></tr>
+    <tr><td>Send Function</td><td>
 		<input style="margin:0; padding:0; border:none" type="radio" name="qcfmail" value="wpemail" ' . $wpemail . '> WP-mail (should work for most email addresses)<br />
 		<input style="margin:0; padding:0; border:none" type="radio" name="qcfmail" value="phpmail" ' . $phpmail . '> PHP mail (the default mail function)<br />
 		<input style="margin:0; padding:0; border:none" type="radio" name="qcfmail" value="smtp" ' . $smtp . '> SMTP (Only use if you have <a href="?page=quick-contact-form/settings.php&tab=smtp">set up SMTP</a>)</td></tr>
 		<tr><td>BCC</td><td><input style="margin:0; padding:0; border:none" type="checkbox" name="qcf_bcc" ' . $reply['qcf_bcc'] . ' value="checked"> Hide email address for multiple recipients.</td></tr>
-        <tr><td>Email subject</td><td>The message subject has two parts: the bit in the text box plus the option below.<br>
+<tr><td>From Address</td><td>
+		Some hosts get very picky about the senders email address. Enter a safe email if your hosts requires it:<br>
+		<input type="text" name="fromemail" value="' . $reply['fromemail'] . '"/><br>
+        <span class="description">If you use this feature the senders email address will automatically appear as a \'Reply To\' line in the email header.</span>
+        </td></tr>
+
+    <tr><td>Email subject</td><td>The message subject has two parts: the bit in the text box plus the option below.<br>
 		<input style="width:100%" type="text" name="subject" value="' . $reply['subject'] . '"/><br>
 		<input style="margin:0; padding:0; border:none" type="radio" name="subjectoption" value="sendername" ' . $sendername . '> sender\'s name (the contents of the first field)<br />
 		<input style="margin:0; padding:0; border:none" type="radio" name="subjectoption" value="sendersubj" ' . $sendersubj . '> Contents of the subject field (if used)<br />
 		<input style="margin:0; padding:0; border:none" type="radio" name="subjectoption" value="senderpage" ' . $senderpage . '> page title (only works if sent from a post or a page)<br />
 		<input style="margin:0; padding:0; border:none" type="radio" name="subjectoption" value="sendernone" ' . $sendernone . '> blank
 		</td></tr>
-		<tr><td>Email body header</td><td>
+        <tr><td>Email body header</td><td>
 		This is the introduction to the email message you receive.<br>
 		<input type="text" name="bodyhead" value="' . $reply['bodyhead'] . '"/></td></tr>
 		<tr><td>Tracking</td><td>
@@ -573,7 +685,7 @@ function qcf_reply_page($id) {
 		<tr><td></td><td><input style="margin:0; padding:0; border:none" type="checkbox" name="qcf_reload" ' . $reply['qcf_reload'] . ' value="checked"> Refresh the page <input style="width:2em" type="text" name="qcf_reload_time" value="' . $reply['qcf_reload_time'] . '" /> seconds after the thank-you message.</td></tr>
 </table>
 		<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the reply settings for '.$id.'?\' );"/></p>
-		</form>
+        </form>
 		</div>
 		<div class="qcf-options" style="float:right"> 
 		<h2 style="color:#B52C00">Test Form</h2>
@@ -581,10 +693,12 @@ function qcf_reply_page($id) {
 	$content .= qcf_loop($id);
 	$content .= '</div></div>';
 	echo $content;
-	}
+}
+
 function qcf_error_page($id) {
 	qcf_change_form_update();
-	if( isset( $_POST['Submit'])) {
+	
+    if( isset( $_POST['Submit'])) {
 		for ($i=1; $i<=13; $i++) $error['field'.$i] = stripslashes($_POST['error'.$i]);
 		$options = array( 'errortitle','errorblurb','email','telephone','mathsmissing','mathsanswer','emailcheck','phonecheck','spam');
 		foreach ( $options as $item) $error[$item] = stripslashes($_POST[$item]);
@@ -593,11 +707,13 @@ function qcf_error_page($id) {
 		else qcf_admin_notice("The default form error settings have been updated.");
 
 		}
-	if( isset( $_POST['Reset'])) {
+	
+    if( isset( $_POST['Reset'])) {
 		delete_option('qcf_error'.$id);
 		qcf_admin_notice("The error settings for the form called ".$id. " have been reset.");
 		}
-	$qcf_setup = qcf_get_stored_setup();
+	
+    $qcf_setup = qcf_get_stored_setup();
 	$id=$qcf_setup['current'];
 	$qcf = qcf_get_stored_options($id);
 	$error = qcf_get_stored_error($id);
@@ -643,11 +759,9 @@ function qcf_error_page($id) {
         <td><input type="text" name="error11" value="' .  $error['field11'] . '" /></td></tr>
         <tr><td>If <em>' .  $qcf['label']['field13'] . '</em> is required:</td>
         <td><input type="text" name="error13" value="' .  $error['field13'] . '" /></td></tr>
-        <tr><td>If <em>' .  $qcf['label']['field12'] . '</em> is required:</td>
-        <td><input type="text" name="error12" value="' .  $error['field12'] . '" /></td></tr>
-		<tr><td>Maths Captcha missing answer:</td><td>
+        <tr><td>Spam Captcha missing answer:</td><td>
 		<p><input type="text" name="mathsmissing" value="' .  $error['mathsmissing'] . '" /></td></tr>
-		<tr><td>Maths Captcha wrong answer:</td><td><input type="text" name="mathsanswer" value="' .  $error['mathsanswer'] . '" /></td></tr>
+		<tr><td>Spam Captcha wrong answer:</td><td><input type="text" name="mathsanswer" value="' .  $error['mathsanswer'] . '" /></td></tr>
 <tr><td colspan="2"><h2>Akismet Spam Message</h2></td></tr>
 <tr><td>If spam detected:</td>
         <td><input type="text" name="spam" value="' .  $error['spam'] . '" /></td></tr>
@@ -691,7 +805,8 @@ function qcf_help($id) {
 	}
 function qcf_reset_page($id) {
 	qcf_change_form_update();
-	if (isset($_POST['qcf_reset'])) {
+	
+    if (isset($_POST['qcf_reset'])) {
 		if (isset($_POST['qcf_delete_form'])) {
 			$qcf_setup = qcf_get_stored_setup();
 			if ($id != '') {
@@ -704,37 +819,43 @@ function qcf_reset_page($id) {
 				$id = '';
 				}
 			}
-		if (isset($_POST['qcf_reset_form'])) {
+        if (isset($_POST['qcf_reset_form'])) {
 			delete_things($id);
 			if ($id) qcf_admin_notice("<b>The form called ".$id. " has been reset.</b> Use the <a href= '?page=quick-contact-form/settings.php&tab=setup'>Setup</a> tab to add a new named form");
 			else qcf_admin_notice("<b>The default form has been reset.</b>");
 			}
-		if (isset($_POST['qcf_reset_options'])) {
+		
+        if (isset($_POST['qcf_reset_options'])) {
 			delete_option('qcf_settings'.$id);
 			if ($id) qcf_admin_notice("<b>Form settings for ".$id." have been reset.</b> Use the <a href= '?page=quick-contact-form/settings.php&tab=settings'>Form Settings</a> tab to change the settings");
 			else qcf_admin_notice("<b>The default form settings have been reset.</b> Use the <a href= '?page=quick-contact-form/settings.php&tab=settings'>Form Settings</a> tab to change the settings");
 			}
-		if (isset($_POST['qcf_reset_attach'])) {
+		
+        if (isset($_POST['qcf_reset_attach'])) {
 			delete_option('qcf_attach'.$id);
 			if ($id) qcf_admin_notice("<b>The attachment options for ".$id." have been reset.</b>. Use the <a href= '?page=quick-contact-form/settings.php&tab=attach'>Attachments</a> tab to change the settings");
 			else qcf_admin_notice("<b>The default attachment options have been reset.</b>. Use the <a href= '?page=quick-contact-form/settings.php&tab=attach'>Attachments</a> tab to change the settings");
 			}
-		if (isset($_POST['qcf_reset_reply'])) {
+		
+        if (isset($_POST['qcf_reset_reply'])) {
 			delete_option('qcf_reply'.$id);
 			if ($id) qcf_admin_notice("<b>The send options for ".$id." have been reset.</b>. Use the <a href= '?page=quick-contact-form/settings.php&tab=reply'>Reply Options</a> tab to change the settings");
 			else qcf_admin_notice("<b>The default send options have been reset.</b>. Use the <a href= '?page=quick-contact-form/settings.php&tab=reply'>Reply Options</a> tab to change the settings");
 			}
-		if (isset($_POST['qcf_reset_styles'])) {
+		
+        if (isset($_POST['qcf_reset_styles'])) {
 			delete_option('qcf_style'.$id);
 			if ($id) qcf_admin_notice("<b>The styles for ".$id." have been reset.</b>. Use the <a href= '?page=quick-contact-form/settings.php&tab=styles'>Styling</a> tab to change the settings");
 			else qcf_admin_notice("<b>The default styles have been reset.</b>. Use the <a href= '?page=quick-contact-form/settings.php&tab=styles'>Styling</a> tab to change the settings");
 			}
-		if (isset($_POST['qcf_reset_errors'])) {
+		
+        if (isset($_POST['qcf_reset_errors'])) {
 			delete_option('qcf_error'.$id);
 			if ($id) qcf_admin_notice("<b>The error messages for ".$id." have been reset.</b> Use the <a href= '?page=quick-contact-form/settings.php&tab=error'>Error Messages</a> tab to change the settings.");
 			else qcf_admin_notice("<b>The default error messages have been reset.</b> Use the <a href= '?page=quick-contact-form/settings.php&tab=error'>Error Messages</a> tab to change the settings.");
 			}
-		if (isset($_POST['qcf_reset_everything'])) {
+		
+        if (isset($_POST['qcf_reset_everything'])) {
 			$qcf_setup = qcf_get_stored_setup();
 			$id = explode(",",$qcf_setup['alternative']);
 			foreach ($id as $item) delete_things($id);
@@ -745,7 +866,8 @@ function qcf_reset_page($id) {
 			$id = '';
 			}
 		}
-	$qcf_setup = qcf_get_stored_setup();
+	
+    $qcf_setup = qcf_get_stored_setup();
 	$id=$qcf_setup['current'];
 	$content ='<div class="qcf-settings"><div class="qcf-options">';
 	if ($id) $content .='<h2 style="color:#B52C00">Reset the options for ' . $id . '</h2>';
@@ -769,7 +891,8 @@ function qcf_reset_page($id) {
 		</form>
 	</div></div>';
 	echo $content;
-	}
+}
+
 function qcf_smtp_page() {
 	if( isset( $_POST['Submit'])) {
 		$options = array('mailer','smtp_host','smtp_port','smtp_ssl','smtp_auth','smtp_user','smtp_pass');
@@ -781,17 +904,17 @@ function qcf_smtp_page() {
 		delete_option('qcf_smtp');
 		qcf_admin_notice("The SMTP settings have been reset.");
 		}
-		$qcfsmtp = qcf_get_stored_smtp ();
-		$$qcfsmtp['mailer'] = 'checked';
-		$$qcfsmtp['smtp_ssl'] = 'checked';
-		$$qcfsmtp['smtp_auth'] = 'checked';
-		$content = '<div class="qcf-settings"><div class="qcf-options">';
-		$content .= wp_nonce_field('email-options');
-		$content .= '<h2>SMTP Settings</h2>
-			<p>These settings only apply if you have chosen to <a href="?page=quick-contact-form/settings.php&tab=reply">send mail by SMTP</a></p>
-			<form method="post" action=""><table style="width:100%>
-			<tr valign="top">
-			<td>SMTP Host</td>
+    $qcfsmtp = qcf_get_stored_smtp ();
+    $$qcfsmtp['mailer'] = 'checked';
+    $$qcfsmtp['smtp_ssl'] = 'checked';
+    $$qcfsmtp['smtp_auth'] = 'checked';
+    $content = '<div class="qcf-settings"><div class="qcf-options">';
+    $content .= wp_nonce_field('email-options');
+    $content .= '<h2>SMTP Settings</h2>
+    <p>These settings only apply if you have chosen to <a href="?page=quick-contact-form/settings.php&tab=reply">send mail by SMTP</a></p>
+    <form method="post" action=""><table style="width:100%>
+    <tr valign="top">
+    <td>SMTP Host</td>
 			<td><input name="smtp_host" type="text" id="smtp_host" value="'.$qcfsmtp['smtp_host'].'" /></td>
 			</tr><tr valign="top">
 			<td>SMTP Port</td><td><input name="smtp_port" type="text" id="smtp_port" value="'.$qcfsmtp['smtp_port'].'" style="width:6em;" /></td>
@@ -827,7 +950,8 @@ function qcf_smtp_page() {
 	$content .= qcf_loop('default');
 	$content .= '</div></div>';
 	echo $content;
-	}
+}
+
 function delete_everything() {
 	$qcf_setup = qcf_get_stored_setup();
 	$arr = explode(",",$qcf_setup['alternative']);
@@ -836,16 +960,19 @@ function delete_everything() {
 	delete_option('qcf_email');
 	delete_option('qcf_message');
 	}
+
 function qcf_delete_things($id) {
 	delete_option('qcf_settings'.$id);
 	delete_option('qcf_reply'.$id);
 	delete_option('qcf_error'.$id);
 	delete_option('qcf_style'.$id);
 	delete_option('qcf_attach'.$id);
-	}
+}
+
 function qcf_admin_notice($message) {
 	if (!empty( $message)) echo '<div class="updated"><p>'.$message.'</p></div>';
-	}
+}
+
 function qcf_change_form($qcf_setup) {
 	if ($qcf_setup['alternative']) {
 		$content .= '<form style="margin-top: 8px" method="post" action="" >';
@@ -859,15 +986,17 @@ function qcf_change_form($qcf_setup) {
 		<input type="hidden" name="dashboard" value = "' . $qcf_setup['dashboard'] . '" />&nbsp;&nbsp;<input type="submit" name="Select" class="button-secondary" value="Change Form" /></form>';
 		}
 	return $content;
-	}
+}
+
 function qcf_change_form_update() {
 	if( isset( $_POST['Select'])) {
 		$qcf_setup['current'] = $_POST['current'];
 		$qcf_setup['alternative'] = $_POST['alternative'];
 		$qcf_setup['dashboard'] = $_POST['dashboard'];
 		update_option( 'qcf_setup', $qcf_setup);
-		}
-	}
+    }
+}
+
 function qcf_generate_csv() {
 	if(isset($_POST['download_csv'])) {
 	$id = $_POST['formname'];
@@ -890,15 +1019,17 @@ function qcf_generate_csv() {
 			fputcsv($outstream,$cells, ',', '"');
 			}
 		fclose($outstream); 
-		exit;
-		}
-	}
+        exit;
+    }
+}
+
 function qcfdonate_verify($formvalues) {
 	$errors = '';
 	if ($formvalues['amount'] == 'Amount' || empty($formvalues['amount'])) $errors = 'first';
 	if ($formvalues['yourname'] == 'Your name' || empty($formvalues['yourname'])) $errors = 'second';
 	return $errors;
-	}
+}
+
 function qcfdonate_display( $values, $errors ) {
 	$content = "<script>\r\t
 	function donateclear(thisfield, defaulttext) {if (thisfield.value == defaulttext) {thisfield.value = '';}}\r\t
@@ -915,6 +1046,7 @@ function qcfdonate_display( $values, $errors ) {
 	</form></div>';
 	echo $content;
 	}
+
 function qcfdonate_process($values) {
 	$page_url = qcfdonate_page_url();
 	$content = '<h2>Waiting for paypal...</h2><form action="https://www.paypal.com/cgi-bin/webscr" method="post" name="frmCart" id="frmCart">
@@ -932,7 +1064,8 @@ function qcfdonate_process($values) {
 	document.getElementById("frmCart").submit();
 	</script>';
 	echo $content;
-	}
+}
+
 function qcfdonate_page_url() {
 	$pageURL = 'http';
 	if( isset($_SERVER["HTTPS"]) ) { if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";} }
@@ -940,7 +1073,8 @@ function qcfdonate_page_url() {
 	if ($_SERVER["SERVER_PORT"] != "80") $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
 	else $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
 	return $pageURL;
-	}
+}
+
 function qcfdonate_loop() {
 	ob_start();
 	if (isset($_POST['donate'])) {
@@ -953,4 +1087,4 @@ function qcfdonate_loop() {
 	$output_string=ob_get_contents();
 	ob_end_clean();
 	return $output_string;
-	}
+}

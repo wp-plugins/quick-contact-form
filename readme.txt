@@ -73,6 +73,10 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 6.9.1 =
+*   Option to delete individual messages
+*   On submit now returns page to the form location
+
 = 6.9 =
 *   Now with Aksimet validation
 *   Locale scripts for dates

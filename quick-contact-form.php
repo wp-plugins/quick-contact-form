@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 6.9
+Version: 6.9.1
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -14,7 +14,7 @@ add_action('wp_enqueue_scripts', 'qcf_admin_scripts');
 add_action('init', 'qcf_init');
 
 function qcf_admin_scripts() {
-	wp_enqueue_style( 'qcf_style',plugins_url('quick-contact-form.css', __FILE__));
+wp_enqueue_style( 'qcf_style',plugins_url('quick-contact-form.css', __FILE__));
 	wp_enqueue_style( 'qcf_custom',plugins_url('quick-contact-form-custom.css', __FILE__));
 	wp_enqueue_script( 'qcf_script',plugins_url('quick-contact-form.js', __FILE__));
 	wp_enqueue_script('jquery-ui-datepicker');
@@ -22,11 +22,11 @@ function qcf_admin_scripts() {
     wp_enqueue_script('qcf_locale', plugins_url('quick-contact-locale.js', __FILE__ ), array( 'jquery-ui-datepicker' ), false, true );
     global $wp_locale;   
     $aryArgs = array(
-        'monthNames' => strip_array_indices( $wp_locale->month ),
-        'monthNamesShort' => strip_array_indices( $wp_locale->month_abbrev ),
-        'dayNames' => strip_array_indices( $wp_locale->weekday ),
-        'dayNamesShort' => strip_array_indices( $wp_locale->weekday_abbrev ),
-        'dayNamesMin' => strip_array_indices( $wp_locale->weekday_initial ),
+        'monthNames' => strip_array_indices( $wp_locale->month),
+        'monthNamesShort' => strip_array_indices( $wp_locale->month_abbrev),
+        'dayNames' => strip_array_indices( $wp_locale->weekday),
+        'dayNamesShort' => strip_array_indices( $wp_locale->weekday_abbrev),
+        'dayNamesMin' => strip_array_indices( $wp_locale->weekday_initial),
         'dateFormat' => 'dd M yy',
     );
     wp_localize_script( 'qcf_locale', 'objectL10n', $aryArgs );
@@ -44,7 +44,7 @@ function qcf_init() {
 	}
 
 function qcf_create_css_file ($update) {
-	if (function_exists(file_put_contents)) {
+	if (function_exists('file_put_contents')) {
 		$css_dir = plugin_dir_path( __FILE__ ) . '/quick-contact-form-custom.css' ;
 		$filename = plugin_dir_path( __FILE__ );
 		if (is_writable($filename) && (!file_exists($css_dir) || !empty($update))) {
@@ -77,13 +77,15 @@ function qcf_display_form( $values, $errors, $id ) {
 	$attach = qcf_get_stored_attach($id);
 	$style = qcf_get_stored_style($id);
     $qcf['required']['field12'] = 'checked';
+    $content = '';
     global $_GET;
 	if ($id) $formstyle=$id; else $formstyle='default';
 	if (!empty($qcf['title'])) $qcf['title'] = '<h2>' . $qcf['title'] . '</h2>';
 	if (!empty($qcf['blurb'])) $qcf['blurb'] = '<p>' . $qcf['blurb'] . '</p>';
 	if (!empty($qcf['mathscaption'])) $qcf['mathscaption'] = '<p class="input">' . $qcf['mathscaption'] . '</p>';
     if ($errors['spam']) $error['errorblurb'] = $errors['spam'];
-	$content = "<div class='qcf-style ".$formstyle."'>\r\t";
+if (count($errors) > 0) $content = "<a id='qcf_reload'></a>";
+	$content .= "<div class='qcf-style ".$formstyle."'>\r\t";
 	$content .= "<div id='" . $style['border'] . "'>\r\t";
 	if (count($errors) > 0)
 		$content .= "<h2>" . $error['errortitle'] . "</h2>\r\t<p class='error'>" . $error['errorblurb'] . "</p>\r\t";
@@ -143,12 +145,11 @@ function qcf_display_form( $values, $errors, $id ) {
                 $content .= '<input type="text" class="' . $required . '" name="qcfname9"  value="' . $values['qcfname9'] . '" onfocus="qcfclear(this, \'' . $values['qcfname9'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname9'] . '\')"><br>'."\r\t";
                 break;
 				case 'field10':
-if ($errors['qcfname10']) $required = 'error';
-
-					$content .= $errors['qcfname10'];
-					$content .= '<input type="text" class="qcfdate ' . $required . '" name="qcfname10"  value="' . $values['qcfname10'] . '" onfocus="qcfclear(this, \'' . $values['qcfname10'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname10'] . '\')" /><br>
+                if ($errors['qcfname10']) $required = 'error';
+                $content .= $errors['qcfname10'];
+                $content .= '<input type="text" class="qcfdate ' . $required . '" name="qcfname10"  value="' . $values['qcfname10'] . '" onfocus="qcfclear(this, \'' . $values['qcfname10'] . '\')" onblur="qcfrecall(this, \'' . $values['qcfname10'] . '\')" /><br>
 					<script type="text/javascript">jQuery(document).ready(function() {jQuery(\'\.qcfdate\').datepicker();});</script>'."\r\t";
-					break;
+                break;
 				case 'field11':
                 if ($errors['qcfname11']) $required = 'error';
                 $content .= $errors['qcfname11'];
@@ -186,11 +187,16 @@ if ($errors['qcfname10']) $required = 'error';
 	$content .= '</form>'."\r\t".
 		'<div style="clear:both;"></div></div>'."\r\t".
 		'</div>'."\r\t";
-	echo $content;
+if (count($errors) > 0) 
+            $content .= "<script type='text/javascript' language='javascript'>
+	document.querySelector('#qcf_reload').scrollIntoView();
+</script>\r\t";
+
+echo $content;
 	}
 
 function qcf_dropdown($var,$list,$values,$errors,$required,$qcf,$name) {
-    $content .= $errors[$var];
+    $content = $errors[$var];
     $content .= '<select name="'.$var.'" class="' . $required . '" ><option value="' . $qcf['label'][$name] . '">' . $qcf['label'][$name] . '</option>'."\r\t";
     $arr = explode(",",$qcf[$list]);
     foreach ($arr as $item) {
@@ -215,7 +221,7 @@ function qcf_checklist($var,$list,$values,$errors,$required,$qcf,$name) {
     return $content;
     }
 function qcf_radio($var,$list,$values,$errors,$required,$qcf,$name) {
-    $content .= '<p class="input">' . $qcf['label'][$name] . '</p>';
+    $content = '<p class="input">' . $qcf['label'][$name] . '</p>';
     $arr = explode(",",$qcf[$list]);
     foreach ($arr as $item) {
         $checked = '';
@@ -388,7 +394,9 @@ function qcf_process_form($values,$id) {
 	if ( $reply['subjectoption'] == "sendername") $addon = $values['qcfname1'];
 	if ( $reply['subjectoption'] == "sendersubj") $addon = $values['qcfname9'];
 	if ( $reply['subjectoption'] == "senderpage") $addon = $pagetitle;
-	if ( $reply['subjectoption'] == "sendernone") $addon = ''; 
+	if ( $reply['subjectoption'] == "sendernone") $addon = '';
+    if ($reply['fromemail']) $from = 'From: '. $reply['fromemail'] . "\r\n" .'Reply-To: '.$values['qcfname1'].' <'.$values['qcfname2'].'>'."\r\n";
+    else $from = "From: {$values['qcfname1']} <{$values['qcfname2']}>\r\n";
 	$ip=$_SERVER['REMOTE_ADDR'];
 	$url = $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
 	$page = get_the_title();
@@ -494,7 +502,7 @@ function qcf_process_form($values,$id) {
 			$bound_text = "x".md5(mt_rand())."x";
 			$bound = "--".$bound_text."\r\n";
 			$bound_last = "--".$bound_text."--\r\n";
- 			$headers = "From: {$values['qcfname1']} <{$values['qcfname2']}>\r\n"
+ 			$headers = $from
 			."MIME-Version: 1.0\r\n"
   			."Content-Type: multipart/mixed; boundary=\"$bound_text\"";
 			$message .= "If you can see this MIME than your client doesn't accept MIME types!\r\n"
@@ -511,10 +519,9 @@ function qcf_process_form($values,$id) {
   			.$bound_last; 
 			}
 		else {
-			$headers = "From: {$values['qcfname1']} <{$values['qcfname2']}>\r\n";
-                if ($reply['qcf_bcc']) { $headers .= "BCC: ".$qcf_email."\r\n";$qcf_email = 'null';}
-                
-			$headers .= "MIME-Version: 1.0\r\n"
+			$headers = $from;
+            if ($reply['qcf_bcc']) { $headers .= "BCC: ".$qcf_email."\r\n";$qcf_email = 'null';}
+            $headers .= "MIME-Version: 1.0\r\n"
 			. "Content-Type: text/html; charset=\"utf-8\"\r\n"; 
 			$message = $sendcontent;
 			}
@@ -546,7 +553,10 @@ function qcf_process_form($values,$id) {
 		$phpmailer->Send();
 		unset($phpmailer);
 		}
-	if ($reply['sendcopy']) mail($values['qcfname2'], $reply['replysubject'], $copycontent, $headers);
+	if ($reply['sendcopy']) {
+        $headers = 'From: <'.$qcf_email.'>'."\r\n";
+        $headers .= "MIME-Version: 1.0\r\n". "Content-Type: text/html; charset=\"utf-8\"\r\n"; 
+        mail($values['qcfname2'], $reply['replysubject'], $copycontent, $headers);}
 	
 	$qcf_messages = get_option('qcf_messages'.$id);
 	if(!is_array($qcf_messages)) $qcf_messages = array();
@@ -561,11 +571,16 @@ function qcf_process_form($values,$id) {
 		echo "<meta http-equiv='refresh' content='0;url=$location' />";
 		}
 	else {
-		$replycontent = "<div class='qcf-style ".$id."'>\r\t
+		$replycontent = "<a id='qcf_reload'></a><br><div class='qcf-style ".$id."'>\r\t
 		<div id='" . $style['border'] . "'>\r\t";
 		$replycontent .= $reply['replytitle'].$reply['replyblurb'];
 		if ($reply['messages']) $replycontent .= $content;
 		$replycontent.='</div></div>';
+            $replycontent .= "<script type='text/javascript' language='javascript'>
+	document.querySelector('#qcf_reload').scrollIntoView();
+</script>";
+
+
 		echo $replycontent; 
 		if ( $reply['qcf_reload'] == 'checked') {
 			$_POST = array();
@@ -680,25 +695,20 @@ if (!$formwidth[1]) $formwidth[1] = 'px';
 		}
 	return $code;	
 	}
+
 function qcf_head_css () {
 	$data = '<style type="text/css" media="screen">'.qcf_generate_css().'</style>';
 	echo $data;
 	}
+
 function qcf_get_stored_options ($id) {
 	$qcf = get_option('qcf_settings'.$id);
 	if(!is_array($qcf)) $qcf = array();
 	$default = qcf_get_default_options();
-	$qcf = array_merge($default, $qcf);
-	if (!strpos($qcf['sort'],'10')) {$qcf['sort'] = $qcf['sort'].',field10';$qcf['label']['field12'] = 'Select Date';}
-	if (!strpos($qcf['sort'],'11')) {$qcf['sort'] = $qcf['sort'].',field11';$qcf['label']['field11'] = 'Add text';}
-	if (!strpos($qcf['sort'],'12')) {$qcf['sort'] = $qcf['sort'].',field12';}
-    if (!strpos($qcf['sort'],'13')) {$qcf['sort'] = $qcf['sort'].',field13';$qcf['label']['field13'] = 'Add text';}
-	if ($qcf['captcha'] && !strpos('field12', $qcf['sort'])) {$qcf['label']['field12'] = $qcf['mathscaption'];$qcf['active_buttons']['field12'] = 'on';$qcf['required']['field12'] = 'checked';}
-	if (!$qcf['captcha'] && !$qcf['label']['field12']){$qcf['label']['field12'] = 'Spambot blocker question';$qcf['required']['field12'] = 'checked';}
-	$version = get_option('qcf_version');
-    if ($version <> '6.8') {update_option('qcf_settings',$qcf);update_option('qcf_version','6.8');}         
+	$qcf = array_merge($default, $qcf);  
     return $qcf;
 	}
+
 function qcf_get_default_options () {
 	$qcf = array();
 	$qcf['active_buttons'] = array( 'field1'=>'on' , 'field2'=>'on','field4'=>'on');	
@@ -721,6 +731,7 @@ function qcf_get_default_options () {
     $qcf['selectorc'] = 'radioc';
 	return $qcf;
 	}
+
 function qcf_get_stored_attach ($id) {
 	$attach = get_option('qcf_attach'.$id);
 	if(!is_array($attach)) $attach = array();
@@ -728,6 +739,7 @@ function qcf_get_stored_attach ($id) {
 	$attach = array_merge($default, $attach);
 	return $attach;
 	}
+
 function qcf_get_default_attach () {
 	$attach = array();
 	$attach['qcf_attach'] = '';
@@ -739,6 +751,7 @@ function qcf_get_default_attach () {
 	$attach['qcf_attach_error_type'] = 'Filetype not permitted';
 	return $attach;
 	}
+
 function qcf_get_stored_style($id) {
 	$style = get_option('qcf_style'.$id);
 	if(!is_array($style)) $style = array();
@@ -746,6 +759,7 @@ function qcf_get_stored_style($id) {
 	$style = array_merge($default, $style);
 	return $style;
 	}
+
 function qcf_get_default_style() {
 	$style['font'] = 'plugin';
 	$style['font-family'] = 'arial, sans-serif';
@@ -785,6 +799,7 @@ function qcf_get_default_style() {
 	$style['styles'] = ".qcf-style {\r\n\r\n}";
 	return $style;
 	}
+
 function qcf_get_stored_reply ($id) {
 	$reply = get_option('qcf_reply'.$id);
 	if(!is_array($reply)) $reply = array();
@@ -792,6 +807,7 @@ function qcf_get_stored_reply ($id) {
 	$reply = array_merge($default, $reply);
 	return $reply;
 	}
+
 function qcf_get_default_reply () {
 	$reply = array();
 	$reply['replytitle'] = 'Message sent!';
@@ -848,6 +864,7 @@ function qcf_get_default_error ($id) {
 	$error['spam'] = 'Your Details have been flagged as spam';
 	return $error;
 	}
+
 function qcf_get_stored_setup () {
 	$qcf_setup = get_option('qcf_setup');
 	if(!is_array($qcf_setup)) $qcf_setup = array();
@@ -869,11 +886,13 @@ function qcf_get_stored_email () {
 	$qcf_email = array_merge($default, $qcf_email);
 	return $qcf_email;
 	}
+
 function qcf_get_default_email () {	
 	$qcf_email = array();
 	$qcf_email[''] = '';
 	return $qcf_email;
 	}
+
 function qcf_get_stored_msg () {
 	$messageoptions = get_option('qcf_messageoptions');
 	if(!is_array($messageoptions)) $messageoptions = array();
@@ -881,12 +900,14 @@ function qcf_get_stored_msg () {
 	$messageoptions = array_merge($default, $messageoptions);
 	return $messageoptions;
 	}
+
 function qcf_get_default_msg () {
 	$messageoptions = array();
 	$messageoptions['messageqty'] = 'fifty';
 	$messageoptions['messageorder'] = 'newest';
 	return $messageoptions;
 	}
+
 function qcf_get_stored_smtp () {
 	$smtp = get_option('qcf_smtp');
 	if(!is_array($smtp)) $smtp = array();
@@ -894,6 +915,7 @@ function qcf_get_stored_smtp () {
 	$smtp = array_merge($default, $smtp);
 	return $smtp;
 	}
+
 function qcf_get_default_smtp () {
 	$smtp = array();
 	$smtp['smtp_host'] = 'localhost';
@@ -914,42 +936,37 @@ class qem_akismet
 	private $apiPort;
 	private $akismetServer;
 	private $akismetVersion;
-	private $ignore = array('HTTP_COOKIE', 
-							'HTTP_X_FORWARDED_FOR', 
-							'HTTP_X_FORWARDED_HOST', 
-							'HTTP_MAX_FORWARDS', 
-							'HTTP_X_FORWARDED_SERVER', 
-							'REDIRECT_STATUS', 
-							'SERVER_PORT', 
-							'PATH',
-							'DOCUMENT_ROOT',
-							'SERVER_ADMIN',
-							'QUERY_STRING',
-							'PHP_SELF' );
-	
+	private $ignore = array(
+        'HTTP_COOKIE', 
+        'HTTP_X_FORWARDED_FOR', 
+        'HTTP_X_FORWARDED_HOST', 
+        'HTTP_MAX_FORWARDS', 
+        'HTTP_X_FORWARDED_SERVER', 
+        'REDIRECT_STATUS', 
+        'SERVER_PORT', 
+        'PATH',
+        'DOCUMENT_ROOT',
+        'SERVER_ADMIN',
+        'QUERY_STRING',
+        'PHP_SELF'
+    );
 	public function __construct($blogURL, $wordPressAPIKey) {
 		$this->blogURL = $blogURL;
 		$this->wordPressAPIKey = $wordPressAPIKey;
-		
 		$this->apiPort = 80;
 		$this->akismetServer = 'rest.akismet.com';
 		$this->akismetVersion = '1.1';
-		
 		$this->comment['blog'] = $blogURL;
 		$this->comment['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
-		
 		if(isset($_SERVER['HTTP_REFERER'])) {
 			$this->comment['referrer'] = $_SERVER['HTTP_REFERER'];
 		}
-		
 		$this->comment['user_ip'] = $_SERVER['REMOTE_ADDR'] != getenv('SERVER_ADDR') ? $_SERVER['REMOTE_ADDR'] : getenv('HTTP_X_FORWARDED_FOR');
 	}
-	
 	public function isKeyValid() {
 		$response = $this->sendRequest('key=' . $this->wordPressAPIKey . '&blog=' . $this->blogURL, $this->akismetServer, '/' . $this->akismetVersion . '/verify-key');
 		return $response[1] == 'valid';
 	}
-	
 	private function sendRequest($request, $host, $path) {
 		$http_request  = "POST " . $path . " HTTP/1.0\r\n";
 		$http_request .= "Host: " . $host . "\r\n";
@@ -962,7 +979,6 @@ class qem_akismet
 		$socketWriteRead->send();
 		return explode("\r\n\r\n", $socketWriteRead->getResponse(), 2);
 	}
-	
 	private function getQueryString() {
 		foreach($_SERVER as $key => $value) {
 			if(!in_array($key, $this->ignore)) {
@@ -972,19 +988,15 @@ class qem_akismet
 					$this->comment[$key] = $value;
 				}
 			}
-		}
-
+        }
 		$query_string = '';
-		
 		foreach($this->comment as $key => $data) {
 			if(!is_array($data)) {
 				$query_string .= $key . '=' . urlencode(stripslashes($data)) . '&';
 			}
 		}
-		
 		return $query_string;
 	}
-	
 	public function isCommentSpam() {
 		$response = $this->sendRequest($this->getQueryString(), $this->wordPressAPIKey . '.rest.akismet.com', '/' . $this->akismetVersion . '/comment-check');
 		if($response[1] == 'invalid' && !$this->isKeyValid()) {
@@ -998,33 +1010,15 @@ class qem_akismet
 	public function submitHam() {
 		$this->sendRequest($this->getQueryString(), $this->wordPressAPIKey . '.' . $this->akismetServer, '/' . $this->akismetVersion . '/submit-ham');
 	}
-	public function setUserIP($userip) {
-		$this->comment['user_ip'] = $userip;
-	}
-	public function setReferrer($referrer) {
-		$this->comment['referrer'] = $referrer;
-	}
-	public function setCommentType($commentType) {
-		$this->comment['comment_type'] = $commentType;
-	}
-	public function setCommentAuthor($commentAuthor) {
-		$this->comment['comment_author'] = $commentAuthor;
-	}
-	public function setCommentAuthorEmail($authorEmail) {
-		$this->comment['comment_author_email'] = $authorEmail;
-	}
-	public function setCommentContent($commentBody) {
-		$this->comment['comment_content'] = $commentBody;
-	}
-	public function setAPIPort($apiPort) {
-		$this->apiPort = $apiPort;
-	}
-	public function setAkismetServer($akismetServer) {
-		$this->akismetServer = $akismetServer;
-	}
-	public function setAkismetVersion($akismetVersion) {
-		$this->akismetVersion = $akismetVersion;
-	}
+	public function setUserIP($userip) {$this->comment['user_ip'] = $userip;}
+	public function setReferrer($referrer) {$this->comment['referrer'] = $referrer;}
+	public function setCommentType($commentType) {$this->comment['comment_type'] = $commentType;}
+	public function setCommentAuthor($commentAuthor) {$this->comment['comment_author'] = $commentAuthor;}
+	public function setCommentAuthorEmail($authorEmail) {$this->comment['comment_author_email'] = $authorEmail;}
+	public function setCommentContent($commentBody) {$this->comment['comment_content'] = $commentBody;}
+	public function setAPIPort($apiPort) {$this->apiPort = $apiPort;}
+	public function setAkismetServer($akismetServer) {$this->akismetServer = $akismetServer;}
+	public function setAkismetVersion($akismetVersion) {$this->akismetVersion = $akismetVersion;}
 }
 
 class SocketWriteRead {
@@ -1035,7 +1029,6 @@ class SocketWriteRead {
 	private $responseLength;
 	private $errorNumber;
 	private $errorString;
-	
 	public function __construct($host, $port, $request, $responseLength = 1160) {
 		$this->host = $host;
 		$this->port = $port;
@@ -1044,36 +1037,21 @@ class SocketWriteRead {
 		$this->errorNumber = 0;
 		$this->errorString = '';
 	}
-	
 	public function send() {
 		$this->response = '';
-		
 		$fs = fsockopen($this->host, $this->port, $this->errorNumber, $this->errorString, 3);
-		
 		if($this->errorNumber != 0) {
 			throw new Exception('Error connecting to host: ' . $this->host . ' Error number: ' . $this->errorNumber . ' Error message: ' . $this->errorString);
 		}
-		
 		if($fs !== false) {
 			@fwrite($fs, $this->request);
-			
 			while(!feof($fs)) {
 				$this->response .= fgets($fs, $this->responseLength);
 			}
-			
 			fclose($fs);
 		}
 	}
-	
-	public function getResponse() {
-		return $this->response;
-	}
-	
-	public function getErrorNumner() {
-		return $this->errorNumber;
-	}
-	
-	public function getErrorString() {
-		return $this->errorString;
-	}
+	public function getResponse() {return $this->response;}
+	public function getErrorNumner() {return $this->errorNumber;}
+	public function getErrorString() {return $this->errorString;}
 }

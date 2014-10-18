@@ -17,17 +17,32 @@ function qcf_messages_admin_tabs($current = 'default') {
 	foreach( $tabs as $tab ) {
 		$class = ( $tab == $current ) ? ' nav-tab-active' : '';
 		if ($tab) echo "<a class='nav-tab$class' href='?page=quick-contact-form/quick-contact-messages.php&tab=".$tab."'>$tab</a>";
-		}
+    }
 	echo '</h2>';
+}
 
-	}
 function qcf_show_messages($id) {
 	if ($id == 'default') $id='';
 	$qcf_setup = qcf_get_stored_setup();
 	$qcf = qcf_get_stored_options($id);
 	qcf_generate_csv();
 	if (isset($_POST['qcf_reset_message'.$id])) delete_option('qcf_messages'.$id);
-	if( isset( $_POST['Submit'])) {
+	
+    if( isset($_POST['qcf_delete_selected'])) {
+        $id = $_POST['formname'];
+        $message = get_option('qcf_messages'.$id);
+        $count = count($message);
+        for($i = 0; $i <= $count; $i++) {
+            if ($_POST[$i] == 'checked') {
+                unset($message[$i]);
+            }
+        }
+        $message = array_values($message);
+        update_option('qcf_messages'.$id, $message ); 
+        qem_admin_notice('Selected messages have been deleted.');
+    }
+    
+    if( isset( $_POST['Submit'])) {
 		$options = array( 'messageqty','messageorder');
 		foreach ( $options as $item) $messageoptions[$item] = stripslashes($_POST[$item]);
 		update_option( 'qcf_messageoptions', $messageoptions );
@@ -50,40 +65,51 @@ function qcf_show_messages($id) {
 	$message = get_option('qcf_messages'.$id);
 	if(!is_array($message)) $message = array();
 	$title = $id; if ($id == '') $title = 'Default';
-	$dashboard .= '<div class="wrap"><div id="qcf-widget">';
+	$dashboard .= '<div class="wrap"><div id="qcf-widget"><form method="post" id="download_form" action="">';
 	$dashboard .= '<table cellspacing="0"><tr>';
 	foreach (explode( ',',$qcf['sort']) as $name) {if ($qcf['active_buttons'][$name] == "on") $dashboard .= '<th>'.$qcf['label'][$name].'</th>';}
-	$dashboard .= '<th>Date Sent</th></tr>';
+	$dashboard .= '<th>Date Sent</th><th>Delete</th></tr>';
 	if ($messageoptions['messageorder'] == 'newest') {
-	foreach(array_reverse( $message ) as $value) {
-		if ($count < $showthismany ) {
-			$content .= '<tr>';
-			foreach (explode( ',',$qcf['sort']) as $name) {
-				if ($qcf['active_buttons'][$name] == "on") {
-					if ($value[$name]) $report = 'messages';
-					$content .= '<td>'.strip_tags($value[$name],$qcf['htmltags']).'</td>';
-					}
+        $i=count($message) - 1;
+        foreach(array_reverse( $message ) as $value) {
+            if ($count < $showthismany ) {
+                $content .= '<tr>';
+                foreach (explode( ',',$qcf['sort']) as $name) {
+                    if ($qcf['active_buttons'][$name] == "on") {
+                        if ($value[$name]) $report = 'messages';
+                        $content .= '<td>'.strip_tags($value[$name],$qcf['htmltags']).'</td>';
+                    }
 				}
-			$content .= '<td>'.$value['field0'].'</td></tr>';
-			$count = $count+1;	}
-			}
-		}
-	else {
-	foreach($message as $value) {
-		if ($count < $showthismany ) {
-			$content .= '<tr>';
-			foreach (explode( ',',$qcf['sort']) as $name) {
-				if ($qcf['active_buttons'][$name] == "on") {
-					if ($value[$name]) $report = 'messages';
-					$content .= '<td>'.strip_tags($value[$name],$qcf['htmltags']).'</td>';
-					}
+                $content .= '<td>'.$value['field0'].'</td><td><input type="checkbox" name="'.$i.'" value="checked" /></td></tr>';
+                $count = $count+1;
+                $i--;
+            }
+        }
+    } else {
+        $i=0;
+        foreach($message as $value) {
+            if ($count < $showthismany ) {
+                $content .= '<tr>';
+                foreach (explode( ',',$qcf['sort']) as $name) {
+                    if ($qcf['active_buttons'][$name] == "on") {
+                        if ($value[$name]) $report = 'messages';
+                        $content .= '<td>'.strip_tags($value[$name],$qcf['htmltags']).'</td>';
+                    }
 				}
-			$content .= '<td>'.$value['field0'].'</td></tr>';
-			$count = $count+1;	}		
-			}
-		}	
+                $content .= '<td>'.$value['field0'].'</td><td><input type="checkbox" name="'.$i.'" value="checked" /></td></tr>';
+                $count = $count+1;
+                $i++;
+            }
+        }
+    }	
 	if ($report) $dashboard .= $content.'</table>';
 	else $dashboard .= '</table><p>No messages found</p>';
-	$dashboard .='<form method="post" id="download_form" action=""><input type="hidden" name="formname" value = "'.$id.'" /><input type="submit" name="download_csv" class="button-primary" value="Export to CSV" /> <input type="submit" name="qcf_reset_message'.$id.'" class="button-primary" style="color: #FFF;" value="Delete Messages" onclick="return window.confirm( \'Are you sure you want to delete the messages for '.$title.'?\' );"/></form></div></div>';		
+	$dashboard .='<input type="hidden" name="formname" value = "'.$id.'" />
+    <input type="submit" name="download_csv" class="button-primary" value="Export to CSV" />
+    <input type="submit" name="qcf_reset_message'.$id.'" class="button-primary" style="color: #FFF;" value="Delete Messages" onclick="return window.confirm( \'Are you sure you want to delete the messages for '.$title.'?\' );"/>
+    <input type="submit" name="qcf_delete_selected" class="button-secondary" value="Delete Selected" onclick="return window.confirm( \'Are you sure you want to delete the selected payment details?\' );"/>
+    </form>
+    </div>
+    </div>';		
 	echo $dashboard;
-	}
+}
