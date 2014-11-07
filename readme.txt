@@ -22,6 +22,10 @@ A really, really simple drag and drop contact form. There is nothing to configur
 *	Multiple form support
 *   Akismet spam filtering
 
+= Update Notice =
+
+If all your styles have gone missing, make sure your have 6.9.3 installed and resave your styles
+
 = Developers plugin page =
 
 [quick contact form plugin](http://quick-plugins.com/quick-contact-form/).
@@ -73,11 +77,15 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 6.9.3 =
+*   Stylesheet bug fix.
+
 = 6.9.2 =
 *   New range slider field
 *   Akismet bug fix
 *   Admin notice bug fix
 *   Page now reloads to form location not top of page
+*   Removed captcha column from messages report
 
 = 6.9.1 =
 *   Option to delete individual messages
