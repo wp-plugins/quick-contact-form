@@ -39,7 +39,7 @@ function qcf_show_messages($id) {
         }
         $message = array_values($message);
         update_option('qcf_messages'.$id, $message ); 
-        qem_admin_notice('Selected messages have been deleted.');
+        qcf_admin_notice('Selected messages have been deleted.');
     }
     
     if( isset( $_POST['Submit'])) {
@@ -67,7 +67,7 @@ function qcf_show_messages($id) {
 	$title = $id; if ($id == '') $title = 'Default';
 	$dashboard .= '<div class="wrap"><div id="qcf-widget"><form method="post" id="download_form" action="">';
 	$dashboard .= '<table cellspacing="0"><tr>';
-	foreach (explode( ',',$qcf['sort']) as $name) {if ($qcf['active_buttons'][$name] == "on") $dashboard .= '<th>'.$qcf['label'][$name].'</th>';}
+	foreach (explode( ',',$qcf['sort']) as $name) {if ($qcf['active_buttons'][$name] == "on" && $name != 'field12') $dashboard .= '<th>'.$qcf['label'][$name].'</th>';}
 	$dashboard .= '<th>Date Sent</th><th>Delete</th></tr>';
 	if ($messageoptions['messageorder'] == 'newest') {
         $i=count($message) - 1;
@@ -75,7 +75,7 @@ function qcf_show_messages($id) {
             if ($count < $showthismany ) {
                 $content .= '<tr>';
                 foreach (explode( ',',$qcf['sort']) as $name) {
-                    if ($qcf['active_buttons'][$name] == "on") {
+                    if ($qcf['active_buttons'][$name] == "on" && $name != 'field12') {
                         if ($value[$name]) $report = 'messages';
                         $content .= '<td>'.strip_tags($value[$name],$qcf['htmltags']).'</td>';
                     }
@@ -91,7 +91,7 @@ function qcf_show_messages($id) {
             if ($count < $showthismany ) {
                 $content .= '<tr>';
                 foreach (explode( ',',$qcf['sort']) as $name) {
-                    if ($qcf['active_buttons'][$name] == "on") {
+                    if ($qcf['active_buttons'][$name] == "on" && $name != 'field12') {
                         if ($value[$name]) $report = 'messages';
                         $content .= '<td>'.strip_tags($value[$name],$qcf['htmltags']).'</td>';
                     }
