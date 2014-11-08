@@ -79,6 +79,7 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 = 6.9.3 =
 *   Stylesheet bug fix.
+*   Updated javascript for range slider
 
 = 6.9.2 =
 *   New range slider field
