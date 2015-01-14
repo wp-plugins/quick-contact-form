@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 6.9.3
+Version: 6.9.4
 Author: fisicx
 Author URI: http://quick-plugins.com/
 */
@@ -14,15 +14,15 @@ add_action('wp_enqueue_scripts', 'qcf_admin_scripts');
 add_action('init', 'qcf_init');
 
 function qcf_admin_scripts() {
-wp_enqueue_style( 'qcf_style',plugins_url('quick-contact-form.css', __FILE__));
-	wp_enqueue_style( 'qcf_custom',plugins_url('quick-contact-form-custom.css', __FILE__));
-	wp_enqueue_script( 'qcf_script',plugins_url('quick-contact-form.js', __FILE__));
-	wp_enqueue_script('jquery-ui-datepicker');
-	wp_enqueue_style('jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
+    wp_enqueue_style( 'qcf_style',plugins_url('quick-contact-form.css', __FILE__));
+    wp_enqueue_style( 'qcf_custom',plugins_url('quick-contact-form-custom.css', __FILE__));
+    wp_enqueue_script( 'qcf_script',plugins_url('quick-contact-form.js', __FILE__));
+    wp_enqueue_script('jquery-ui-datepicker');
+    wp_enqueue_style('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
     wp_enqueue_script('qcf_locale', plugins_url('quick-contact-locale.js', __FILE__ ), array( 'jquery-ui-datepicker' ), false, true );
     wp_enqueue_script("jquery-effects-core");
     wp_enqueue_script('qcf_slider', plugins_url('quick-range-slider.js', __FILE__ ), array( 'jquery' ), false, true );
-    global $wp_locale;   
+    global $wp_locale;
     $aryArgs = array(
         'monthNames' => strip_array_indices( $wp_locale->month),
         'monthNamesShort' => strip_array_indices( $wp_locale->month_abbrev),
@@ -230,9 +230,10 @@ function qcf_dropdown($var,$list,$values,$errors,$required,$qcf,$name) {
     $content .= '</select>'."\r\t";
     return $content;
     }
+
 function qcf_checklist($var,$list,$values,$errors,$required,$qcf,$name) {
-    if ($errors[$var]) $content .= $errors[$var];
-    else $content .= '<p class="input ' . $required . '">' . $qcf['label'][$name] . '</p>';
+    if ($errors[$var]) $content = $errors[$var];
+    else $content = '<p class="input ' . $required . '">' . $qcf['label'][$name] . '</p>';
     $content .= '<p class="input">';
     $arr = explode(",",$qcf[$list]);
     foreach ($arr as $item) {
@@ -263,7 +264,7 @@ function qcf_verify_form(&$values, &$errors,$id) {
     $apikey = get_option('qcf_akismet');
     if ($apikey) {
         $blogurl = get_site_url();
-        $akismet = new qem_akismet($blogurl ,$apikey);
+        $akismet = new qcf_akismet($blogurl ,$apikey);
         $akismet->setCommentAuthor($values['qcfname1']);
         $akismet->setCommentAuthorEmail($values['qcfname2']);
         $akismet->setCommentContent($values['qcfname4']);
@@ -279,7 +280,7 @@ function qcf_verify_form(&$values, &$errors,$id) {
             $errors['qcfname2'] = '<p><span>' . $error['email'] . '</span></p>';
     }
     if ($qcf['active_buttons']['field3'] && $phonecheck == 'checked' && $values['qcfname3'] !== $qcf['label']['field3']) {
-        if (preg_match("/[^0-9()\+\.-\s]$/",$values['qcfname3']))
+        if (preg_match("/[^0-9()\+\.\-\s]$/",$values['qcfname3']))
             $errors['qcfname3'] = '<p><span>' . $error['telephone'] . '</span></p>';
     }
     if ($qcf['fieldtype'] == 'tmail' && $qcf['active_buttons']['field11'] && $values['qcfname11'] !== $qcf['label']['field11']) {
@@ -287,7 +288,7 @@ function qcf_verify_form(&$values, &$errors,$id) {
             $errors['qcfname11'] = '<p><span>' . $error['email'] . '</span></p>';
     }
     if ($qcf['fieldtype'] == 'ttele' && $qcf['active_buttons']['field11'] && $phonecheck == 'checked' && $values['qcfname11'] !== $qcf['label']['field11']) {
-        if (preg_match("/[^0-9()\+\.-\s]$/",$values['qcfname11']))
+        if (preg_match("/[^0-9()\+\.\-\s]$/",$values['qcfname11']))
             $errors['qcfname11'] = '<p><span>' . $error['telephone'] . '</span></p>';
     }
     if ($qcf['fieldtypeb'] == 'bmail' && $qcf['active_buttons']['field13'] && $values['qcfname13'] !== $qcf['label']['field13']) {
@@ -295,7 +296,7 @@ function qcf_verify_form(&$values, &$errors,$id) {
             $errors['qcfname13'] = '<p><span>' . $error['email'] . '</span></p>';
     }
     if ($qcf['fieldtypeb'] == 'btele' && $qcf['active_buttons']['field13'] && $phonecheck == 'checked' && $values['qcfname13'] !== $qcf['label']['field13']) {
-        if (preg_match("/[^0-9()\+\.-\s]$/",$values['qcfname11']))
+        if (preg_match("/[^0-9()\+\.\-\s]$/",$values['qcfname11']))
             $errors['qcfname13'] = '<p><span>' . $error['telephone'] . '</span></p>';
     }
     foreach (explode( ',',$qcf['sort']) as $name)
@@ -393,10 +394,12 @@ function qcf_verify_form(&$values, &$errors,$id) {
     $name = $_FILES['filename']['name'];
     $size = $_FILES['filename']['size'];
     if (file_exists($tmp_name)) {
-        if ($size > $attach['qcf_attach_size']) $errors['attach'] = '<p><span>' . $attach['qcf_attach_error_size'] . '</span></p>'; 
+        if ($size > $attach['qcf_attach_size'])
+            $errors['attach'] = '<p><span>' . $attach['qcf_attach_error_size'] . '</span></p>'; 
         $ext = substr(strrchr($name,'.'),1);
         $pos = strpos($qcf['qcf_attach_type'],$ext);
-        if (strpos($attach['qcf_attach_type'],$ext) === false) $errors['attach'] = '<p><span>' . $attach['qcf_attach_error_type'] . '</span></p>'; 
+        if (strpos($attach['qcf_attach_type'],$ext) === false)
+            $errors['attach'] = '<p><span>' . $attach['qcf_attach_error_type'] . '</span></p>'; 
     }
     return (count($errors) == 0);	
 }
@@ -1011,7 +1014,7 @@ function qcf_get_default_smtp () {
     return $smtp;
 }
 
-class qem_akismet {
+class qcf_akismet {
     private $version = '0.4';
     private $wordPressAPIKey;
     private $blogURL;

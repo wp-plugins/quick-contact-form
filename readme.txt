@@ -77,6 +77,10 @@ No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
 
+= 6.9.4 =
+*   Bug fix on the telephone number validation
+*   Tweak to Akismet functions
+
 = 6.9.3 =
 *   Stylesheet bug fix.
 *   Updated javascript for range slider
