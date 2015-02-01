@@ -1,0 +1,16 @@
+.qcf-style {text-align: left;margin: 0 0 10px 0;padding: 0;}
+.qcf-style form, .qcf-style p {margin: 0;padding: 0;}
+.qcf-style #none {border: 0px solid #FFF;padding: 0;}
+.qcf-style #plain {border: 1px solid #415063;padding: 10px;margin: 0;}
+.qcf-style #rounded {border: 1px solid #415063;padding: 10px;-moz-border-radius: 10px;-webkit-box-shadow: 10px;border-radius: 10px;}
+.qcf-style #shadow {border: 1px solid #415063;padding: 10px;margin: 0 10px 20px 0;-webkit-box-shadow: 5px 5px 5px #415063;-moz-box-shadow: 5px 5px 5px #415063;box-shadow: 5px 5px 5px #415063;}
+.qcf-style #roundshadow {border: 1px solid #415063;padding: 10px; margin: 0 10px 20px 0;-webkit-box-shadow: 5px 5px 5px #415063;-moz-box-shadow: 5px 5px 5px #415063;box-shadow: 5px 5px 5px #415063;-moz-border-radius: 10px;-webkit-box-shadow: 10px;border-radius: 10px;}
+.qcf-style input[type=text], .qcf-style textarea, .qcf-style select, .qcf-style #submit {margin: 5px 0 7px 0;padding: 6px;height:auto;color: #465069;font-size: 100%;border:1px solid #415063;width: 100%;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;}
+.qcf-style input:focus, .qcf-style textarea:focus {background:#FFFFCC;}
+.qcf-style p {margin: 4px 0;}
+.qcf-style img {width:100%;height:auto;overflow:hidden;}
+.qcf-style p span {color: #D31900;clear:both;}
+.qcf-style input[type=text].required, .qcf-style textarea.required {border: 1px solid #00C618;}
+.qcf-style input[type=text].error, .qcf-style textarea.error {border: 1px solid #D31900;}
+.qcf-style #submit, .qcf-style #submit:hover{text-align: center;cursor: pointer;}
+#ui-datepicker-div {display:none;}
