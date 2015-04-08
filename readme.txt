@@ -3,11 +3,11 @@
 
 Contributors: 
 Tags: contact form
-Requires at least: 3.0
-Tested up to: 4.0
+Requires at least: 4.0
+Tested up to: 4.1
 Stable tag: trunk
 
-Simple plug and play contact form. 
+A Simple plug and play contact form with a huge range of options and styles.
 
 == Description ==
 
@@ -21,10 +21,6 @@ A really, really simple drag and drop contact form. There is nothing to configur
 *	Custom error and thank-you messages
 *	Multiple form support
 *   Akismet spam filtering
-
-= Update Notice =
-
-If all your styles have gone missing, make sure your have 6.9.3 installed and resave your styles
 
 = Developers plugin page =
 
@@ -76,6 +72,11 @@ I did, and so have you.  Maybe there will be more, who knows.
 No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
+
+= 6.9.5 =
+*   Option to remove styling
+*   CSS Tweak to prevent double line spacing
+*   CSRF and XSS security patches
 
 = 6.9.4 =
 *   Bug fix on the telephone number validation

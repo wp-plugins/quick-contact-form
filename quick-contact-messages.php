@@ -23,6 +23,8 @@ function qcf_messages_admin_tabs($current = 'default') {
 
 function qcf_show_messages($id) {
 	if ($id == 'default') $id='';
+    $fifty=$hundred=$all=$oldest=$newest='';
+    $title = $id; if ($id == '') $title = 'Default';
 	$qcf_setup = qcf_get_stored_setup();
 	$qcf = qcf_get_stored_options($id);
 	
@@ -95,8 +97,9 @@ function qcf_show_messages($id) {
 
 function qcf_build_message_table($id,$messageoptions,$qcf,$showthismany) {
     $message = get_option('qcf_messages'.$id);
+    $count = $content = '';
     if(!is_array($message)) $message = array();
-    $dashboard .= '<table cellspacing="0"><tr>';
+    $dashboard = '<table cellspacing="0"><tr>';
     foreach (explode( ',',$qcf['sort']) as $name) {
         if ($qcf['active_buttons'][$name] == "on" && $name != 'field12') $dashboard .= '<th style="text-align:left">'.$qcf['label'][$name].'</th>';
     }

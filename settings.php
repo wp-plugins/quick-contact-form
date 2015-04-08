@@ -28,7 +28,7 @@ add_action('admin_enqueue_scripts', 'qcf_settings_scripts');
 function qcf_tabbed_page() {
     $qcf_setup = qcf_get_stored_setup();
     $id=$qcf_setup['current'];
-    echo '<div class="wrap"><h1>Quick Contact Form</h1>';
+    echo '<div class="wrapper"><h1>Quick Contact Form</h1>';
     if ( isset ($_GET['tab'])) {qcf_admin_tabs($_GET['tab']); $tab = $_GET['tab'];} else {qcf_admin_tabs('setup'); $tab = 'setup';}
     switch ($tab) {
         case 'setup' : qcf_setup($id); break;
@@ -68,22 +68,28 @@ function qcf_setup ($id) {
     $qcf_email = qcf_get_stored_email();
     $qcf_apikey = get_option('qcf_akismet');
     
-    if( isset( $_POST['Submit'])) {
-        $qcf_setup['alternative'] = $_POST['alternative'];
-        $qcf_setup['current'] = $_POST['current'];
+    if( isset( $_POST['Submit']) && check_admin_referer("save_qcf")) {
+$options = array('alternative','current','nostyling','noui');
+foreach ( $options as $item) {
+            $qcf_setup[$item] = stripslashes($_POST[$item]);
+            $qcf_setup[$item] =filter_var($qcf_setup[$item],FILTER_SANITIZE_STRING);
+        }
         if (empty($qcf_setup['current'])) $qcf_setup['current'] = '';
         $arr = explode(",",$qcf_setup['alternative']);
-        foreach ($arr as $item) $qcf_email[$item] = stripslashes($_POST['qcf_email'.$item]);
+        foreach ($arr as $item) {
+            $qcf_email[$item] = stripslashes($_POST['qcf_email'.$item]);
+            $qcf_email[$item] = filter_var($qcf_email[$item],FILTER_VALIDATE_EMAIL);
+        }
         update_option( 'qcf_email', $qcf_email);
         update_option( 'qcf_setup', $qcf_setup);
         qcf_admin_notice("The forms have been updated.");
     }
-    
-    if( isset( $_POST['newform'])) {
+    if( isset( $_POST['newform']) && check_admin_referer("save_qcf")) {
         $qcf_setup['alternative'] = $_POST['alternative'];
         if (!empty($_POST['new_form'])) {
             $qcf_setup['current'] = stripslashes($_POST['new_form']);
             $qcf_setup['current'] = preg_replace("/[^A-Za-z]/",'',$qcf_setup['current']);
+            $qcf_setup['current'] = filter_var($qcf_setup['current'],FILTER_SANITIZE_STRING);
             $qcf_setup['alternative'] = $qcf_setup['current'].','.$qcf_setup['alternative'];
             $qcf_email[$qcf_setup['current']] = stripslashes($_POST['new_email']);
         }
@@ -106,14 +112,14 @@ function qcf_setup ($id) {
         break;
     }
     
-    if( isset( $_POST['Reset'])) {
+    if( isset( $_POST['Reset']) && check_admin_referer("save_qcf")) {
         qcf_delete_everything();
         qcf_create_css_file ('');
         qcf_admin_notice("Everything has been reset.");
         $qcf_setup = qcf_get_stored_setup();
     }
     
-    if( isset( $_POST['Validate'])) {
+    if( isset( $_POST['Validate']) && check_admin_referer("save_qcf")) {
         $apikey = $_POST['qcf_apikey'];
         $blogurl = get_site_url();
         $akismet = new qcf_akismet($blogurl, $apikey);
@@ -121,7 +127,7 @@ function qcf_setup ($id) {
         else qcf_admin_notice("Your Akismet API Key is not Valid");
 		}
 
-    if( isset( $_POST['Delete'])) {
+    if( isset( $_POST['Delete']) && check_admin_referer("save_qcf")) {
         delete_option('qcf_akismet');
         qcf_admin_notice("Akismet validation is no longer active on the Quick Contact Form");
 		}
@@ -169,7 +175,11 @@ function qcf_setup ($id) {
     <p>Enter your API Key to check all messages against the Akismet database. <a href="?page=quick-contact-form/settings.php&tab=error">Change the error message</a>.</p> 
     <p><input type="text" label="akismet" name="qcf_apikey" value="'.$qcf_apikey.'" /></p>
     <p><input type="submit" name="Validate" class="button-primary" style="color: #FFF;" value="Activate Akismet Validation" /> <input type="submit" name="Delete" class="button-secondary" value="Deactivate Aksimet Validation" onclick="return window.confirm( \'This will delete the Akismet Key.\nAre you sure you want to do this?\' );"/></p>
-    </form>
+    <p><input type="checkbox" style="margin:0; padding: 0; border: none" name="nostyling"' . $qcf_setup['nostyling'] . ' value="checked" /> Remove all form styles</p>
+    <p><input type="checkbox" style="margin:0; padding: 0; border: none" name="noui"' . $qcf_setup['noui'] . ' value="checked" /> Remove all jQuery  styles</p>
+<p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Settings" /></p>';
+    $content .= wp_nonce_field("save_qcf");
+    $content .= '</form>
     </div>
     <div class="qcf-options" style="float:right">
     <h2>Adding the contact form to your site</h2>
@@ -204,7 +214,7 @@ function qcf_form_options($id) {
     $active_buttons =
         array('field1','field2','field3','field4','field5','field6','field7','field8','field9','field10','field11','field12','field13','field14');
     qcf_change_form_update();
-    if( isset( $_POST['Submit'])) {
+    if( isset( $_POST['Submit']) && check_admin_referer("save_qcf")) {
         foreach ( $active_buttons as $item) {
             $qcf['active_buttons'][$item] = (isset( $_POST['qcf_settings_active_'.$item]) and $_POST['qcf_settings_active_'.$item] == 'on' ) ? true : false;
             $qcf['required'][$item] = (isset( $_POST['required_'.$item]) );
@@ -219,7 +229,6 @@ function qcf_form_options($id) {
         $options = array(
             'sort',
             'lines',
-            'htmltags',
             'title',
             'blurb',
             'border',
@@ -235,12 +244,16 @@ function qcf_form_options($id) {
             'initial',
             'step'
         );
-        foreach ( $options as $item) $qcf[$item] = stripslashes($_POST[$item]);
+        foreach ( $options as $item) {
+            $qcf[$item] = stripslashes($_POST[$item]);
+            $qcf[$item] =filter_var($qcf[$item],FILTER_SANITIZE_STRING);
+        }
+        $qcf['htmltags'] = stripslashes($_POST['htmltags']);
         update_option( 'qcf_settings'.$id, $qcf);
         if ($id) qcf_admin_notice("The form settings for ". $id . " have been updated.");
         else qcf_admin_notice("The default form settings have been updated.");
     }
-    if( isset( $_POST['Reset'])) {
+    if( isset( $_POST['Reset']) && check_admin_referer("save_qcf")) {
         delete_option('qcf_settings'.$id);
         if ($id) qcf_admin_notice("The form settings for ".$id. " have been reset.");
         else qcf_admin_notice("The default form settings have been reset.");
@@ -370,8 +383,9 @@ function qcf_form_options($id) {
     <input type="hidden" id="qcf_settings_sort" name="sort" value="'.$qcf['sort'].'" />
     <h2>Submit button caption</h2>
     <p><input type="text" text-align:center" name="send" value="' . $qcf['send'] . '" /></p>
-    <p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" />  <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset these settings?\' );"/></p>
-    </form>
+    <p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" />  <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset these settings?\' );"/></p>';
+    $content .= wp_nonce_field("save_qcf");
+    $content .= '</form>
     </div>
     <div class="qcf-options" style="float:right">
     <h2 style="color:#B52C00">Form Preview</h2>
@@ -386,7 +400,7 @@ function qcf_form_options($id) {
 
 function qcf_attach ($id) {
     qcf_change_form_update();
-    if( isset( $_POST['Submit'])) {
+    if( isset( $_POST['Submit']) && check_admin_referer("save_qcf")) {
         $options = array(
             'qcf_attach',
             'qcf_attach_label',
@@ -396,13 +410,16 @@ function qcf_attach ($id) {
             'qcf_attach_error_size',
             'qcf_attach_error_type'
         );
-        foreach ( $options as $item) $attach[$item] = stripslashes($_POST[$item]);
+        foreach ( $options as $item) {
+            $attach[$item] = stripslashes($_POST[$item]);
+            $attach[$item] =filter_var($attach[$item],FILTER_SANITIZE_STRING);
+        }
         update_option( 'qcf_attach'.$id, $attach);
         if ($id) qcf_admin_notice("The attachment settings for ".$id. " have been updated.");
         else qcf_admin_notice("The default form settings have been reset.");
     }
     
-    if( isset( $_POST['Reset'])) {
+    if( isset( $_POST['Reset']) && check_admin_referer("save_qcf")) {
         delete_option('qcf_attach'.$id);
         if ($id) qcf_admin_notice("The attachment settings for ".$id. " have been reset.");
         else qcf_admin_notice("The default form settings have been reset.");
@@ -432,8 +449,9 @@ function qcf_attach ($id) {
     <td>If the filetype is incorrect:</td><td><input type="text" name="qcf_attach_error_type" value="' . $attach['qcf_attach_error_type'] . '" /></td>
     </tr>
     </table>
-    <p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the attachment settings for '.$id.'?\' );"/></p>
-    </form>
+    <p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the attachment settings for '.$id.'?\' );"/></p>';
+    $content .= wp_nonce_field("save_qcf");
+    $content .= '</form>
     </div>
     <div class="qcf-options" style="float:right"> 
     <h2 style="color:#B52C00">Form Preview</h2>
@@ -445,7 +463,7 @@ function qcf_attach ($id) {
 
 function qcf_styles($id) {
     qcf_change_form_update();
-    if( isset( $_POST['Submit'])) {
+    if( isset( $_POST['Submit']) && check_admin_referer("save_qcf")) {
         $options = array(
             'font',
             'font-family',
@@ -486,9 +504,13 @@ function qcf_styles($id) {
             'handle-background',
             'handle-border',
             'output-size',
-            'output-colour'
+            'output-colour',
+            'nostyling'
         );
-        foreach ( $options as $item) $style[$item] = stripslashes($_POST[$item]);
+        foreach ( $options as $item) {
+            $style[$item] = stripslashes($_POST[$item]);
+            $style[$item] =filter_var($style[$item],FILTER_SANITIZE_STRING);
+        }
         if ($style['widthtype'] == 'pixel') {
             $formwidth = preg_split('#(?<=\d)(?=[a-z%])#i', $style['width']);
             if (!$formwidth[1]) $formwidth[1] = 'px';
@@ -498,7 +520,7 @@ function qcf_styles($id) {
         qcf_create_css_file ('update');
         qcf_admin_notice("The form styles have been updated.");
     }
-    if( isset( $_POST['Reset'])) {
+    if( isset( $_POST['Reset']) && check_admin_referer("save_qcf")) {
         delete_option('qcf_style'.$id);
         qcf_create_css_file ('update');
         if ($id) qcf_admin_notice("The style settings for ".$id. " have been reset.");
@@ -681,8 +703,9 @@ function qcf_styles($id) {
     <p>The main style wrapper is the <code>.qcf-style</code> id.</p>
     <p>The form borders are: #none, #plain, #rounded, #shadow, #roundshadow.</p>
     <p>Errors and required fields have the classes .error and .required</p>
-    <p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the style settings for '.$id.'?\' );"/></p>
-    </form>
+    <p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the style settings for '.$id.'?\' );"/></p>';
+    $content .= wp_nonce_field("save_qcf");
+    $content .= '</form>
     </div>
     <div class="qcf-options" style="float:right">
     <h2 style="color:#B52C00">Test Form</h2>
@@ -694,7 +717,7 @@ function qcf_styles($id) {
 
 function qcf_reply_page($id) {
     qcf_change_form_update();
-    if( isset( $_POST['Submit'])) {
+    if( isset( $_POST['Submit']) && check_admin_referer("save_qcf")) {
         $options = array(
             'replytitle',
             'replyblurb',
@@ -718,12 +741,15 @@ function qcf_reply_page($id) {
             'copy_message',
             'bodyhead'
         );
-        foreach ( $options as $item) $reply[$item] = stripslashes($_POST[$item]);
+        foreach ( $options as $item) {
+            $reply[$item] = stripslashes($_POST[$item]);
+            $reply[$item] =filter_var($reply[$item],FILTER_SANITIZE_STRING);
+        }
         update_option('qcf_reply'.$id, $reply);
         if ($id) qcf_admin_notice("The send settings for " . $id . " have been updated.");
         else qcf_admin_notice("The default form send settings have been updated.");
     }
-    if( isset( $_POST['Reset'])) {
+    if( isset( $_POST['Reset']) && check_admin_referer("save_qcf")) {
         delete_option('qcf_reply'.$id);
         qcf_admin_notice("The reply settings for the form called ".$id. " have been reset.");
     }
@@ -818,8 +844,9 @@ function qcf_reply_page($id) {
     <td><input style="margin:0; padding:0; border:none" type="checkbox" name="qcf_reload" ' . $reply['qcf_reload'] . ' value="checked"> Refresh the page <input style="width:2em" type="text" name="qcf_reload_time" value="' . $reply['qcf_reload_time'] . '" /> seconds after the thank-you message.</td>
     </tr>
     </table>
-    <p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the reply settings for '.$id.'?\' );"/></p>
-    </form>
+    <p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the reply settings for '.$id.'?\' );"/></p>';
+    $content .= wp_nonce_field("save_qcf");
+    $content .= '</form>
     </div>
     <div class="qcf-options" style="float:right">
     <h2 style="color:#B52C00">Test Form</h2>
@@ -831,15 +858,18 @@ function qcf_reply_page($id) {
 
 function qcf_error_page($id) {
     qcf_change_form_update();
-    if( isset( $_POST['Submit'])) {
+    if( isset( $_POST['Submit']) && check_admin_referer("save_qcf")) {
         for ($i=1; $i<=13; $i++) $error['field'.$i] = stripslashes($_POST['error'.$i]);
         $options = array( 'errortitle','errorblurb','email','telephone','mathsmissing','mathsanswer','emailcheck','phonecheck','spam');
-        foreach ( $options as $item) $error[$item] = stripslashes($_POST[$item]);
+        foreach ( $options as $item) {
+            $error[$item] = stripslashes($_POST[$item]);
+            $error[$item] =filter_var($error[$item],FILTER_SANITIZE_STRING);
+        }
         update_option( 'qcf_error'.$id, $error );
         if ($id) qcf_admin_notice("The reply settings for " . $id . " have been updated.");
         else qcf_admin_notice("The default form error settings have been updated.");
     }
-    if( isset( $_POST['Reset'])) {
+    if( isset( $_POST['Reset']) && check_admin_referer("save_qcf")) {
         delete_option('qcf_error'.$id);
         qcf_admin_notice("The error settings for the form called ".$id. " have been reset.");
     }
@@ -900,8 +930,9 @@ function qcf_error_page($id) {
     <td><input type="text" name="spam" value="' .  $error['spam'] . '" /></td>
     </tr>
     </table>
-    <p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the error settings for '.$id.'?\' );"/></p>
-    </form>
+    <p><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" /> <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset the error settings for '.$id.'?\' );"/></p>';
+    $content .= wp_nonce_field("save_qcf");
+    $content .= '</form>
     </div>
     <div class="qcf-options" style="float:right"> 
     <h2 style="color:#B52C00">Error Checker</h2>
@@ -940,7 +971,7 @@ function qcf_help($id) {
 
 function qcf_reset_page($id) {
     qcf_change_form_update();
-    if (isset($_POST['qcf_reset'])) {
+    if (isset($_POST['qcf_reset']) && check_admin_referer("save_qcf")) {
         if (isset($_POST['qcf_delete_form'])) {
             $qcf_setup = qcf_get_stored_setup();
             if ($id != '') {
@@ -953,8 +984,8 @@ function qcf_reset_page($id) {
                 $id = '';
             }
         }
-        if (isset($_POST['qcf_reset_form'])) {
-            delete_things($id);
+        if (isset($_POST['qcf_reset_form']) && check_admin_referer("save_qcf")) {
+            qcf_delete_things($id);
             if ($id) qcf_admin_notice("<b>The form called ".$id. " has been reset.</b> Use the <a href= '?page=quick-contact-form/settings.php&tab=setup'>Setup</a> tab to add a new named form");
             else qcf_admin_notice("<b>The default form has been reset.</b>");
         }
@@ -986,7 +1017,7 @@ function qcf_reset_page($id) {
         if (isset($_POST['qcf_reset_everything'])) {
             $qcf_setup = qcf_get_stored_setup();
             $id = explode(",",$qcf_setup['alternative']);
-            foreach ($id as $item) delete_things($id);
+            foreach ($id as $item) qcf_delete_things($id);
             delete_option('qcf_email');
             delete_option('qcf_setup');
             delete_option('qcf_message');
@@ -1014,20 +1045,24 @@ function qcf_reset_page($id) {
     if ($id) $content .= '<br /><input style="margin:0; padding:0; border:none;" type="checkbox" name="qcf_delete_form"> Delete '.$id.'</p>';
     $content .= '<hr>
     <p>
-    <input type="submit" class="button-primary" name="qcf_reset" style="color: #FFF" value="Reset Options" onclick="return window.confirm( \'Are you sure you want to reset these settings?\' );"/>
-    </form>
+    <input type="submit" class="button-primary" name="qcf_reset" style="color: #FFF" value="Reset Options" onclick="return window.confirm( \'Are you sure you want to reset these settings?\' );"/>';
+    $content .= wp_nonce_field("save_qcf");
+    $content .= '</form>
     </div></div>';
     echo $content;
 }
 
 function qcf_smtp_page() {
-	if( isset( $_POST['Submit'])) {
+	if( isset( $_POST['Submit']) && check_admin_referer("save_qcf")) {
 		$options = array('mailer','smtp_host','smtp_port','smtp_ssl','smtp_auth','smtp_user','smtp_pass');
-		foreach ( $options as $item) $qcfsmtp[$item] = stripslashes($_POST[$item]);
+		foreach ( $options as $item) {
+            $qcfsmtp[$item] = stripslashes($_POST[$item]);
+            $qcfsmtp[$item] =filter_var($qcfsmtp[$item],FILTER_SANITIZE_STRING);
+        }
 		update_option( 'qcf_smtp', $qcfsmtp );
 		qcf_admin_notice("The SMTP settings have been updated.");
 		}
-	if( isset( $_POST['Reset'])) {
+	if( isset( $_POST['Reset']) && check_admin_referer("save_qcf")) {
 		delete_option('qcf_smtp');
 		qcf_admin_notice("The SMTP settings have been reset.");
 		}
@@ -1070,8 +1105,9 @@ function qcf_smtp_page() {
     <input type="hidden" name="action" value="update" /><input type="hidden" name="option_page" value="email">
     </td>
     </tr>
-    </table>
-    </form>
+    </table>';
+    $content .= wp_nonce_field("save_qcf");
+    $content .= '</form>
     </div>
     <div class="qcf-options" style="float:right"> 
     <h2 style="color:#B52C00">SMTP Test</h2>
@@ -1084,7 +1120,7 @@ function qcf_smtp_page() {
 function delete_everything() {
     $qcf_setup = qcf_get_stored_setup();
     $arr = explode(",",$qcf_setup['alternative']);
-    foreach ($arr as $item) delete_things($item);
+    foreach ($arr as $item) qcf_delete_things($item);
     delete_option('qcf_setup');
     delete_option('qcf_email');
     delete_option('qcf_message');
@@ -1119,7 +1155,7 @@ function qcf_change_form($qcf_setup) {
 }
 
 function qcf_change_form_update() {
-    if( isset( $_POST['Select'])) {
+    if( isset( $_POST['Select']) && check_admin_referer("save_qcf")) {
         $qcf_setup['current'] = $_POST['current'];
         $qcf_setup['alternative'] = $_POST['alternative'];
         $qcf_setup['dashboard'] = $_POST['dashboard'];

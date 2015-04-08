@@ -1,4 +1,5 @@
-.qcf-settings {width: 100%;}
+.wrapper {padding: 0 15px;}
+.qem-settings {width: 100%;}
 .qcf-options {float:left;border: 1px solid #B52C00;padding: 0 10px 10px 10px;margin: 10px 0 0 0;background:#FFF;width:46%;width: calc(50% - 40px);}
 .qcf-options table input[type=text], .qcf-options textarea, .qcf-options table select {margin: 2px 0 2px 0;padding: 2px;color: #465069;font-size: 100%;border:1px solid #415063;width:100%;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;height:auto;line-height:normal;}
 .qcf-options input[type=text] {color: #465069;font-size: 100%;border:1px solid #415063;width:100%;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;height:auto;line-height:normal;}
