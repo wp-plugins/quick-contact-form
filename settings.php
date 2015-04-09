@@ -1155,7 +1155,7 @@ function qcf_change_form($qcf_setup) {
 }
 
 function qcf_change_form_update() {
-    if( isset( $_POST['Select']) && check_admin_referer("save_qcf")) {
+    if( isset( $_POST['Select'])) {
         $qcf_setup['current'] = $_POST['current'];
         $qcf_setup['alternative'] = $_POST['alternative'];
         $qcf_setup['dashboard'] = $_POST['dashboard'];
