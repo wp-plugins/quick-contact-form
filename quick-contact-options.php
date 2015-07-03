@@ -5,78 +5,79 @@ function qcf_get_stored_options ($id) {
     if(!is_array($qcf)) $qcf = array();
     $default = qcf_get_default_options();
     $qcf = array_merge($default, $qcf);
-    if (!strpos($qcf['sort'],'14')) {$qcf['sort'] = $qcf['sort'].',field14';$qcf['label']['field14'] = 'Select Value';update_option('qcf_settings'.$id,$qcf);}
     return $qcf;
 }
 
 function qcf_get_default_options () {
-    $qcf = array();
-    $qcf['active_buttons'] = array(
-        'field1'=>'on' , 'field2'=>'on',
-        'field3'=>'',
-        'field4'=>'on',
-        'field5'=>'',
-        'field6'=>'',
-        'field7'=>'',
-        'field8'=>'',
-        'field9'=>'',
-        'field10'=>'',
-        'field11'=>'',
-        'field12'=>'',
-        'field13'=>'',
-        'field14'=>''
+    $qcf = array(
+        'active_buttons'=> array(
+            'field1'=>'on' , 'field2'=>'on',
+            'field3'=>'',
+            'field4'=>'on',
+            'field5'=>'',
+            'field6'=>'',
+            'field7'=>'',
+            'field8'=>'',
+            'field9'=>'',
+            'field10'=>'',
+            'field11'=>'',
+            'field12'=>'',
+            'field13'=>'',
+            'field14'=>''
+        ),
+        'required'=> array(
+            'field1'=>'checked',
+            'field2'=>'checked',
+            'field3'=>'',
+            'field4'=>'',
+            'field5'=>'',
+            'field6'=>'',
+            'field7'=>'',
+            'field8'=>'',
+            'field9'=>'',
+            'field10'=>'',
+            'field11'=>'',
+            'field12'=>'checked',
+            'field13'=>'',
+            'field14'=>''
+        ),
+        'label'=> array(
+            'field1'=>'Your Name',
+            'field2'=>'Email',
+            'field3'=>'Telephone',
+            'field4'=>'Message' , 
+            'field5'=>'Select a value' ,
+            'field6'=>'Select a value' ,
+            'field7'=>'Select a value' , 
+            'field8'=>'Website' , 
+            'field9'=>'Subject', 
+            'field10'=>'Select date', 
+            'field11'=>'Add text',
+            'field12'=>'Spambot blocker question',
+            'field13'=>'Add text',
+            'field14' =>'Select Value'
+        ),
+        'sort'=> 'field1,field2,field3,field4,field5,field6,field7,field10,field8,field9,field11,field13,field14,field12',
+        'lines'=> 6,
+        'htmltags'=> '<a><b><i>',
+        'datepicker'=> 'checked',
+        'dropdownlist'=> 'Pound,Dollar,Euro,Yen,Triganic Pu',
+        'checklist'=> 'Donald Duck,Mickey Mouse,Goofy',
+        'radiolist'=> 'Large,Medium,Small',
+        'title'=> 'Enquiry Form',
+        'blurb'=> 'Fill in the form below and we will be in touch soon',
+        'send'=> 'Send it!',
+        'fieldtype'=> 'ttext',
+        'fieldtypeb'=> 'btext',
+        'selectora'=> 'dropdowna',
+        'selectorb'=> 'checkboxb',
+        'selectorc'=> 'radioc',
+        'min'=> '0',
+        'max'=> '100',
+        'initial'=> '50',
+        'step'=> '10',
+        'output-values'=> 'checked'
     );
-    $qcf['required'] = array(
-        'field1'=>'checked',
-        'field2'=>'checked',
-        'field3'=>'',
-        'field4'=>'',
-        'field5'=>'',
-        'field6'=>'',
-        'field7'=>'',
-        'field8'=>'',
-        'field9'=>'',
-        'field10'=>'',
-        'field11'=>'',
-        'field12'=>'checked',
-        'field13'=>'',
-        'field14'=>''
-    );
-    $qcf['label'] = array(
-        'field1'=>'Your Name',
-        'field2'=>'Email',
-        'field3'=>'Telephone',
-        'field4'=>'Message' , 
-        'field5'=>'Select a value' ,
-        'field6'=>'Select a value' ,
-        'field7'=>'Select a value' , 
-        'field8'=>'Website' , 
-        'field9'=>'Subject', 
-        'field10'=>'Select date', 
-        'field11'=>'Add text',
-        'field12'=>'Spambot blocker question',
-        'field13'=>'Add text',
-        'field14' =>'Select Value');
-    $qcf['sort'] = 'field1,field2,field3,field4,field5,field6,field7,field10,field8,field9,field11,field13,field14,field12';
-    $qcf['lines'] = 6;
-    $qcf['htmltags'] = '<a><b><i>';
-    $qcf['datepicker'] = 'checked';
-    $qcf['dropdownlist'] = 'Pound,Dollar,Euro,Yen,Triganic Pu';
-    $qcf['checklist'] = 'Donald Duck,Mickey Mouse,Goofy';
-    $qcf['radiolist'] = 'Large,Medium,Small';
-    $qcf['title'] = 'Enquiry Form';
-    $qcf['blurb'] = 'Fill in the form below and we will be in touch soon';
-    $qcf['send'] = 'Send it!';
-    $qcf['fieldtype'] = 'ttext';
-    $qcf['fieldtypeb'] = 'btext';
-    $qcf['selectora'] = 'dropdowna';
-    $qcf['selectorb'] = 'checkboxb';
-    $qcf['selectorc'] = 'radioc';
-    $qcf['min'] = '0';
-    $qcf['max'] = '100';
-    $qcf['initial'] = '50';
-    $qcf['step'] = '10';
-    $qcf['output-values'] = 'checked';
     return $qcf;
 }
 
@@ -89,14 +90,17 @@ function qcf_get_stored_attach ($id) {
 }
 
 function qcf_get_default_attach () {
-    $attach = array();
-    $attach['qcf_attach'] = '';
-    $attach['qcf_attach_label'] = 'Attach an image (Max 100kB)';
-    $attach['qcf_attach_size'] = '100000';
-    $attach['qcf_attach_type'] = 'jpg,gif,png,pdf';
-    $attach['qcf_attach_width'] = '15';
-    $attach['qcf_attach_error_size'] = 'File is too big';
-    $attach['qcf_attach_error_type'] = 'Filetype not permitted';
+    $attach = array(
+        'qcf_attach' => '',
+        'qcf_number' => '3',
+        'qcf_attach_label' => 'Attach an image (Max 100kB)',
+        'qcf_attach_size' => '100000',
+        'qcf_attach_type' => 'jpg,gif,png,pdf',
+        'qcf_attach_width' => '15',
+        'qcf_attach_error' => 'There is a problem with your attachment. Please check file formats and size.',
+        'qcf_attach_error_size' => 'File is too big',
+        'qcf_attach_error_type' => 'Filetype not permitted'
+    );
     return $attach;
 	}
 
@@ -109,48 +113,51 @@ function qcf_get_stored_style($id) {
 }
 
 function qcf_get_default_style() {
-    $style['font'] = 'plugin';
-    $style['font-family'] = 'arial, sans-serif';
-    $style['font-size'] = '1.2em';
-    $style['font-colour'] = '#465069';
-    $style['header'] = '';
-    $style['header-size'] = '1.6em';
-    $style['header-colour'] = '#465069';
-    $style['text-font-family'] = 'arial, sans-serif';
-    $style['text-font-size'] = '1.2em';
-    $style['text-font-colour'] = '#465069';
-    $style['error-font-colour'] = '#D31900';
-    $style['error-border'] = '1px solid #D31900';
-    $style['width'] = 280;
-    $style['widthtype'] = 'percent';
-    $style['submitwidth'] = 'submitpercent';
-    $style['submitposition'] = 'submitleft';
-    $style['border'] = 'none';
-    $style['form-border'] = '1px solid #415063';
-    $style['input-border'] = '1px solid #415063';
-    $style['input-required'] = '1px solid #00C618';
-    $style['bordercolour'] = '#415063';
-    $style['inputborderdefault'] = '1px solid #415063';
-    $style['inputborderrequired'] = '1px solid #00C618';
-    $style['inputbackground'] = '#FFFFFF';
-    $style['inputfocus'] = '#FFFFCC';
-    $style['background'] = 'white';
-    $style['backgroundhex'] = '#FFF';
-    $style['submit-colour'] = '#FFF';
-    $style['submit-background'] = '#343838';
-    $style['submit-button'] = '';
-    $style['submit-border'] = '1px solid #415063';
-    $style['submitwidth'] = 'submitpercent';
-    $style['submitposition'] = 'submitleft';
-    $style['corners'] = 'corner';
-    $style['slider-background'] = '#CCC';
-    $style['slider-revealed'] = '#00ff00';
-    $style['handle-background'] = 'white';
-    $style['handle-border'] = '#CCC';
-    $style['output-size'] = '1.2em';
-    $style['output-colour'] = '#465069';
-    $style['use_custom'] = '';
-    $style['styles'] = ".qcf-style {\r\n\r\n}";
+    $style = array(
+        'font' => 'plugin',
+        'font-family' => 'arial, sans-serif',
+        'font-size' => '1.2em',
+        'font-colour' => '#465069',
+        'header' => '',
+        'header-type' => 'h2',
+        'header-size' => '1.6em',
+        'header-colour' => '#465069',
+        'text-font-family' => 'arial, sans-serif',
+        'text-font-size' => '1.2em',
+        'text-font-colour' => '#465069',
+        'error-font-colour' => '#D31900',
+        'error-border' => '1px solid #D31900',
+        'width' => 280,
+        'widthtype' => 'percent',
+        'submitwidth' => 'submitpercent',
+        'submitposition' => 'submitleft',
+        'border' => 'none',
+        'form-border' => '1px solid #415063',
+        'input-border' => '1px solid #415063',
+        'input-required' => '1px solid #00C618',
+        'bordercolour' => '#415063',
+        'inputborderdefault' => '1px solid #415063',
+        'inputborderrequired' => '1px solid #00C618',
+        'inputbackground' => '#FFFFFF',
+        'inputfocus' => '#FFFFCC',
+        'background' => 'white',
+        'backgroundhex' => '#FFF',
+        'submit-colour' => '#FFF',
+        'submit-background' => '#343838',
+        'submit-button' => '',
+        'submit-border' => '1px solid #415063',
+        'submitwidth' => 'submitpercent',
+        'submitposition' => 'submitleft',
+        'corners' => 'corner',
+        'slider-background' => '#CCC',
+        'slider-revealed' => '#00ff00',
+        'handle-background' => 'white',
+        'handle-border' => '#CCC',
+        'output-size' => '1.2em',
+        'output-colour' => '#465069',
+        'use_custom' => '',
+        'styles' => ".qcf-style {\r\n\r\n}"
+    );
     return $style;
 }
 
@@ -163,26 +170,27 @@ function qcf_get_stored_reply ($id) {
 }
 
 function qcf_get_default_reply () {
-    $reply = array();
-    $reply['replytitle'] = 'Message sent!';
-    $reply['replyblurb'] = 'Thank you for your enquiry, I&#146;ll be in contact soon';
-    $reply['sendcopy'] = '!';
-    $reply['replycopy'] = '!';
-    $reply['replysubject'] = 'Thank you for your enquiry';
-    $reply['replymessage'] = 'I&#146;ll be in contact soon. If you have any questions please reply to this email.';
-    $reply['messages'] = 'checked';
-    $reply['tracker'] = 'checked';
-    $reply['page'] = 'checked';
-    $reply['url'] = '';
-    $reply['subject'] = 'Enquiry from';
-    $reply['subjectoption'] = 'sendername';
-    $reply['qcf_redirect'] = '';
-    $reply['qcf_redirect_url'] = '';
-    $reply['copy_message'] = 'Thank you for your enquiry. This is a copy of your message';
-    $reply['qcf_reload'] = '';
-    $reply['qcf_reload_time'] = '5';
-    $reply['qcfmail'] = 'wpemail';
-    $reply['bodyhead'] = 'The message is:';
+    $reply = array(
+        'replytitle' => 'Message sent!',
+        'replyblurb' => 'Thank you for your enquiry, I&#146,ll be in contact soon',
+        'sendcopy' => '',
+        'replycopy' => '',
+        'replysubject' => 'Thank you for your enquiry',
+        'replymessage' => 'I&#146,ll be in contact soon. If you have any questions please reply to this email.',
+        'messages' => 'checked',
+        'tracker' => 'checked',
+        'page' => 'checked',
+        'url' => '',
+        'subject' => 'Enquiry from',
+        'subjectoption' => 'sendername',
+        'qcf_redirect' => '',
+        'qcf_redirect_url' => '',
+        'copy_message' => 'Thank you for your enquiry. This is a copy of your message',
+        'qcf_reload' => '',
+        'qcf_reload_time' => '5',
+        'qcfmail' => 'wpemail',
+        'bodyhead' => 'The message is:'
+    );
     return $reply;
 }
 
@@ -196,28 +204,29 @@ function qcf_get_stored_error ($id) {
 
 function qcf_get_default_error ($id) {
     $qcf = qcf_get_stored_options($id);
-    $error = array();
-    $error['field1'] = 'Giving me '. strtolower($qcf['label']['field1']) . ' would really help.';
-    $error['field2'] = 'Please enter your '. strtolower($qcf['label']['field2']) . ' address';
-    $error['field3'] = 'A telephone number is needed';
-    $error['field4'] = 'What is the '. strtolower($qcf['label']['field4']);
-    $error['field5'] = 'Select a option from the list';
-    $error['field6'] = 'Check at least one box';
-    $error['field7'] = 'There is an error';
-    $error['field8'] = 'The ' . strtolower($qcf['label']['field8']) . ' is missing';
-    $error['field9'] = 'What is your '. strtolower($qcf['label']['field9']) . '?';
-    $error['field10'] = 'Please select a date';
-    $error['field11'] = 'Enter a value';
-    $error['field13'] = 'Enter a value';
-    $error['email'] = 'There&#146;s a problem with your email address';
-    $error['telephone'] = 'Please check your phone number';
-    $error['mathsmissing'] = 'Answer the sum please';
-    $error['mathsanswer'] = 'That&#146;s not the right answer, try again';
-    $error['errortitle'] = 'Oops, got a few problems here';
-    $error['errorblurb'] = 'Can you sort out the details highlighted below.';
-    $error['emailcheck'] = '';
-    $error['phonecheck'] = '';
-    $error['spam'] = 'Your Details have been flagged as spam';
+    $error = array(
+        'field1' => 'Giving me '. strtolower($qcf['label']['field1']) . ' would really help.',
+        'field2' => 'Please enter your '. strtolower($qcf['label']['field2']) . ' address',
+        'field3' => 'A telephone number is needed',
+        'field4' => 'What is the '. strtolower($qcf['label']['field4']),
+        'field5' => 'Select a option from the list',
+        'field6' => 'Check at least one box',
+        'field7' => 'There is an error',
+        'field8' => 'The ' . strtolower($qcf['label']['field8']) . ' is missing',
+        'field9' => 'What is your '. strtolower($qcf['label']['field9']) . '?',
+        'field10' => 'Please select a date',
+        'field11' => 'Enter a value',
+        'field13' => 'Enter a value',
+        'email' => 'There&#146,s a problem with your email address',
+        'telephone' => 'Please check your phone number',
+        'mathsmissing' => 'Answer the sum please',
+        'mathsanswer' => 'That&#146,s not the right answer, try again',
+        'errortitle' => 'Oops, got a few problems here',
+        'errorblurb' => 'Can you sort out the details highlighted below.',
+        'emailcheck' => '',
+        'phonecheck' => '',
+        'spam' => 'Your Details have been flagged as spam'
+    );
     return $error;
 }
 
@@ -230,10 +239,12 @@ function qcf_get_stored_setup () {
 }
 
 function qcf_get_default_setup () {
-    $qcf_setup = array();
-    $qcf_setup['current'] = '';
-    $qcf_setup['alternative'] = '';
-    $qcf_setup['dashboard'] = '';
+    $qcf_setup = array(
+        'current' => '',
+        'alternative' => '',
+        'noui' => '',
+        'nostyling' => ''
+    );
     return $qcf_setup;
 }
 
@@ -260,9 +271,10 @@ function qcf_get_stored_msg () {
 }
 
 function qcf_get_default_msg () {
-    $messageoptions = array();
-    $messageoptions['messageqty'] = 'fifty';
-    $messageoptions['messageorder'] = 'newest';
+    $messageoptions = array(
+        'messageqty' => 'fifty',
+        'messageorder' => 'newest'
+    );
     return $messageoptions;
 }
 
@@ -275,13 +287,68 @@ function qcf_get_stored_smtp () {
 }
 
 function qcf_get_default_smtp () {
-    $smtp = array();
-    $smtp['smtp_host'] = 'localhost';
-    $smtp['smtp_port'] = '25';
-    $smtp['smtp_ssl'] = 'none';
-    $smtp['smtp_auth'] = 'authfalse';
-    $smtp['smtp_user'] = '';
-    $smtp['smtp_pass'] = '';
+    $smtp = array(
+        'smtp_host' => 'localhost',
+        'smtp_port' => '25',
+        'smtp_ssl' => 'none',
+        'smtp_auth' => 'authfalse',
+        'smtp_user' => '',
+        'smtp_pass' => ''
+    );
     return $smtp;
 }
 
+function qcf_get_stored_autoresponder2 ($id) {
+    $auto = get_option('qcf_autoresponder'.$id);
+    if(!is_array($auto)) $auto = array();
+    $default = qcf_get_default_autoresponce();
+    $auto = array_merge($default, $auto);
+    return $auto;
+}
+
+function qcf_get_default_autoresponce2 () {
+    $auto = array(
+        'enable' => '',
+        'subject' => '<p>Thank you for your enquiry.</p>',
+        'message' => '<p>I&#146,ll be in contact soon. If you have any questions please reply to this email.</p>'
+    );
+    return $auto;
+}
+
+function qcf_get_stored_autoresponder ($id) {
+    $auto = get_option('qcf_autoresponder'.$id);
+    if(!is_array($auto)) {
+        $send = qcf_get_stored_reply ($id);
+$qcfemail = qcf_get_stored_email();
+$fromemail = $qcfemail[$id];
+if (empty($fromemail)) {
+        global $current_user;
+        get_currentuserinfo();
+        $fromemail = $current_user->user_email;
+    } 
+
+        if ($send['sendcopy']) {
+            $auto = array(
+                'enable' => $send['sendcopy'],
+                'subject' => $send['replysubject'],
+                'message' => $send['replymessage'],
+                'sendcopy' => $send['replycopy'],
+                'fromname' => '',
+                'fromemail' => $fromemail,
+            );
+            $send['thankyou'] = '';
+            update_option( 'qcf_reply'.$id, $send );
+update_option( 'qcf_autoresponder'.$id, $auto );
+        } else {
+            $auto = array(
+                'enable' => '',
+                'subject' => 'Thank you for your enquiry.',
+                'message' => 'We will be in contact soon. If you have any questions please reply to this email.',
+                'sendcopy' => 'checked',
+                'fromname' => '',
+                'fromemail' => '',
+            );
+        }
+    }
+    return $auto;
+}

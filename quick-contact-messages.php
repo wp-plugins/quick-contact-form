@@ -88,7 +88,7 @@ function qcf_show_messages($id) {
     <input type="submit" name="download_csv" class="button-primary" value="Export to CSV" />
     <input type="submit" name="qcf_emaillist" class="button-primary" value="Email List" />
     <input type="submit" name="qcf_reset_message'.$id.'" class="button-primary" style="color: #FFF;" value="Delete Messages" onclick="return window.confirm( \'Are you sure you want to delete the messages for '.$title.'?\' );"/>
-    <input type="submit" name="qcf_delete_selected" class="button-secondary" value="Delete Selected" onclick="return window.confirm( \'Are you sure you want to delete the selected payment details?\' );"/>
+    <input type="submit" name="qcf_delete_selected" class="button-secondary" value="Delete Selected" onclick="return window.confirm( \'Are you sure you want to delete the selected messages?\' );"/>
     </form>
     </div>
     </div>';		

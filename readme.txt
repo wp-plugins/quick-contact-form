@@ -4,10 +4,10 @@
 Contributors: 
 Tags: contact form
 Requires at least: 4.0
-Tested up to: 4.1
+Tested up to: 4.2
 Stable tag: trunk
 
-A Simple plug and play contact form with a huge range of options and styles.
+A simple plug and play contact form with a huge range of options and styles.
 
 == Description ==
 
@@ -21,6 +21,7 @@ A really, really simple drag and drop contact form. There is nothing to configur
 *	Custom error and thank-you messages
 *	Multiple form support
 *   Akismet spam filtering
+*   Autoresponder
 
 = Developers plugin page =
 
@@ -72,6 +73,12 @@ I did, and so have you.  Maybe there will be more, who knows.
 No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
+
+= 6.10
+*   New Autoresponder
+*   Updated header styling options
+*   Code optimisation
+*   Minor bug fixes
 
 = 6.9.5 =
 *   Option to remove styling

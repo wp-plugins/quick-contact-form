@@ -2,9 +2,9 @@
 /*
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
-Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go.
-Version: 6.9.5
-Author: fisicx
+Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go. But you then have access to a huge range of easy to use features.
+Version: 6.10
+Author: aerin
 Author URI: http://quick-plugins.com/
 */
 
@@ -18,67 +18,6 @@ add_filter('plugin_action_links', 'qcf_plugin_action_links', 10, 2 );
 add_action('wp_enqueue_scripts', 'qcf_admin_scripts', 99);
 add_action('init', 'qcf_init');
 
-function qcf_admin_scripts() {
-    $qcf_form = qcf_get_stored_setup();
-    wp_enqueue_script('qcf_script',plugins_url('quick-contact-form.js', __FILE__));
-    wp_enqueue_script('jquery-ui-datepicker');
-    wp_enqueue_script('qcf_locale', plugins_url('quick-contact-locale.js', __FILE__ ), array( 'jquery-ui-datepicker' ), false, true );
-    wp_enqueue_script("jquery-effects-core");
-    wp_enqueue_script('qcf_slider', plugins_url('quick-range-slider.js', __FILE__ ), array( 'jquery' ), false, true );
-    if (!$qcf_form['nostyling']) {
-        wp_enqueue_style ('qcf_style',plugins_url('quick-contact-form.css', __FILE__));
-        wp_enqueue_style ('qcf_custom',plugins_url('quick-contact-form-custom.css', __FILE__), false, true);
-    }
-    if (!$qcf_form['noui']) {
-        wp_enqueue_style ('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
-    }
-    global $wp_locale;
-    $aryArgs = array(
-        'monthNames' => strip_array_indices( $wp_locale->month),
-        'monthNamesShort' => strip_array_indices( $wp_locale->month_abbrev),
-        'dayNames' => strip_array_indices( $wp_locale->weekday),
-        'dayNamesShort' => strip_array_indices( $wp_locale->weekday_abbrev),
-        'dayNamesMin' => strip_array_indices( $wp_locale->weekday_initial),
-        'dateFormat' => 'dd M yy',
-    );
-    wp_localize_script( 'qcf_locale', 'objectL10n', $aryArgs );
-}
-
-function strip_array_indices( $ArrayToStrip ) {
-    foreach( $ArrayToStrip as $objArrayItem) {
-        $NewArray[] = $objArrayItem;
-    }
-    return( $NewArray );
-}
-
-function qcf_init() {
-	qcf_create_css_file ('');
-	}
-
-function qcf_create_css_file ($update) {
-	if (function_exists('file_put_contents')) {
-		$css_dir = plugin_dir_path( __FILE__ ) . '/quick-contact-form-custom.css' ;
-		$filename = plugin_dir_path( __FILE__ );
-		if (is_writable($filename) && (!file_exists($css_dir) || !empty($update))) {
-			$data = qcf_generate_css();
-			file_put_contents($css_dir, $data, LOCK_EX);
-			}
-		}
-	else add_action('wp_head', 'qcf_head_css');
-	}
-
-function qcf_start($atts) {
-	extract(shortcode_atts(array( 'id' => '' ), $atts));
-	return qcf_loop($id);
-	}
-function qcf_plugin_action_links($links, $file ) {
-	if ( $file == plugin_basename( __FILE__ ) ) {
-		$qcf_links = '<a href="'.get_admin_url().'options-general.php?page=quick-contact-form/settings.php">'.__('Settings').'</a>';
-		array_unshift( $links, $qcf_links );
-		}
-	return $links;
-	}
-
 function qcf_display_form( $values, $errors, $id ) {
     $qcf_form = qcf_get_stored_setup();
     $qcf = qcf_get_stored_options($id);
@@ -87,10 +26,11 @@ function qcf_display_form( $values, $errors, $id ) {
     $attach = qcf_get_stored_attach($id);
     $style = qcf_get_stored_style($id);
     $qcf['required']['field12'] = 'checked';
+    $hd = ($style['header-type'] ? $style['header-type'] : 'h2');
     $content = '';
     global $_GET;
     if ($id) $formstyle=$id; else $formstyle='default';
-    if (!empty($qcf['title'])) $qcf['title'] = '<h2>' . $qcf['title'] . '</h2>';
+    if (!empty($qcf['title'])) $qcf['title'] = '<'.$hd.'>' . $qcf['title'] . '</'.$hd.'>';
     if (!empty($qcf['blurb'])) $qcf['blurb'] = '<p>' . $qcf['blurb'] . '</p>';
     if (!empty($qcf['mathscaption'])) $qcf['mathscaption'] = '<p class="input">' . $qcf['mathscaption'] . '</p>';
     if ($errors['spam']) $error['errorblurb'] = $errors['spam'];
@@ -98,7 +38,7 @@ function qcf_display_form( $values, $errors, $id ) {
     $content .= "<div class='qcf-style ".$formstyle."'>\r\t";
     $content .= "<div id='" . $style['border'] . "'>\r\t";
     if (count($errors) > 0)
-        $content .= "<h2>" . $error['errortitle'] . "</h2>\r\t<p class='error'>" . $error['errorblurb'] . "</p>\r\t";
+        $content .= "<".$hd.">" . $error['errortitle'] . "</".$hd.">\r\t<p><span>" . $error['errorblurb'] . "</span></p>\r\t";
     else
         $content .= $qcf['title'] . "\r\t" . $qcf['blurb'] . "\r\t";
     $content .= "<form action=\"\" method=\"POST\" enctype=\"multipart/form-data\">\r\t";
@@ -210,9 +150,12 @@ function qcf_display_form( $values, $errors, $id ) {
     }
     if ($attach['qcf_attach'] == "checked") {
         if ($errors['attach']) $content .= $errors['attach'];
-        else $content .= '<p class="input">' . $attach['qcf_attach_label'] . '</p>'."\r\t";
+        else $content .= '<p class="input">' . $attach['qcf_attach_label'] . '</p>'."\r\t".'<p>';
         $size = $attach['qcf_attach_width'];
-        $content .= '<p><input type="file" size="' . $size . '" name="filename"></p>'."\r\t";
+        for($i = 1; $i < $attach['qcf_number']; $i++) {
+            $content .= '<input type="file" size="' . $size . '" name="filename'.$i.'"/><br>';
+        }
+        $content .= '<input type="file" size="' . $size . '" name="filename'.$attach['qcf_number'].'"/></p>';
     }
     $caption = $qcf['send'];
     if ($style['submit-button']) $content .= '<p><input type="image" value="' . $caption . '" src="'.$style['submit-button'].'" id="submit" name="qcfsubmit'.$id.'" /></p>';
@@ -228,14 +171,14 @@ function qcf_display_form( $values, $errors, $id ) {
 
 function qcf_dropdown($var,$list,$values,$errors,$required,$qcf,$name) {
     $content = $errors[$var];
-    $content .= '<p><select name="'.$var.'" class="' . $required . '" ><option value="' . $qcf['label'][$name] . '">' . $qcf['label'][$name] . '</option>'."\r\t";
+    $content .= '<select name="'.$var.'" class="' . $required . '" ><option value="' . $qcf['label'][$name] . '">' . $qcf['label'][$name] . '</option>'."\r\t";
     $arr = explode(",",$qcf[$list]);
     foreach ($arr as $item) {
         $selected = '';
         if ($values[$var] == $item) $selected = 'selected';
         $content .= '<option value="' .  $item . '" ' . $selected .'>' .  $item . '</option>'."\r\t";
     }
-    $content .= '</select></p>'."\r\t";
+    $content .= '</select>'."\r\t";
     return $content;
     }
 
@@ -252,6 +195,7 @@ function qcf_checklist($var,$list,$values,$errors,$required,$qcf,$name) {
     $content .= '</p>';
     return $content;
     }
+
 function qcf_radio($var,$list,$values,$errors,$required,$qcf,$name) {
     $content = '<p class="input">' . $qcf['label'][$name] . '</p>';
     $arr = explode(",",$qcf[$list]);
@@ -398,17 +342,21 @@ function qcf_verify_form(&$values, &$errors,$id) {
             break;
         }
     }
-    $tmp_name = $_FILES['filename']['tmp_name'];
-    $name = $_FILES['filename']['name'];
-    $size = $_FILES['filename']['size'];
-    if (file_exists($tmp_name)) {
-        if ($size > $attach['qcf_attach_size'])
-            $errors['attach'] = '<p><span>' . $attach['qcf_attach_error_size'] . '</span></p>'; 
-        $ext = substr(strrchr($name,'.'),1);
-        $pos = strpos($qcf['qcf_attach_type'],$ext);
-        if (strpos($attach['qcf_attach_type'],$ext) === false)
-            $errors['attach'] = '<p><span>' . $attach['qcf_attach_error_type'] . '</span></p>'; 
+    for($i = 1; $i < $attach['qcf_number']; $i++) {
+        $tmp_name = $_FILES['filename'.$i]['tmp_name'];
+        $name = $_FILES['filename'.$i]['name'];
+        $size = $_FILES['filename'.$i]['size'];
+        if (file_exists($tmp_name)) {
+            if ($size > $attach['qcf_attach_size']) {
+                $errors['attach'] = '<p><span>' . $attach['qcf_attach_error_size'] . '</span></p>'; 
+            }
+            $ext = strtolower(substr(strrchr($name,'.'),1));
+            if (strpos($attach['qcf_attach_type'],$ext) === false) {
+                $errors['attach'] = '<p><span>' . $attach['qcf_attach_error_type'] . '</span></p>'; 
+            }
+        }
     }
+    if ($errors['attach'] && $attach['qcf_attach_size'] > 1) $errors['attach'] = '<p><span>' . $attach['qcf_attach_error'] . '</span></p>'; 
     return (count($errors) == 0);	
 }
 
@@ -416,6 +364,8 @@ function qcf_process_form($values,$id) {
     $qcf = qcf_get_stored_options($id);
     $reply = qcf_get_stored_reply($id);
     $style = qcf_get_stored_style($id);
+    $attach = qcf_get_stored_attach($id);
+    $auto = qcf_get_stored_autoresponder($id);
     $qcfemail = qcf_get_stored_email();
     $qcf_email = $qcfemail[$id];
     global $_GET;
@@ -527,51 +477,53 @@ function qcf_process_form($values,$id) {
     if ($reply['page']) $sendcontent .= "<p>Message was sent from: <b>".$page."</b></p>";
     if ($reply['tracker']) $sendcontent .= "<p>Senders IP address: <b>".$ip."</b></p>";
     if ($reply['url']) $sendcontent .= "<p>URL: <b>".$url."</b></p>";
+    
+    $subject = "{$reply['subject']} {$addon}";
+    
+    $attachments = array();
+    add_filter( 'upload_dir', 'qcf_upload_dir' );
+    $dir = (realpath(WP_CONTENT_DIR . '/uploads/qcf/') ? '/uploads/qcf/' : '/uploads/');
+    
+        for($i = 1; $i <= $attach['qcf_number']; $i++) {
+        $filename = $_FILES['filename'.$i]['tmp_name'];
+        if (file_exists($filename)) {
+            $name = $_FILES['filename'.$i]['name'];
+            $uploadedfile = $_FILES['filename'.$i];
+            $upload_overrides = array( 'test_form' => false );
+            $movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
+            if (!$attach['qcf_attach_link']) array_push($attachments , WP_CONTENT_DIR .$dir.$name);
+        }
+    }
+    remove_filter( 'upload_dir', 'qcf_upload_dir' );
+    
+    if ($attach['qcf_attach_link']) {
+        $sendcontent .= '<h2>Attachments:</h2>';
+        $url = get_site_url();
+        for($i = 1; $i <= $attach['qcf_number']; $i++) {
+            $filename = $_FILES['filename'.$i]['name'];
+            $filename = str_replace(' ','-',$filename);
+            if ($filename) {
+                $sendcontent .= '<p><a href = "'.$url.'/wp-content'.$dir.$filename.'">'.$filename.'</a><br>';
+            }
+        }
+        $sendcontent .= '</p>';
+    }
+    
     $sendcontent .="</html>";
     $copycontent .="</html>";
-    $subject = "{$reply['subject']} {$addon}";
-    $tmp_name = $_FILES['filename']['tmp_name'];
-    $type = $_FILES['filename']['type'];
-    $name = $_FILES['filename']['name'];
-    $size = $_FILES['filename']['size'];
-    if (file_exists($tmp_name)) {
-        if(is_uploaded_file($tmp_name)) {
-            $file = fopen($tmp_name,'rb');
-            $data = fread($file,filesize($tmp_name));
-            fclose($file);
-            $data = chunk_split(base64_encode($data));
-        }
-        $bound_text = "x".md5(mt_rand())."x";
-        $bound = "--".$bound_text."\r\n";
-        $bound_last = "--".$bound_text."--\r\n";
-        $headers = $from
-            ."MIME-Version: 1.0\r\n"
-            ."Content-Type: multipart/mixed; boundary=\"$bound_text\"";
-        $message .= "If you can see this MIME than your client doesn't accept MIME types!\r\n"
-            .$bound; 
-        $message .= "Content-Type: text/html; charset=\"utf-8\"\r\n"
-            ."Content-Transfer-Encoding: 7bit\r\n\r\n"
-            .$sendcontent."\r\n"
-            .$bound; 	  
-        $message .= "Content-Type: ".$type."; name=\"".$name."\"\r\n" 
-            ."Content-Transfer-Encoding: base64\r\n"
-            ."Content-disposition: attachment; file=\"".$name."\"\r\n" 
-            ."\r\n"
-            .$data
-            .$bound_last; 
-    } else {
-        $headers = $from;
-        if ($reply['qcf_bcc']) { $headers .= "BCC: ".$qcf_email."\r\n";$qcf_email = 'null';}
-        $headers .= "MIME-Version: 1.0\r\n"
-            . "Content-Type: text/html; charset=\"utf-8\"\r\n"; 
-        $message = $sendcontent;
-    }
+    
+    $headers = $from;
+    if ($reply['qcf_bcc']) { $headers .= "BCC: ".$qcf_email."\r\n";$qcf_email = 'null';}
+    $headers .= "MIME-Version: 1.0\r\n"
+    . "Content-Type: text/html; charset=\"utf-8\"\r\n";	
+    $message = $sendcontent;
+
     if (function_exists('qcf_select_email')) {
         $email = qcf_select_email($id,$values['qcfname5']);
         if ($email) $qcf_email = $email;
     }
-    if ($reply['qcfmail'] == 'phpmail') mail($qcf_email, $subject, $message, $headers);
-    if ($reply['qcfmail'] == 'wpemail') wp_mail($qcf_email, $subject, $message, $headers);
+    if ($reply['qcfmail'] == 'phpmail') wp_mail($qcf_email, $subject, $message, $headers, $attachments);
+    if ($reply['qcfmail'] == 'wpemail') wp_mail($qcf_email, $subject, $message, $headers, $attachments);
     if ($reply['qcfmail'] == 'smtp') {
         $qcfsmtp = qcf_get_stored_smtp ();
         require_once ABSPATH . WPINC . '/class-phpmailer.php';
@@ -594,11 +546,6 @@ function qcf_process_form($values,$id) {
         $phpmailer->Send();
         unset($phpmailer);
     }
-    if ($reply['sendcopy']) {
-        $headers = 'From: <'.$qcf_email.'>'."\r\n";
-        $headers .= "MIME-Version: 1.0\r\n". "Content-Type: text/html; charset=\"utf-8\"\r\n"; 
-        mail($values['qcfname2'], $reply['replysubject'], $copycontent, $headers);
-    }
     $qcf_messages = get_option('qcf_messages'.$id);
     if(!is_array($qcf_messages)) $qcf_messages = array();
     if ($values['qcfname1'] == $qcf['label']['field1']) $values['qcfname1'] ='';
@@ -620,6 +567,11 @@ function qcf_process_form($values,$id) {
         'field14' => $values['qcfname14']
     );
     update_option('qcf_messages'.$id,$qcf_messages);
+    
+    if ($auto['enable'] && $values['qcfname2']) {
+qcf_send_confirmation ($values,$content,$id,$qcf_email); 
+    }
+
     if ( $reply['qcf_redirect'] == 'checked') {
         if (function_exists('qcf_select_redirect')) $redirect = qcf_select_redirect($id,$values);
         if ($redirect) $location = $redirect;
@@ -640,6 +592,28 @@ function qcf_process_form($values,$id) {
             echo '<meta http-equiv="refresh" content="'.$reply['qcf_reload_time'].'">';
         }
     }
+}
+
+function qcf_send_confirmation ($values,$content,$id,$qcf_email) {
+    $auto = qcf_get_stored_autoresponder($id);
+    
+    if (empty($auto['fromemail'])) {
+        $auto['fromemail'] = $qcf_email;
+    }
+    if (empty($auto['fromname'])) {
+        $auto['fromname'] = get_bloginfo('name');
+    }
+    
+        $headers = "From: {$auto['fromname']} <{$auto['fromemail']}>\r\n"
+. "MIME-Version: 1.0\r\n"
+. "Content-Type: text/html; charset=\"utf-8\"\r\n";	
+        $subject = $auto['subject'];
+        $message = '<html>'.$auto['message'];
+if ($auto['sendcopy']) {
+$message .= $content;
+}
+$message .= '<html>';
+        wp_mail($values['qcfname2'], $subject,$message, $headers);   
 }
 
 function qcf_loop($id) {
@@ -717,14 +691,17 @@ function qcf_generate_css() {
     $qcf_form = qcf_get_stored_setup();
     $arr = explode(",",$qcf_form['alternative']);
     foreach ($arr as $item) {
-        $corners=$input=$background=$submitwidth=$paragraph=$submitbutton=$submit='';
+        $headercolour=$headersize=$corners=$input=$background=$submitwidth=$paragraph=$submitbutton=$submit='';
         $style = qcf_get_stored_style($item);
+$hd = ($style['header-type'] ? $style['header-type'] : 'h2');
         if ($item !='') $id = '.'.$item; else $id = '.default';
         if ($style['font'] == 'plugin') {
             $font = "font-family: ".$style['text-font-family']."; font-size: ".$style['text-font-size'].";color: ".$style['text-font-colour'].";height:auto;";
             $inputfont = "font-family: ".$style['font-family']."; font-size: ".$style['font-size']."; color: ".$style['font-colour'].";";
             $submitfont = "font-family: ".$style['font-family'];
-            if ($style['header']) $header = ".qcf-style".$id." h2 {font-size: ".$style['header-size']."; color: ".$style['header-colour'].";height:auto;}";
+if ($style['header-size']) $headersize = "font-size: ".$style['header-size'].";";
+if ($style['header-colour']) $headercolour = "color: ".$style['header-colour'].";";
+$header = ".qcf-style".$id." ".$hd." {".$headercolour.$headersize.";height:auto;}";
         }
         $input = ".qcf-style".$id." input[type=text], .qcf-style".$id." textarea, .qcf-style".$id." select {border: ".$style['input-border'].";background:".$style['inputbackground'].";".$inputfont.";line-height:normal;height:auto;}\r\n";
         $focus = ".qcf-style".$id." input:focus, .qcf-style".$id." textarea:focus {background:".$style['inputfocus'].";}\r\n";
@@ -764,4 +741,75 @@ $formwidth = preg_split('#(?<=\d)(?=[a-z%])#i', $style['width']);
 function qcf_head_css () {
     $data = '<style type="text/css" media="screen">'.qcf_generate_css().'</style>';
     echo $data;
+}
+
+function qcf_admin_scripts() {
+    $qcf_form = qcf_get_stored_setup();
+    wp_enqueue_script('jquery');
+    wp_enqueue_script('qcf_script',plugins_url('quick-contact-form.js', __FILE__), false, true );
+    wp_enqueue_script('jquery-ui-datepicker');
+    wp_enqueue_script('qcf_locale', plugins_url('quick-contact-locale.js', __FILE__ ), array( 'jquery-ui-datepicker' ), false, true );
+    wp_enqueue_script("jquery-effects-core");
+    wp_enqueue_script('qcf_slider', plugins_url('quick-range-slider.js', __FILE__ ), array('jquery'), false, true );
+    if (!$qcf_form['nostyling']) {
+        wp_enqueue_style ('qcf_style',plugins_url('quick-contact-form.css', __FILE__));
+        wp_enqueue_style ('qcf_custom',plugins_url('quick-contact-form-custom.css', __FILE__));
+    }
+    if (!$qcf_form['noui']) {
+        wp_enqueue_style ('jquery-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
+    }
+    global $wp_locale;
+    $aryArgs = array(
+        'monthNames' => strip_array_indices( $wp_locale->month),
+        'monthNamesShort' => strip_array_indices( $wp_locale->month_abbrev),
+        'dayNames' => strip_array_indices( $wp_locale->weekday),
+        'dayNamesShort' => strip_array_indices( $wp_locale->weekday_abbrev),
+        'dayNamesMin' => strip_array_indices( $wp_locale->weekday_initial),
+        'dateFormat' => 'dd M yy',
+    );
+    wp_localize_script( 'qcf_locale', 'objectL10n', $aryArgs );
+}
+
+function strip_array_indices( $ArrayToStrip ) {
+    foreach( $ArrayToStrip as $objArrayItem) {
+        $NewArray[] = $objArrayItem;
+    }
+    return( $NewArray );
+}
+
+function qcf_init() {
+    qcf_create_css_file ('');
+}
+
+function qcf_create_css_file ($update) {
+    if (function_exists('file_put_contents')) {
+        $css_dir = plugin_dir_path( __FILE__ ) . '/quick-contact-form-custom.css' ;
+        $filename = plugin_dir_path( __FILE__ );
+        if (is_writable($filename) && (!file_exists($css_dir) || !empty($update))) {
+            $data = qcf_generate_css();
+            file_put_contents($css_dir, $data, LOCK_EX);
+        }
+    }
+    else add_action('wp_head', 'qcf_head_css');
+}
+
+function qcf_start($atts) {
+    extract(shortcode_atts(array( 'id' => '' ), $atts));
+    return qcf_loop($id);
+}
+
+function qcf_plugin_action_links($links, $file ) {
+    if ( $file == plugin_basename( __FILE__ ) ) {
+        $qcf_links = '<a href="'.get_admin_url().'options-general.php?page=quick-contact-form/settings.php">'.__('Settings').'</a>';
+        array_unshift( $links, $qcf_links );
+    }
+    return $links;
+}
+
+function qcf_upload_dir( $dir ) {
+    return array(
+        'path'   => $dir['basedir'] . '/qcf',
+        'url'    => $dir['baseurl'] . '/qcf',
+        'subdir' => '/qcf',
+    ) + $dir;
 }
