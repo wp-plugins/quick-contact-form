@@ -319,13 +319,14 @@ function qcf_get_stored_autoresponder ($id) {
     $auto = get_option('qcf_autoresponder'.$id);
     if(!is_array($auto)) {
         $send = qcf_get_stored_reply ($id);
-$qcfemail = qcf_get_stored_email();
-$fromemail = $qcfemail[$id];
-if (empty($fromemail)) {
-        global $current_user;
-        get_currentuserinfo();
-        $fromemail = $current_user->user_email;
-    } 
+        $qcfemail = qcf_get_stored_email();
+        $fromemail = $qcfemail[$id];
+        if (empty($fromemail)) {
+            global $current_user;
+            get_currentuserinfo();
+            $fromemail = $current_user->user_email;
+        } 
+        $title = get_bloginfo('name');
 
         if ($send['sendcopy']) {
             $auto = array(
@@ -333,20 +334,20 @@ if (empty($fromemail)) {
                 'subject' => $send['replysubject'],
                 'message' => $send['replymessage'],
                 'sendcopy' => $send['replycopy'],
-                'fromname' => '',
-                'fromemail' => $fromemail,
+                'fromname' => $title,
+                'fromemail' => $fromemail
             );
             $send['thankyou'] = '';
             update_option( 'qcf_reply'.$id, $send );
-update_option( 'qcf_autoresponder'.$id, $auto );
+            update_option( 'qcf_autoresponder'.$id, $auto );
         } else {
             $auto = array(
                 'enable' => '',
                 'subject' => 'Thank you for your enquiry.',
                 'message' => 'We will be in contact soon. If you have any questions please reply to this email.',
                 'sendcopy' => 'checked',
-                'fromname' => '',
-                'fromemail' => '',
+                'fromname' => $title,
+                'fromemail' => $fromemail
             );
         }
     }

@@ -954,7 +954,7 @@ function qcf_autoresponce_page($id) {
 	if ($id) $content .='<h2 style="color:#B52C00">Autoresponse settings for ' . $id . '</h2>';
 	else $content .='<h2 style="color:#B52C00">Default form autoresponse settings</h2>';
 	$content .= qcf_change_form($qcf_setup);
-	$content .='<p>The auto responder is similar to the Email Message option on the <a href="?page=quick-contact-form/settings.php&tab=send">Send Options</a> page but allows you to format a proper HTML message with media, links and so on. If you enable the Auto Responder it will disable the Email Message settings.</p>
+	$content .='<p>The auto responder allows you to format a proper HTML message with media, links and so on.</p>
     <form method="post" action="">
 	<p><input type="checkbox" style="margin: 0; padding: 0; border: none;" name="enable"' . $auto['enable'] . ' value="checked" /> Enable Auto Responder.</p>
 <p>From Name (<span class="description">Defaults to your <a href="'. get_admin_url().'options-general.php">Site Title</a> if left blank.</span>):<br>
