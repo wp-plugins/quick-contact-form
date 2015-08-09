@@ -21,7 +21,7 @@ A really, really simple drag and drop contact form. There is nothing to configur
 *	Custom error and thank-you messages
 *	Multiple form support
 *   Akismet spam filtering
-*   Autoresponder
+*   Fully editable autoresponder
 
 = Developers plugin page =
 
@@ -73,6 +73,9 @@ I did, and so have you.  Maybe there will be more, who knows.
 No but I've inherited 2 ancient, deaf and grumpy Persians.
 
 == Changelog ==
+
+= 6.10.1
+*   Widget update for WP 4.3
 
 = 6.10
 *   New Autoresponder

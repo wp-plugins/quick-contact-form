@@ -469,7 +469,7 @@ function qcf_styles($id) {
             'submit-button',
             'form-border',
             'header',
-'header-type',
+            'header-type',
             'header-size',
             'header-colour',
             'error-font-colour',
@@ -1019,9 +1019,9 @@ function qcf_smtp_page() {
     </td>
     </tr>
     <tr valign="top">
-    <td>Username</td><td><input name="smtp_user" type="text" value=" '.$qcfsmtp['smtp_user'].'" /></td>
+    <td>Username</td><td><input name="smtp_user" type="text" value="'.$qcfsmtp['smtp_user'].'" /></td>
     </tr><tr valign="top">
-    <td>Password</td><td><input name="smtp_pass" type="text" value=" '.$qcfsmtp['smtp_pass'].'" /></td>
+    <td>Password</td><td><input name="smtp_pass" type="text" value="'.$qcfsmtp['smtp_pass'].'" /></td>
     </tr>
     <tr>
     <td colspan="2"><input type="submit" name="Submit" class="button-primary" style="color: #FFF;" value="Save Changes" />  <input type="submit" name="Reset" class="button-primary" style="color: #FFF;" value="Reset" onclick="return window.confirm( \'Are you sure you want to reset these settings?\' );"/></p>

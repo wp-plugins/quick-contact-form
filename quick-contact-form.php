@@ -3,7 +3,7 @@
 Plugin Name: Quick Contact Form
 Plugin URI: http://quick-plugins.com/quick-contact-form/
 Description: A really, really simple contact form. There is nothing to configure, just add your email address and it's ready to go. But you then have access to a huge range of easy to use features.
-Version: 6.10
+Version: 6.10.1
 Author: aerin
 Author URI: http://quick-plugins.com/
 */
@@ -644,10 +644,13 @@ function qcf_loop($id) {
 }
 
 class qcf_widget extends WP_Widget {
-    function qcf_widget() {
-        $widget_ops = array('classname' => 'qcf_widget', 'description' => 'Add the Quick Contact Form to your sidebar');
-        $this->WP_Widget('qcf_widget', 'Quick Contact Form', $widget_ops);
-    }
+    function __construct() {
+		parent::__construct(
+			'qcf_widget', // Base ID
+			__( 'Quick Contact Form', 'text_domain' ), // Name
+			array( 'description' => __( 'Add the Quick Contact Form to your sidebar', 'text_domain' ), ) // Args
+		);
+	}
     
     function form($instance) {
         $instance = wp_parse_args( (array) $instance, array( 'formname' => '' ) );
@@ -746,7 +749,7 @@ function qcf_head_css () {
 function qcf_admin_scripts() {
     $qcf_form = qcf_get_stored_setup();
     wp_enqueue_script('jquery');
-    wp_enqueue_script('qcf_script',plugins_url('quick-contact-form.js', __FILE__), false, true );
+    wp_enqueue_script('qcf_script',plugins_url('quick-contact-form.js', __FILE__), array(), false, true );
     wp_enqueue_script('jquery-ui-datepicker');
     wp_enqueue_script('qcf_locale', plugins_url('quick-contact-locale.js', __FILE__ ), array( 'jquery-ui-datepicker' ), false, true );
     wp_enqueue_script("jquery-effects-core");

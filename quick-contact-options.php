@@ -298,23 +298,6 @@ function qcf_get_default_smtp () {
     return $smtp;
 }
 
-function qcf_get_stored_autoresponder2 ($id) {
-    $auto = get_option('qcf_autoresponder'.$id);
-    if(!is_array($auto)) $auto = array();
-    $default = qcf_get_default_autoresponce();
-    $auto = array_merge($default, $auto);
-    return $auto;
-}
-
-function qcf_get_default_autoresponce2 () {
-    $auto = array(
-        'enable' => '',
-        'subject' => '<p>Thank you for your enquiry.</p>',
-        'message' => '<p>I&#146,ll be in contact soon. If you have any questions please reply to this email.</p>'
-    );
-    return $auto;
-}
-
 function qcf_get_stored_autoresponder ($id) {
     $auto = get_option('qcf_autoresponder'.$id);
     if(!is_array($auto)) {
